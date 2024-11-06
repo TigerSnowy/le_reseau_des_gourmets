@@ -1,0 +1,13 @@
+services:
+# base de donnée
+# nom du service
+  mysql: 
+    image: mysql:9
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/app
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: always

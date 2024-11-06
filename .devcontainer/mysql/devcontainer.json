@@ -1,0 +1,6 @@
+{
+    "name": "Le Réseau des Gourmets - MySQL",
+    "service" : "mysql",
+    "dockerComposeFile": "../../docker-compose.dev.yaml",
+    "workspaceFolder": "/app"
+}
