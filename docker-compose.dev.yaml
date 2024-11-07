@@ -6,8 +6,18 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./mysql:/app
+      - ./code/server/mysql:/app
       - ./mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
     restart: always
+
+# il n'est pas obligé de l'appeler server. Il faut créer une dossier du même nom dans .devcontainer, et y mettre le fichier devcontainer.json
+  server: 
+    image: node:23
+    ports: 
+      - 3000:3000
+    volumes:
+      - ./code/server:/app
+# node n'est pas un serveur, comme mysql, tty est pour qu'il reste ouvert, un peu comme "restart: always"
+    tty: true 
