@@ -1,31 +1,33 @@
 {
-    "name": "Le Réseau des Gourmets - Server",
-    "service" : "server",
-    "dockerComposeFile": "../../docker-compose.dev.yaml",
-    "workspaceFolder": "/app",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "christian-kohler.npm-intellisense",
-                "christian-kohler.path-intellisense",
-                "biomejs.biome",
-                "VASubasRaj.flashpost"
-            ],
+	"name": "Le Réseau des Gourmets - Server",
+	"service": "server",
+	"dockerComposeFile": "../../docker-compose.dev.yaml",
+	"workspaceFolder": "/app",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"christian-kohler.npm-intellisense",
+				"christian-kohler.path-intellisense",
+				"biomejs.biome",
+				"VASubasRaj.flashpost"
+			],
 
-            "settings": {
+			"settings": {
+				"[javascript]": {
+					"editor.defaultFormatter": "biomejs.biome",
+					"editor.formatOnSave": true,
+					"editor.formatOnType": true
+				},
 
-                "[javascript]": {
-                    "editor.defaultFormatter": "biomejs.biome",
-                    "editor.formatOnSave": true,
-                    "editor.formatOnType": true
-                  },
-
-                "[typescript]": {
-                    "editor.defaultFormatter": "biomejs.biome",
-                    "editor.formatOnSave": true,
-                    "editor.formatOnType": true
-                  }
-            }
-        }
-    }
+				"[typescript]": {
+					"editor.defaultFormatter": "biomejs.biome",
+					"editor.formatOnSave": true,
+					"editor.formatOnType": true
+				},
+				"editor.codeActionsOnSave": {
+					"source.fixAll": "always"
+				}
+			}
+		}
+	}
 }
