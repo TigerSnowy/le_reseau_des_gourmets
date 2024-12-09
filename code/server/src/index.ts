@@ -1,4 +1,4 @@
-import Server from "./core/server";
+import Server from "./core/server.js";
 
 // démarrer le serveur
 const server: Server = new Server();

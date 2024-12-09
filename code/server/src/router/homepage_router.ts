@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import HomepageController from "../controller/homepage_controller";
+import HomepageController from "../controller/homepage_controller.js";
 
 class HomepageRouter {
 	// propriétés

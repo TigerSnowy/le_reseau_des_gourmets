@@ -6,8 +6,9 @@ import express, {
 } from "express";
 
 import http from "node:http";
-import HomepageRouter from "../router/homepage_router";
-import NotFoundRouter from "../router/not_found_router";
+import HomepageRouter from "../router/homepage_router.js";
+import NotFoundRouter from "../router/not_found_router.js";
+import RoleRouter from "../router/role_router.js";
 
 class Server {
 	// propriétés
@@ -26,10 +27,12 @@ class Server {
 
 	// méthodes
 	private routersList = () => {
-		// préfixe à toutes les routes 
+		// préfixe de toutes les routes d'un routeur 
 		this.router.use('/', new HomepageRouter().getRoutes());
 
-		// routeur des routes inexistantes doit être obligatoirement en dernière position
+		this.router.use('/role', new RoleRouter().getRoutes());
+
+		// routeur des routes inexistantes doit être obligatoirement en dernière position pour qu'il soit trouvé en dernier
 		this.router.use('*', new NotFoundRouter().getRoutes());
 		};
 

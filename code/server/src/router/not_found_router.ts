@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import NotFoundController from "../controller/not_found_controller";
+import NotFoundController from "../controller/not_found_controller.js";
 
 class NotFoundRouter {
 	// propriétés
