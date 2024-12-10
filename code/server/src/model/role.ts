@@ -9,16 +9,16 @@ type Role = {
 	image: string;
 };
 
-type User = {
-	user_id: number;
-	pseudo: string;
-	surname: string;
-	first_name: string;
-	email: string;
-	password: string;
-	profil_picture: string;
-	profile_background: string;
-	subscription_date: number;
-}
+// type User = {
+// 	user_id: number;
+// 	pseudo: string;
+// 	surname: string;
+// 	first_name: string;
+// 	email: string;
+// 	password: string;
+// 	profil_picture: string;
+// 	profile_background: string;
+// 	subscription_date: number;
+// }
 
 export default Role;

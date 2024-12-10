@@ -21,3 +21,11 @@ services:
       - ./code/server:/app
 # node n'est pas un serveur, comme mysql, tty est pour qu'il reste ouvert, un peu comme "restart: always"
     tty: true 
+
+  client: 
+    image: node:23
+    ports: 
+      - 5173:5173
+    volumes:
+      - ./code/server:/app
+    tty: true 
