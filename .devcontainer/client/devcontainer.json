@@ -1,0 +1,33 @@
+{
+	"name": "Le Réseau des Gourmets - Client",
+	"service": "client",
+	"dockerComposeFile": "../../docker-compose.dev.yaml",
+	"workspaceFolder": "/app",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"christian-kohler.npm-intellisense",
+				"christian-kohler.path-intellisense",
+				"biomejs.biome",
+				"dsznajder.es7-react-js-snippets"
+			],
+
+			"settings": {
+				"[javascriptreact]": {
+					"editor.defaultFormatter": "biomejs.biome",
+					"editor.formatOnSave": true,
+					"editor.formatOnType": true
+				},
+
+				"[typescriptreact]": {
+					"editor.defaultFormatter": "biomejs.biome",
+					"editor.formatOnSave": true,
+					"editor.formatOnType": true
+				},
+				"editor.codeActionsOnSave": {
+					"source.fixAll": "always"
+				}
+			}
+		}
+	}
+}

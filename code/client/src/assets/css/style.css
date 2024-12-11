@@ -1,0 +1,10 @@
+/* styles commun à toutes les pages */
+
+*{
+    box-sizing: border-box;
+    margin: auto;
+}
+
+img {
+    width: 100%;
+}

@@ -1,0 +1,13 @@
+/* le suffixe module permet d'isoler les styles d'un composant */
+
+.site-header {
+    background-color: navajowhite;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.site-logo {
+    width: 10rem;
+}
+
