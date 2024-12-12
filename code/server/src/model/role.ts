@@ -9,6 +9,8 @@ type Role = {
 	image: string;
 };
 
+export default Role;
+
 // type User = {
 // 	user_id: number;
 // 	pseudo: string;
@@ -20,5 +22,3 @@ type Role = {
 // 	profile_background: string;
 // 	subscription_date: number;
 // }
-
-export default Role;

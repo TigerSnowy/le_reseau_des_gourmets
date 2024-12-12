@@ -5,8 +5,9 @@ import { useRef, useState } from "react";
 const Nav = () => {
 	// créer une référence : permet de cibler un élément HTML
 	// remplace l'utilisation de querySelector / querySelectorAll
+	// const référence = useRef<type de l'élément ciblé>(valeur initiale de la référence)
 
-	const siteNav = useRef();
+	const siteNav = useRef<HTMLDivElement>(null);
 
 	// créer un état : useState
 	// const [état, setter de l'état] = useState<typer l'état>(valeur initiale de l'état)
