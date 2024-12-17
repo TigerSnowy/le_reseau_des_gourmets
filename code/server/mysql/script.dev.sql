@@ -144,10 +144,10 @@ VALUES
 INSERT INTO le_reseau_des_gourmets_dev.recipe_ingredient
 VALUES
 
-    (3, NULL, 1, 1),
-    (1.5, 'kg', 2, 2),
-    (500, 'ml', 3, 3),
-    (2, NULL, 1, 4)
+    (1, 3, NULL, 1, 1),
+    (2, 1.5, 'kg', 2, 2),
+    (3, 500, 'ml', 3, 3),
+    (4, 2, NULL, 1, 4)
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.picture

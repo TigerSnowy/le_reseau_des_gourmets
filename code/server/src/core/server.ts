@@ -10,6 +10,12 @@ import HomepageRouter from "../router/homepage_router.js";
 import NotFoundRouter from "../router/not_found_router.js";
 import RoleRouter from "../router/role_router.js";
 import cors from "cors";
+import IngredientRouter from "../router/ingredient_router.js";
+import PictureRouter from "../router/picture_router.js";
+import PostRouter from "../router/post_router.js";
+import RecipeRouter from "../router/recipe_router.js";
+import ShareTypeRouter from "../router/share_type_router.js";
+import UserRouter from "../router/user_router.js";
 
 class Server {
 	// propriétés
@@ -36,6 +42,12 @@ class Server {
 		this.router.use("/", new HomepageRouter().getRoutes());
 
 		this.router.use("/role", new RoleRouter().getRoutes());
+		this.router.use("/ingredient", new IngredientRouter().getRoutes());
+		this.router.use("/picture", new PictureRouter().getRoutes());
+		this.router.use("/post", new PostRouter().getRoutes());
+		this.router.use("/recipe", new RecipeRouter().getRoutes());
+		this.router.use("/share_type", new ShareTypeRouter().getRoutes());
+		this.router.use("/user", new UserRouter().getRoutes());
 
 		// routeur des routes inexistantes doit être obligatoirement en dernière position pour qu'il soit trouvé en dernier
 		this.router.use("*", new NotFoundRouter().getRoutes());

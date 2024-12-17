@@ -9,14 +9,13 @@ class MySQLService {
 
 	// async permet de créer une fonction asyncgrone
 	public connect = async () => {
-
 		// tester si une connection n'existe pas
 		// await : à utiliser avec du code asynchrone (promise);
 		// créer un temps d'attente dans l'exécution du code;
 		// récupérer le contenu d'une promesse
 
 		if (!MySQLService.connection) {
-			return await mysql
+			MySQLService.connection = await mysql
 				.createPool({
 					host: process.env.MYSQL_HOST,
 					user: process.env.MYSQL_USER,
