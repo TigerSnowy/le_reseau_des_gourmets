@@ -23,6 +23,30 @@ class IngredientRepository {
 		}
 	};
 
+	public selectInList = async (
+		list: string,
+	): Promise<Ingredient[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+            SELECT
+                ${this.table}.*
+            FROM 
+                ${process.env.MYSQL_DATABASE}.${this.table}
+			WHERE
+				${this.table}.ingredient_id IN (${list})
+			;
+        `;
+
+		try {
+			const [results] = await connexion.execute(sql);
+
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
+
 	public selectOne = async (
 		data: Partial<Ingredient>,
 	): Promise<Ingredient[] | unknown> => {

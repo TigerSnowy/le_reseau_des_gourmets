@@ -4,6 +4,7 @@
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
 import type Ingredient from "./ingredient.js";
+import type Picture from "./picture.js";
 import type User from "./user.js";
 
 type Recipe = {
@@ -17,8 +18,8 @@ type Recipe = {
 	user_id: number;
 	user: User;
 
-	ingredient_ids: string;
-	ingredients: Ingredient[];
+	picture_ids: string;
+	pictures: Picture[];
 };
 
 export default Recipe;
