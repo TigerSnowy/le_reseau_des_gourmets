@@ -1,0 +1,6 @@
+{
+    "name": "Le Réseau des Gourmets - MongoDB",
+    "service" : "mongodb",
+    "dockerComposeFile": "../../docker-compose.dev.yaml",
+    "workspaceFolder": "/app"
+}

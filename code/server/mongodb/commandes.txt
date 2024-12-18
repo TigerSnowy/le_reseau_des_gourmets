@@ -1,0 +1,5 @@
+// se connecter au serveur MongoDB
+mongosh -u root --authenticationDatabase admin -p
+
+// charger un fichier JS dans le serveur MongoDB
+mongoimport -d le_reseau_des_gourmets_dev -c contact --file contact.dev.json --jsonArray -u root --authenticationDatabase admin
