@@ -3,6 +3,8 @@
 // ex: table Role => objets = role_id, name, image
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
+import type Ingredient from "./ingredient.js";
+
 type RecipeIngredient = {
 	id: number;
 	quantity?: number | null;
@@ -11,14 +13,15 @@ type RecipeIngredient = {
 		| "kg"
 		| "ml"
 		| "l"
-		| "cs"
-		| "cc"
-		| "pince(s)"
+		| "càs"
+		| "càc"
+		| "pincée(s)"
 		| "oz"
 		| "lb"
 		| null;
 	recipe_id: number;
 	ingredient_id: number;
+	ingredient: Ingredient;
 };
 
 export default RecipeIngredient;

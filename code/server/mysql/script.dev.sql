@@ -168,6 +168,20 @@ VALUES
     (3, 3)
 ;
 
+INSERT INTO le_reseau_des_gourmets_dev.share_type
+VALUES
+
+    (NULL, 'lecture seule'),
+    (NULL, 'modifiable')
+;
+
+INSERT INTO le_reseau_des_gourmets_dev.user_recipe_type
+VALUES
+
+    (1, 1, 1),
+    (3, 2, 2)
+;
+
 
 
 -- modifier des enregistrements :

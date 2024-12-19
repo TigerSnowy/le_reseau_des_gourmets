@@ -1,9 +1,12 @@
 import type Ingredient from "../model/ingredient.js";
 import type Picture from "../model/picture.js";
 import type Recipe from "../model/recipe.js";
+import type RecipeIngredient from "../model/recipe_ingredient.js";
 import type User from "../model/user.js";
 import MySQLService from "../service/mysql_service.js";
+import IngredientRepository from "./ingredient_repository.js";
 import PictureRepository from "./picture_repository.js";
+import RecipeIngredientRepository from "./recipe_ingredient_repository.js";
 import UserRepository from "./user_repository.js";
 
 class RecipeRepository {
@@ -27,7 +30,7 @@ class RecipeRepository {
 			ON
 				recipe_picture.picture_id = picture.picture_id
 			GROUP BY
-				${this.table}.recipe_id
+				${this.table}.recipe_id 
 			;
         `;
 
@@ -44,6 +47,11 @@ class RecipeRepository {
 				result.pictures = (await new PictureRepository().selectInList(
 					result.picture_ids,
 				)) as Picture[];
+
+				result.recipe_ingredients =
+					(await new RecipeIngredientRepository().selectByRecipeId(
+						result.recipe_id,
+					)) as RecipeIngredient[];
 			}
 
 			return results;
