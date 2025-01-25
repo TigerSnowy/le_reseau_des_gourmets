@@ -4,3 +4,5 @@ code/server/node_modules
 code/client/dist
 code/client/node_modules
 mongodb-data/
+
+.claude-files/
