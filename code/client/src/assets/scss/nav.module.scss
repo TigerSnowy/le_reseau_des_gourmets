@@ -1,0 +1,76 @@
+// Variables
+$primary-color: #ff715b;
+$secondary-color: #6e5d4b;
+$text-color: white;
+
+// Styles de la navbar
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $primary-color;
+  padding: 1rem;
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $text-color;
+    text-decoration: none;
+
+    &:hover {
+      color: $secondary-color;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+
+    .nav-link {
+      color: $text-color;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $secondary-color;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+// .btn-nav-mobile {
+//     display: none;
+
+// }
+
+// .site-nav {
+//     display: block;
+// }
+
+// @media screen and (max-width: 50rem){
+//     .btn-nav-mobile {
+//         display: block;
+//         width: 90px;
+//         height: 40px;
+//         background-color: white;
+//         color: #B72D2D;
+//         font-weight: 700;
+//         border: 2px solid #B72D2D;
+//     }
+
+//     .site-nav {
+//         display: none;
+//     }
+
+//     .site-nav-visible {
+//         display: block;
+//     }
+// }
