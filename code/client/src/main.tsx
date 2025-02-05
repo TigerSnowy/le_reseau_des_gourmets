@@ -1,9 +1,17 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-createRoot(document.getElementById("root")!).render(
-	<StrictMode>
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+	throw new Error("L'élément root est introuvable. Vérifie ton index.html !");
+}
+
+ReactDOM.createRoot(rootElement).render(
+	<React.StrictMode>
 		<App />
-	</StrictMode>,
+	</React.StrictMode>,
 );
+
+// J'ai supprimé <RouterProvider router={router} /> de App.tsx, et ajouté BrowserRouter ici à la place. Il ne peut y avoir qu'un seul Router à la fois.

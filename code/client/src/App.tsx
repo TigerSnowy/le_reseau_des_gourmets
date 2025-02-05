@@ -1,15 +1,15 @@
 // composant react :
-	// capitaliser le nom du composant
-	// une focntion JS/TS qui renvoie du HTML
+// capitaliser le nom du composant
+// une focntion JS/TS qui renvoie du HTML
 
 // import d'un css global
-import './assets/css/reset_css.css';
-import './assets/css/style.css';
+import "./assets/scss/reset_css.scss";
+import "./assets/scss/style.scss";
 import { RouterProvider } from "react-router-dom";
-import router from './service/router'
+import router from "./service/router";
 
-	const App = () => {
-		return <RouterProvider router={ router }/>;
-	}
+const App = () => {
+	return <RouterProvider router={router} />;
+};
 
-	export default App;
+export default App;

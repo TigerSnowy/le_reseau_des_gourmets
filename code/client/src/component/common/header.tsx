@@ -1,4 +1,4 @@
-import Nav from "./nav";
+import NavBar from "./navbar";
 
 // import d'un CSS d'un composant
 import styles from "../../assets/css/header.module.css";
@@ -16,7 +16,7 @@ const Header = () => {
 					<img src="/img/logo.png" alt="" />
 				</Link>
 			</div>
-			<Nav />
+			<NavBar />
 		</header>
 	);
 };
