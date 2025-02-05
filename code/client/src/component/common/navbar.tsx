@@ -1,26 +1,61 @@
-// import { Link } from "react-router-dom";
-// import styles from "../../assets/css/nav.module.css";
-// import { useRef, useState } from "react";
-
+import { useState } from "react";
+import styles from "../../assets/scss/nav.module.scss";
 import { Link } from "react-router-dom";
-import "../../assets/scss/nav.module.scss";
 
 const NavBar = () => {
+	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const user = {
+		username: "TigerSnowy",
+		avatar: "/img/piti_piaf.jpg",
+	};
+
 	return (
-		<nav className="navbar">
-			{/* Logo */}
-			<Link to="/" className="logo">
+		<nav className={styles.navbar}>
+			{/* bouton blog */}
+			<Link to="/" className={styles.blogButton}>
 				Les Saveurs du Réseau
 			</Link>
 
-			{/* Navigation Links */}
-			<div className="nav-links">
-				<Link to="/contact" className="nav-link">
-					Contact
-				</Link>
-				<Link to="/connexion" className="nav-link">
-					Connexion
-				</Link>
+			{/* logo */}
+			<div className={styles.logoContainer}>
+				<img
+					src="/img/logo_noir.svg"
+					alt="Logo - Le Réseau des Gourmets"
+					className={styles.logo}
+				/>
+			</div>
+
+			{/* bouton connexion/connecté */}
+			<div className={styles.navLinks}>
+				{isLoggedIn ? (
+					<div className={styles.loggedInButton}>
+						<span className={styles.username}>{user.username}</span>
+						<img
+							src={user.avatar}
+							alt="Avatar utilisateur"
+							className={styles.avatar}
+						/>
+					</div>
+				) : (
+					<Link to="/connexion" className={styles.loginButton}>
+						Connexion
+					</Link>
+				)}
+
+				{/* menu déroulant */}
+				{isLoggedIn && (
+					<div className={styles.dropdownMenu}>
+						<Link to="/">Mon Carnet</Link>
+						<Link to="/">Créer une recette +</Link>
+						<button
+							className={styles.logoutButton}
+							onClick={() => setIsLoggedIn(false)}
+							type="button"
+						>
+							Déconnexion
+						</button>
+					</div>
+				)}
 			</div>
 		</nav>
 	);

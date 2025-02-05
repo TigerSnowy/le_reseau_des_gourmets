@@ -1,12 +1,7 @@
-import RoleList from "../component/home/RoleList";
+// import RoleList from "../component/home/RoleList";
 
-const ProfilPage = () => {
-	return (
-		<>
-			<h1>Contact</h1>
-			<RoleList />
-		</>
-	);
+const ProfilePage = () => {
+	return <></>;
 };
 
-export default ProfilPage;
+export default ProfilePage;

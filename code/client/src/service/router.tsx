@@ -1,13 +1,16 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import ContactPage from "../page/ContactPage";
 import BaseLayout from "../layout/BasetLayout";
+import ProfileLayout from "../layout/ProfileLayout";
 import HomePage from "../page/HomePage";
-// import LoginPage from "../page/LoginPage";
-// import RegisterPage from "../page/RegisterPage";
-// import ProfilePage from "../page/ProfilePage";
-// import SettingsPage from "../page/SettingsPage";
-// import RecipesPage from "../page/RecipesPage";
-// import CreateRecipePage from "../page/CreateRecipePage";
+import ContactPage from "../page/ContactPage";
+import ProfilePage from "../page/ProfilePage";
+import SettingsPage from "../page/SettingsPage";
+import ConfidentialityPage from "../page/ConfidentialityPage";
+import ThemesPage from "../page/ThemesPage";
+import RecipesPage from "../page/RecipesPage";
+import CreateRecipePage from "../page/CreateRecipesPage";
+import LoginPage from "../page/LoginPage";
+import RegisterPage from "../page/RegisterPage";
 
 const router = createBrowserRouter([
 	{
@@ -21,7 +24,7 @@ const router = createBrowserRouter([
 		// référencer les pages utilisant la mise en page
 		children: [
 			{
-				path: "",
+				path: "accueil",
 				element: <HomePage />,
 			},
 			{
@@ -30,28 +33,31 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "connexion",
-				element: <div>Connexion</div>,
+				element: <LoginPage />,
 			},
 			{
 				path: "inscription",
-				element: <div>Inscription</div>,
-			},
-			{
-				path: "profil",
-				element: <div>Profil</div>,
-			},
-			{
-				path: "parametres",
-				element: <div>Paramètres</div>,
+				element: <RegisterPage />,
 			},
 			{
 				path: "recettes",
-				element: <div>Mes recettes</div>,
+				element: <RecipesPage />,
 			},
 			{
 				path: "recettes/creation",
-				element: <div>Créer une recette</div>,
+				element: <CreateRecipePage />,
 			},
+		],
+	},
+
+	{
+		path: "profil",
+		element: <ProfileLayout />,
+		children: [
+			{ path: "", element: <ProfilePage /> },
+			{ path: "parametres", element: <SettingsPage /> },
+			{ path: "securite", element: <ConfidentialityPage /> },
+			{ path: "themes", element: <ThemesPage /> },
 		],
 	},
 ]);

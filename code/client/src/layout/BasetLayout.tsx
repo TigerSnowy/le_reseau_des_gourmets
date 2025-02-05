@@ -1,21 +1,22 @@
-// import { Outlet } from "react-router-dom";
-// import Footer from "../component/common/footer";
-// import Header from "../component/common/header";
-
 import type React from "react";
 import type { ReactNode } from "react";
 import NavBar from "../component/common/navbar";
+import Footer from "../component/common/footer";
+import styles from "../assets/scss/baseLayout.module.scss";
 
 type BaseLayoutProps = {
-	children: ReactNode; // Définit le type pour 'children'
+	children: ReactNode;
+
+	// Définit le type pour 'children'. children => contenu unique de chaque page qui sera affiché dans <main>.
 };
 
 const BaseLayout: React.FC<BaseLayoutProps> = ({ children }) => {
 	return (
-		<>
+		<div className={styles.layout}>
 			<NavBar />
-			<main>{children}</main>
-		</>
+			<main className={styles.main}>{children}</main>
+			<Footer />
+		</div>
 	);
 };
 

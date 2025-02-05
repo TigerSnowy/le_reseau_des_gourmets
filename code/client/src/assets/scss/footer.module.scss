@@ -1,4 +1,21 @@
-.site-footer {
-    background-color: rgb(222, 166, 84);
-    padding: 1rem;
+$primary-color: #4D4D4D;
+$secondary-color: #F7F3EB;
+$tertiary-color: #E6E0D5;
+$quaternary-color: #6E5D4B;
+$emphasis-color: #FF715B;
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $quaternary-color;
+    padding: 4rem;
+    padding-left: 15%;
+    padding-right: 15%;
+
+    .contactLink, .blogLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
+        text-decoration: none;
+        color: $secondary-color;
+        font-size: 1.1rem;
+    }
 }
