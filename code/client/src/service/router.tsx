@@ -1,9 +1,9 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, Navigate } from "react-router-dom";
 import BaseLayout from "../layout/BasetLayout";
 import ProfileLayout from "../layout/ProfileLayout";
 import HomePage from "../page/HomePage";
 import ContactPage from "../page/ContactPage";
-import ProfilePage from "../page/ProfilePage";
+// import ProfilePage from "../page/ProfilePage";
 import SettingsPage from "../page/SettingsPage";
 import ConfidentialityPage from "../page/ConfidentialityPage";
 import ThemesPage from "../page/ThemesPage";
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
 		path: "profil",
 		element: <ProfileLayout />,
 		children: [
-			{ path: "", element: <ProfilePage /> },
+			{ path: "", element: <Navigate to="parametres" replace /> },
 			{ path: "parametres", element: <SettingsPage /> },
 			{ path: "securite", element: <ConfidentialityPage /> },
 			{ path: "themes", element: <ThemesPage /> },

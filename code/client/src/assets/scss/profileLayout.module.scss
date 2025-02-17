@@ -4,3 +4,178 @@ $tertiary-color: #E6E0D5;
 $quaternary-color: #6E5D4B;
 $emphasis-color: #FF715B;
 
+.profileLayout {
+    display: flex;
+    flex-direction: column;
+    min-height: 70vh;
+    background-color: $secondary-color;
+}
+
+.mainContent {
+    flex: 1;
+    display: flex;
+}
+
+.profileSidebar {
+    width: 36rem;
+    min-height: 70vh;
+    background: $secondary-color;
+    color: $primary-color;
+    border-right: solid 1px $primary-color;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+// profil
+
+    .profileInfo {
+        text-align: center;
+        margin-top: 5rem;
+        position: relative;
+    }
+
+// avatar
+
+    .avatarContainer {
+        position: relative;
+        display: inline-block;
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 15px;
+            border: solid 2px $primary-color;
+            object-fit: cover;
+        }
+
+// bouton modification
+
+        .editButton {
+            position: absolute;
+            top: 5px;
+            right: -35px;
+            background: $secondary-color;
+            border: solid 1px $primary-color;
+            border-radius: 5px;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+    
+            &:hover {
+                background: $emphasis-color;
+    
+                svg {
+                    color: $secondary-color;
+                }
+            }
+        }
+    }
+
+// pseudo
+
+    .usernameContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 25px;
+
+    .username {
+        font-size: 1.5rem;
+        margin-top: 2.1rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 3rem;
+    }
+
+// bouton modification
+
+    .editButton {
+        background: $secondary-color;
+        border: solid 1px $primary-color;
+        border-radius: 5px;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+
+        svg {
+            stroke: $emphasis-color;
+        }
+
+        &:hover {
+            background: $emphasis-color;
+
+            svg {
+                stroke: $secondary-color;
+            }
+        }
+    }
+}
+
+// rôle
+
+    .userRole {
+        background-color: $emphasis-color;
+        color: $secondary-color;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+// navigation
+
+    nav ul {
+        list-style: none;
+        padding-top: 4.1rem;
+        width: 100%;
+    }
+
+    nav ul li {
+        width: 100%;
+        height: 5rem;
+        text-align: center;
+        align-content: center;
+        background-color: $tertiary-color;
+        font-size: 1.4rem;
+        border-top: solid 1px $primary-color;
+        transition: background 0.3s;
+    }
+
+    nav ul li a {
+        color: $primary-color;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        height: 5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    nav ul li:hover {
+        background-color: $emphasis-color;
+    }
+
+    .active {
+        background-color: $emphasis-color !important;
+    }
+
+// contenu de sous-page
+
+    .mainContent {
+        flex: 1;
+        padding: 2rem;
+        background-color: $secondary-color;
+    }
+}
+
+
