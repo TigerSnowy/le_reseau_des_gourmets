@@ -1,9 +1,8 @@
 import { createBrowserRouter, Outlet, Navigate } from "react-router-dom";
-import BaseLayout from "../layout/BasetLayout";
+import BaseLayout from "../layout/BaseLayout";
 import ProfileLayout from "../layout/ProfileLayout";
 import HomePage from "../page/HomePage";
 import ContactPage from "../page/ContactPage";
-// import ProfilePage from "../page/ProfilePage";
 import SettingsPage from "../page/SettingsPage";
 import ConfidentialityPage from "../page/ConfidentialityPage";
 import ThemesPage from "../page/ThemesPage";

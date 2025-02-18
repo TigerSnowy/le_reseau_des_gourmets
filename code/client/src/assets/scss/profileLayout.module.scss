@@ -11,9 +11,16 @@ $emphasis-color: #FF715B;
     background-color: $secondary-color;
 }
 
+.profileContainer {
+	display: flex;
+	flex: 1; 
+}
+
 .mainContent {
-    flex: 1;
+    flex-grow: 1;
+    padding: 2rem;
     display: flex;
+    flex-direction: column;
 }
 
 .profileSidebar {
@@ -25,6 +32,7 @@ $emphasis-color: #FF715B;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    flex-shrink: 0;
 
 // profil
 
@@ -65,11 +73,15 @@ $emphasis-color: #FF715B;
             cursor: pointer;
             transition: background 0.3s;
     
+            svg {
+                stroke: $emphasis-color;
+            }
+    
             &:hover {
                 background: $emphasis-color;
     
                 svg {
-                    color: $secondary-color;
+                    stroke: $secondary-color;
                 }
             }
         }

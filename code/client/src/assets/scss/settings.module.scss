@@ -1,0 +1,111 @@
+$primary-color: #4D4D4D;
+$secondary-color: #F7F3EB;
+$tertiary-color: #E6E0D5;
+$quaternary-color: #6E5D4B;
+$emphasis-color: #FF715B;
+
+.settingsPage {
+    display: flex;
+    gap: 3rem;
+    margin-top: 7rem;
+    justify-content: center;
+    color: $primary-color;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 80vw;
+    overflow-x: hidden;
+
+    .newsletter, .general {
+        flex: 1;
+        background: $tertiary-color;
+        padding: 2.5rem;
+        border-radius: 25px;
+        max-width: 45%;
+        min-width: 18rem;
+
+        h2 {
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 25px;
+        }
+    }
+
+    .newsletter {
+        height: 14rem;
+        align-content: center;
+        justify-items: center;
+        align-self: flex-end;
+
+        label {
+            font-size: 21px;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 1rem;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid $primary-color;
+            background-color: $secondary-color;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+
+            &:checked {
+                background: $secondary-color;
+                border: 2px solid $primary-color;
+
+                &::after {
+                    content: "✔";
+                    color: $emphasis-color;
+                    font-size: 14px;
+                    font-weight: bold;
+                    position: absolute;
+                    top: 48%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            }
+        }
+    }
+
+    .general {
+        height: 27rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        input {
+            background: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            margin-top: 1rem;
+            width: 90%;
+        }
+    
+        button {
+            background: $emphasis-color;
+            color: $secondary-color;
+            border: solid 1px $secondary-color;
+            border-radius: 10px;
+            padding: 0.7rem 3rem;
+            margin-top: 2rem;
+            width: 90%;
+            font-size: 15px;
+            cursor: pointer;
+    
+            &:hover {
+                background: $secondary-color;
+                border: solid 1px $emphasis-color;
+                color: #FF715B;
+            }
+        }
+    }
+}
