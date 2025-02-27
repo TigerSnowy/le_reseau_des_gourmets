@@ -1,0 +1,108 @@
+.confidentialityPage {
+    display: flex;
+    gap: 3rem;
+    margin-top: 7rem;
+    justify-content: center;
+    color: var(--primary-color);
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 80vw;
+    overflow-x: hidden;
+
+    .accountActions, .passwordChange {
+        flex: 1;
+        background: var(--tertiary-color);
+        padding: 2.5rem;
+        border-radius: 25px;
+        max-width: 45%;
+        min-width: 18rem;
+
+        h2 {
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 25px;
+        }
+    }
+
+    .accountActions {
+        height: 14rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        align-self: flex-end;
+        gap: 1.5rem;
+
+        button {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border: solid 1px var(--primary-color);
+            border-radius: 10px;
+            padding: 0.7rem 3rem;
+            width: 90%;
+            font-size: 15px;
+            cursor: pointer;
+    
+            &:hover {
+                background: var(--secondary-color);
+                border: solid 1px var(--emphasis-color);
+                color: var(--emphasis-color);
+            }
+        }
+
+        .deleteAccount {
+            background: var(--emphasis-color);
+            color: var(--secondary-color);
+            border: solid 1px var(--secondary-color);
+            border-radius: 10px;
+            padding: 0.7rem 3rem;
+            // margin-top: 1.5rem;
+            width: 90%;
+            font-size: 15px;
+            cursor: pointer;
+    
+            &:hover {
+                background: var(--secondary-color);
+                border: solid 1px var(--emphasis-color);
+                color: var(--emphasis-color);
+            }
+        }
+    }
+
+    .passwordChange {
+        height: 27rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        input {
+            background: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            margin-top: 1rem;
+            width: 90%;
+        }
+    
+        button {
+            background: var(--emphasis-color);
+            color: var(--secondary-color);
+            border: solid 1px var(--secondary-color);
+            border-radius: 10px;
+            padding: 0.7rem 3rem;
+            margin-top: 2rem;
+            width: 90%;
+            font-size: 15px;
+            cursor: pointer;
+    
+            &:hover {
+                background: var(--secondary-color);
+                border: solid 1px var(--emphasis-color);
+                color: var(--emphasis-color);
+            }
+        }
+    }
+}

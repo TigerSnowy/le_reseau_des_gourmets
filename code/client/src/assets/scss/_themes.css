@@ -1,0 +1,25 @@
+/* thème par défaut */
+
+.theme-default {
+    --primary-color: #4D4D4D;
+    --secondary-color: #F7F3EB;
+    --tertiary-color: #E6E0D5;
+    --quaternary-color: #6E5D4B;
+    --emphasis-color: #FF715B;
+  }
+
+  .theme-cottonCandy {
+    --primary-color: #F29191;
+    --secondary-color: #F2F2F2;
+    --tertiary-color: #F2D7D0;
+    --quaternary-color: #F7BDC9;
+    --emphasis-color: #F2385A;
+  }
+
+  .theme-autumn {
+    --primary-color: #A65B2D;
+    --secondary-color: #FFD699;
+    --tertiary-color: #FFB366;
+    --quaternary-color: #CC5500;
+    --emphasis-color: #8B3A3A;
+}
