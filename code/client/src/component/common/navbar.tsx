@@ -28,14 +28,14 @@ const NavBar = () => {
 			{/* bouton connexion/connecté */}
 			<div className={styles.navLinks}>
 				{isLoggedIn ? (
-					<div className={styles.loggedInButton}>
+					<Link to="/profil/parametres" className={styles.loggedInButton}>
 						<span className={styles.username}>{user.username}</span>
 						<img
 							src={user.avatar}
 							alt="Avatar utilisateur"
 							className={styles.avatar}
 						/>
-					</div>
+					</Link>
 				) : (
 					<Link to="/connexion" className={styles.loginButton}>
 						Connexion

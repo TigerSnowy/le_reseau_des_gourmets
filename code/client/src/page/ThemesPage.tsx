@@ -3,10 +3,11 @@ import "../assets/scss/_themes.css";
 import { useState, useEffect } from "react";
 
 const ThemesPage = () => {
-	// Stocke le thème actif
-	const [theme, setTheme] = useState("theme-default");
+	// récupérer le dernier thème enregistré dans localStorage
+	const savedTheme = localStorage.getItem("selectedTheme") || "theme-default";
+	const [theme, setTheme] = useState(savedTheme);
 
-	// Met à jour la classe du <body> à chaque changement de thème
+	// mets à jour le body et sauvegarder le choix
 	useEffect(() => {
 		document.body.classList.remove(
 			"theme-default",
@@ -14,6 +15,9 @@ const ThemesPage = () => {
 			"theme-autumn",
 		);
 		document.body.classList.add(theme);
+
+		// sauvegarde le choix de l'utilisateur
+		localStorage.setItem("selectedTheme", theme);
 	}, [theme]);
 
 	// Liste des thèmes
