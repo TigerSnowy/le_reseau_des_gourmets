@@ -1,0 +1,133 @@
+.recipeContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+    // max-width: 100rem;
+    // margin: auto;
+    padding: 2rem;
+    // min-height: 80vh;
+    gap: 5rem;
+
+    .left {
+        background: var(--tertiary-color);
+        margin-top: 4rem;
+        width: 25rem;
+        padding: 2.5rem;
+        border-radius: 10px;
+
+        .customFileUpload {
+            background: var(--secondary-color);
+            color: var(--emphasis-color);
+            border: 1px solid var(--emphasis-color);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            transition: 0.3s;
+            margin-top: 1.5rem;
+
+            &:hover {
+                background: var(--emphasis-color);
+                color: var(--secondary-color);
+                border: 1px solid var(--secondary-color);
+            }
+        }
+
+        .imgInput {
+            display: none;
+        }
+
+        .previewImage {
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+            border: 2px solid var(--primary-color);
+          }
+    }
+
+    .right {
+        background: var(--tertiary-color);
+        margin-top: 7.5rem;
+        // margin-left: 7rem;
+        padding: 2.5rem;
+        border-radius: 10px;
+        width: 55rem;
+    }
+  
+    h1 {
+      font-size: 1.8rem;
+      margin-top: 1.4rem;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 1rem;
+
+      h3 {
+        font-size: 1.1rem;
+        text-transform: uppercase;
+      }
+
+      .instructionsMargin {
+        margin-top: 1.1rem;
+      }
+    }
+  
+    input, textarea, button {
+      width: 100%;
+      max-width: 100%;
+      padding: 0.8rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      border: none;
+    }
+
+    textarea {
+        min-width: 100%;
+    }
+  
+    .ingredientRow {
+      display: flex;
+      gap: 10px;
+      
+      input {
+        flex: 1;
+      }
+    }
+  
+    button {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+  
+      &:hover {
+        background-color: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+      }
+    }
+
+    .submitButton {
+        background: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+
+        &:hover {
+            background-color: var(--secondary-color);
+            color: var(--emphasis-color);
+            border: 1px solid var(--emphasis-color);
+        }
+    }
+  }
+  

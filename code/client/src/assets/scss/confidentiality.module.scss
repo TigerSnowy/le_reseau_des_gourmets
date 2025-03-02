@@ -20,7 +20,7 @@
         h2 {
             margin-bottom: 3rem;
             text-align: center;
-            font-size: 25px;
+            font-size: 1.6rem;
         }
     }
 
@@ -42,8 +42,9 @@
             border-radius: 10px;
             padding: 0.7rem 3rem;
             width: 90%;
-            font-size: 15px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: 0.3s;
     
             &:hover {
                 background: var(--secondary-color);
@@ -62,6 +63,7 @@
             width: 90%;
             font-size: 15px;
             cursor: pointer;
+            transition: 0.3s;
     
             &:hover {
                 background: var(--secondary-color);
@@ -95,8 +97,9 @@
             padding: 0.7rem 3rem;
             margin-top: 2rem;
             width: 90%;
-            font-size: 15px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: 0.3s;
     
             &:hover {
                 background: var(--secondary-color);

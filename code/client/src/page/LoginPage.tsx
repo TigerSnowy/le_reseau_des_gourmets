@@ -5,9 +5,11 @@ import LoginIllustration from "/img/pinch.png";
 const LoginPage = () => {
 	return (
 		<div className={styles.authContainer}>
+			{/* illustration */}
 			<div className={styles.left}>
 				<img src={LoginIllustration} alt="Illustration connexion" />
 			</div>
+			{/* formulaire */}
 			<div className={styles.right}>
 				<h1>CONNEXION</h1>
 				<form>
