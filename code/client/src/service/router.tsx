@@ -6,8 +6,9 @@ import ContactPage from "../page/ContactPage";
 import SettingsPage from "../page/SettingsPage";
 import ConfidentialityPage from "../page/ConfidentialityPage";
 import ThemesPage from "../page/ThemesPage";
-import RecipesPage from "../page/RecipesPage";
+import RecipesPage from "../page/RecipePage";
 import CreateRecipePage from "../page/CreateRecipesPage";
+import AllRecipesPage from "../page/AllRecipesPage";
 import LoginPage from "../page/LoginPage";
 import RegisterPage from "../page/RegisterPage";
 
@@ -40,11 +41,15 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "recettes",
-				element: <RecipesPage />,
+				element: <AllRecipesPage />,
 			},
 			{
 				path: "recettes/creation",
 				element: <CreateRecipePage />,
+			},
+			{
+				path: "recettes/creation/recette",
+				element: <RecipesPage />,
 			},
 		],
 	},

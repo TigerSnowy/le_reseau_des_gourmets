@@ -17,13 +17,13 @@ const NavBar = () => {
 			</Link>
 
 			{/* logo */}
-			<div className={styles.logoContainer}>
+			<Link to="/accueil" className={styles.logoContainer}>
 				<img
 					src="/img/logo_noir.svg"
 					alt="Logo - Le Réseau des Gourmets"
 					className={styles.logo}
 				/>
-			</div>
+			</Link>
 
 			{/* bouton connexion/connecté */}
 			<div className={styles.navLinks}>
@@ -45,8 +45,8 @@ const NavBar = () => {
 				{/* menu déroulant */}
 				{isLoggedIn && (
 					<div className={styles.dropdownMenu}>
-						<Link to="/">Mon Carnet</Link>
-						<Link to="/">Créer une recette +</Link>
+						<Link to="/recettes">Mon Carnet</Link>
+						<Link to="/recettes/creation">Créer une recette +</Link>
 						<button
 							className={styles.logoutButton}
 							onClick={() => setIsLoggedIn(false)}

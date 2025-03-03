@@ -13,6 +13,17 @@ const CreateRecipePage = () => {
 		{ id: crypto.randomUUID(), name: "", quantity: "", unit: "" },
 	]);
 
+	// met à jour uniquement le champ concerné (ingrédient, quantité ou unité)
+	const updateIngredient = (
+		id: string,
+		field: keyof (typeof ingredients)[0],
+		value: string,
+	) => {
+		setIngredients(
+			ingredients.map((i) => (i.id === id ? { ...i, [field]: value } : i)),
+		);
+	};
+
 	//stocke la liste des instructions sous forme de texte (id unique)
 	const [instructions, setInstructions] = useState([
 		{ id: crypto.randomUUID(), text: "" },
@@ -21,11 +32,23 @@ const CreateRecipePage = () => {
 	// stocke les tags associés à la recette
 	const [tags, setTags] = useState("");
 
+	// stocke le temps de préparation et de cuisson
+	const [preparationTime, setPreparationTime] = useState("");
+	const [cookingTime, setCookingTime] = useState("");
+
+	// stocke la difficulté de la recette
+	const [difficulty, setDifficulty] = useState("Facile");
+
 	// gère le changement d'image et stock le fichier séléctionné
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
 			setImage(event.target.files[0]);
 		}
+	};
+
+	// supprime l'image téléchargée
+	const removeImage = () => {
+		setImage(null);
 	};
 
 	// ajoute un nouvel ingrédient à la liste
@@ -36,9 +59,19 @@ const CreateRecipePage = () => {
 		]);
 	};
 
+	// supprime un ingrédient
+	const removeIngredient = (id: string) => {
+		setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
+	};
+
 	// ajoute une nouvelle instruction à la liste
 	const addInstruction = () => {
 		setInstructions([...instructions, { id: crypto.randomUUID(), text: "" }]);
+	};
+
+	// supprimer une instruction
+	const removeInstruction = (id: string) => {
+		setInstructions(instructions.filter((step) => step.id !== id));
 	};
 
 	return (
@@ -48,12 +81,39 @@ const CreateRecipePage = () => {
 				<form>
 					{/* nom de la recette */}
 					<input
+						className={styles.nameInput}
 						type="text"
-						placeholder="Nom de la recette"
+						placeholder="Nom de la recette*"
 						value={recipeName}
 						onChange={(e) => setRecipeName(e.target.value)}
 						required
 					/>
+					{/* temps de préparation et cuisson */}
+					<div className={styles.timeInputs}>
+						<input
+							type="number"
+							placeholder="Temps de préparation (min)"
+							value={preparationTime}
+							onChange={(e) => setPreparationTime(e.target.value)}
+						/>
+						<input
+							type="number"
+							placeholder="Temps de cuisson (min)"
+							value={cookingTime}
+							onChange={(e) => setCookingTime(e.target.value)}
+						/>
+					</div>
+
+					{/* difficulté */}
+					<select
+						value={difficulty}
+						onChange={(e) => setDifficulty(e.target.value)}
+						className={styles.difficultySelect}
+					>
+						<option value="Facile">Facile</option>
+						<option value="Moyen">Moyen</option>
+						<option value="Difficile">Difficile</option>
+					</select>
 
 					{/* image */}
 					<label htmlFor="imageUpload" className={styles.customFileUpload}>
@@ -67,11 +127,20 @@ const CreateRecipePage = () => {
 						className={styles.imgInput}
 					/>
 					{image && (
-						<img
-							src={URL.createObjectURL(image)}
-							alt="Aperçu de l'image"
-							className={styles.previewImage}
-						/>
+						<div>
+							<img
+								src={URL.createObjectURL(image)}
+								alt="Aperçu de l'image"
+								className={styles.previewImage}
+							/>
+							<button
+								type="button"
+								onClick={removeImage}
+								className={styles.deleteImage}
+							>
+								Supprimer
+							</button>
+						</div>
 					)}
 				</form>
 			</div>
@@ -85,41 +154,36 @@ const CreateRecipePage = () => {
 								type="text"
 								placeholder="Nom"
 								value={ingredient.name}
-								onChange={(e) => {
-									const newIngredients = ingredients.map((i) =>
-										i.id === ingredient.id ? { ...i, name: e.target.value } : i,
-									);
-									setIngredients(newIngredients);
-								}}
-								required
+								onChange={(e) =>
+									updateIngredient(ingredient.id, "name", e.target.value)
+								}
 							/>
 							{/* quantité */}
 							<input
 								type="text"
 								placeholder="Quantité"
 								value={ingredient.quantity}
-								onChange={(e) => {
-									const newIngredients = ingredients.map((i) =>
-										i.id === ingredient.id
-											? { ...i, quantity: e.target.value }
-											: i,
-									);
-									setIngredients(newIngredients);
-								}}
-								required
+								onChange={(e) =>
+									updateIngredient(ingredient.id, "quantity", e.target.value)
+								}
 							/>
 							{/* unité */}
 							<input
 								type="text"
 								placeholder="Unité"
 								value={ingredient.unit}
-								onChange={(e) => {
-									const newIngredients = ingredients.map((i) =>
-										i.id === ingredient.id ? { ...i, unit: e.target.value } : i,
-									);
-									setIngredients(newIngredients);
-								}}
+								onChange={(e) =>
+									updateIngredient(ingredient.id, "unit", e.target.value)
+								}
 							/>
+
+							<button
+								type="button"
+								onClick={() => removeIngredient(ingredient.id)}
+								className={styles.deleteButton}
+							>
+								🗑
+							</button>
 						</div>
 					))}
 					<button type="button" onClick={addIngredient}>
@@ -129,18 +193,26 @@ const CreateRecipePage = () => {
 					{/* instructions */}
 					<h3 className={styles.instructionsMargin}>Instructions</h3>
 					{instructions.map((step) => (
-						<textarea
-							key={step.id}
-							placeholder={"Étape"}
-							value={step.text}
-							onChange={(e) => {
-								const newInstructions = instructions.map((s) =>
-									s.id === step.id ? { ...s, text: e.target.value } : s,
-								);
-								setInstructions(newInstructions);
-							}}
-							required
-						/>
+						<div key={step.id} className={styles.instructionRow}>
+							<textarea
+								key={step.id}
+								placeholder={"Étape"}
+								value={step.text}
+								onChange={(e) => {
+									const newInstructions = instructions.map((s) =>
+										s.id === step.id ? { ...s, text: e.target.value } : s,
+									);
+									setInstructions(newInstructions);
+								}}
+							/>
+							<button
+								type="button"
+								onClick={() => removeInstruction(step.id)}
+								className={styles.deleteButton}
+							>
+								🗑
+							</button>
+						</div>
 					))}
 					<button type="button" onClick={addInstruction}>
 						Ajouter une étape
@@ -152,6 +224,7 @@ const CreateRecipePage = () => {
 						placeholder="Tags (ex: dessert, rapide)"
 						value={tags}
 						onChange={(e) => setTags(e.target.value)}
+						className={styles.tagsInput}
 					/>
 
 					<button className={styles.submitButton} type="submit">
