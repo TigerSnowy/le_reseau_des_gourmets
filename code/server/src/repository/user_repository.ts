@@ -20,15 +20,15 @@ class UserRepository {
 				GROUP_CONCAT(share_type.share_type_id) AS share_type_ids
             FROM 
                 ${process.env.MYSQL_DATABASE}.${this.table}
-			JOIN
+			LEFT JOIN
 				${process.env.MYSQL_DATABASE}.user_recipe_type
 			ON
 				user_recipe_type.user_id =  ${this.table}.user_id
-			JOIN
+			LEFT JOIN
 				${process.env.MYSQL_DATABASE}.recipe
 			ON
 				user_recipe_type.recipe_id = recipe.recipe_id
-			JOIN
+			LEFT JOIN
 				${process.env.MYSQL_DATABASE}.share_type
 			ON
 				share_type.share_type_id = 	user_recipe_type.share_type_id
@@ -81,6 +81,95 @@ class UserRepository {
 			})) as Role;
 
 			return result;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	//créer un enregistrement
+	public insert = async (data: Partial<User>): Promise<User[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		//créer ne variable de requête SQL en préfixant le nom d'une variable par :
+		const sql = `
+
+			INSERT INTO 
+				${process.env.MYSQL_DATABASE}.${this.table}
+			VALUES
+				(
+					NULL,
+					:pseudo,
+					:surname,
+					:first_name,
+					:email,
+					:password,
+					:profile_picture,
+					:profile_background,
+					:subscription_date,
+					:role_id
+				)
+			;
+        `;
+
+		try {
+			const [results] = await connexion.execute(sql, data);
+
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	// modifier un enregistrement
+	public update = async (data: Partial<User>): Promise<User[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		//créer une variable de requête SQL en préfixant le nom d'une variable par :
+		const sql = `
+
+			UPDATE 
+				${process.env.MYSQL_DATABASE}.${this.table}
+			SET
+				${this.table}.pseudo = :pseudo,
+				${this.table}.surname = :surname,
+				${this.table}.first_name = :first_name,
+				${this.table}.email = :email,
+				${this.table}.password = :password,
+				${this.table}.profile_picture = :profile_picture,
+				${this.table}.profile_background = :profile_background,
+				${this.table}.subscription_date = :subscription_date,
+				${this.table}.role_id = :role_id
+			WHERE
+				${this.table}.user_id = :user_id
+			;
+        `;
+
+		try {
+			const [results] = await connexion.execute(sql, data);
+
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	public delete = async (data: Partial<User>): Promise<User[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		//créer une variable de requête SQL en préfixant le nom d'une variable par :
+		const sql = `
+
+			DELETE FROM 
+				${process.env.MYSQL_DATABASE}.${this.table}
+			WHERE
+				${this.table}.user_id = :user_id
+			;
+        `;
+
+		try {
+			const [results] = await connexion.execute(sql, data);
+
+			return results;
 		} catch (error) {
 			return error;
 		}

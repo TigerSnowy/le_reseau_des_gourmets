@@ -13,8 +13,25 @@ const LoginPage = () => {
 			<div className={styles.right}>
 				<h1>CONNEXION</h1>
 				<form>
-					<input type="email" placeholder="Email" required />
-					<input type="password" placeholder="Mot de passe" required />
+					<label htmlFor="email">Email :</label>
+					<input
+						type="email"
+						placeholder="Email"
+						id="email"
+						required
+						aria-required
+						autoComplete=""
+					/>
+
+					<label htmlFor="password">Mot de passe</label>
+					<input
+						type="password"
+						placeholder="Mot de passe"
+						required
+						aria-required
+						autoComplete=""
+					/>
+
 					<button type="submit">Se connecter</button>
 				</form>
 				<p>

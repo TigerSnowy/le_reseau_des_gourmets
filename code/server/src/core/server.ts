@@ -30,6 +30,9 @@ class Server {
 		// CORS : Cross Origin Resource Sharing
 		this.app.use(cors());
 
+		// accéder au contenu d'une requête HTTP - proprété body - au format JSON
+		this.app.use(express.json());
+
 		//relier le routeur à l'application
 		this.app.use(this.router);
 
