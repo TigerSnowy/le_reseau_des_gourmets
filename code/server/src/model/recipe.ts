@@ -6,7 +6,6 @@
 import type Ingredient from "./ingredient.js";
 import type Picture from "./picture.js";
 import type RecipeIngredient from "./recipe_ingredient.js";
-import type ShareType from "./share_type.js";
 import type User from "./user.js";
 
 type Recipe = {
@@ -14,9 +13,8 @@ type Recipe = {
 	title: string;
 	preparation_time?: string | null;
 	cooking_time?: string | null;
-	difficulty?: "facile" | "moyen" | "difficile" | null;
+	difficulty?: "Facile" | "Moyen" | "Difficile" | null;
 	description?: string | null;
-	share_token?: string | null;
 	user_id: number;
 	user: User;
 
@@ -28,9 +26,6 @@ type Recipe = {
 
 	recipe_ingredient_ids: string;
 	recipe_ingredients: RecipeIngredient[];
-
-	share_type_ids: string;
-	share_types: ShareType[];
 };
 
 export default Recipe;

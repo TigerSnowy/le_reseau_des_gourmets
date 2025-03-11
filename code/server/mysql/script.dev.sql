@@ -10,8 +10,7 @@ CREATE DATABASE le_reseau_des_gourmets_dev;
 
 CREATE TABLE le_reseau_des_gourmets_dev.role(
     role_id TINYINT(1) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(10) NOT NULL,
-    image VARCHAR(50) NOT NULL
+    name VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE le_reseau_des_gourmets_dev.ingredient(
@@ -27,8 +26,6 @@ CREATE TABLE le_reseau_des_gourmets_dev.user(
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     profile_picture VARCHAR(100) NULL,
-    profile_background VARCHAR(100) NULL,
-    subscription_date DATE NOT NULL,
     role_id TINYINT(1) UNSIGNED,
     FOREIGN KEY (role_id) REFERENCES role(role_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -38,21 +35,20 @@ CREATE TABLE le_reseau_des_gourmets_dev.recipe(
     title VARCHAR(50) NOT NULL UNIQUE,
     preparation_time TIME NULL,
     cooking_time TIME NULL,
-    difficulty ENUM('facile', 'moyen', 'difficile') DEFAULT NULL,
+    difficulty ENUM('Facile', 'Moyen', 'Difficile') DEFAULT NULL,
     description TEXT NULL,
-    share_token VARCHAR (255) DEFAULT NULL,
     user_id TINYINT UNSIGNED,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE le_reseau_des_gourmets_dev.recipe_ingredient(
-    id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     quantity DECIMAL(5,1) NULL,
     unit ENUM('g', 'kg', 'ml', 'l', 'càs', 'càc', 'pincée(s)', 'oz', 'lb') DEFAULT NULL,
     recipe_id SMALLINT UNSIGNED,
     FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id),
     ingredient_id SMALLINT UNSIGNED,
-    FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
+    FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id),
+    PRIMARY KEY (recipe_id, ingredient_id)
 );
 
 CREATE TABLE le_reseau_des_gourmets_dev.picture(
@@ -78,21 +74,6 @@ CREATE TABLE le_reseau_des_gourmets_dev.post(
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
-CREATE TABLE le_reseau_des_gourmets_dev.share_type(
-    share_type_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    type VARCHAR(30) NOT NULL
-);
-
-CREATE TABLE le_reseau_des_gourmets_dev.user_recipe_type(
-    recipe_id SMALLINT UNSIGNED,
-    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id),
-    user_id TINYINT UNSIGNED,
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    share_type_id SMALLINT UNSIGNED NOT NULL,
-    FOREIGN KEY (share_type_id) REFERENCES share_type(share_type_id)
-);
-
-
 
 -- créer des enregistrements
 -- commencer par les tables n'ayant pas de clés étrangères
@@ -103,8 +84,8 @@ INSERT INTO le_reseau_des_gourmets_dev.role
 VALUES
 
 -- pour la primary key, utiliser NULL pour l'auto-incrémentation
-    (NULL, 'admin', 'logo-admin.png'),
-    (NULL, 'user', 'logo-user.png')
+    (NULL, 'admin'),
+    (NULL, 'user')
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.ingredient
@@ -113,15 +94,16 @@ VALUES
     (NULL, 'Citron'),
     (NULL, 'Viande hachée'),
     (NULL, 'Boudoire'),
-     (NULL, 'Oeuf')
+    (NULL, 'Oeuf'),
+    (NULL, 'Cerise')
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.user
 VALUES
 
-    (NULL, 'Tigy', 'Ferreira', 'Ines', 'ines@gmail.com', 'Bidibabidibou92', 'image1.jpg', 'image2.jpg', '2024-08-10', 1),
-    (NULL, 'Lulu', 'Jalba', 'Ludmila', 'ludmila@gmail.com', 'Bidibabidibou74', 'image1.jpg', 'image2.jpg', '2024-10-30', 2),
-    (NULL, 'Zyny', 'Yakut', 'Zeynep', 'zeynep@gmail.com', 'Bidibabidibou80', 'image1.jpg', 'image2.jpg', '2024-09-25', 2)
+    (NULL, 'Tigy', 'Ferreira', 'Ines', 'ines@gmail.com', 'Bidibabidibou92', 'image1.jpg', 1),
+    (NULL, 'Lulu', 'Jalba', 'Ludmila', 'ludmila@gmail.com', 'Bidibabidibou74', 'image1.jpg', 2),
+    (NULL, 'Zyny', 'Yakut', 'Zeynep', 'zeynep@gmail.com', 'Bidibabidibou80', 'image1.jpg', 2)
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.post
@@ -136,18 +118,18 @@ VALUES
 INSERT INTO le_reseau_des_gourmets_dev.recipe
 VALUES
 
-    (NULL, 'Tarte au citron', '01:00:00', '00:30:00', 'Facile', 'Etape 1: zhafhazbfchbazhquxcb.', NULL, 2),
-    (NULL, 'Lasagnes', '01:30:00', '00:45:00', 'Difficile', 'Etape 1: ezffuhuahfabfia.', NULL, 3),
-    (NULL, 'Charlotte aux fraises', '00:45:00', '03:00:00', 'Moyen', 'Etape 1: ejhducabucbu.', 'abc123xyz', 1)
+    (NULL, 'Tarte au citron', '01:00:00', '00:30:00', 'Facile', 'Etape 1: zhafhazbfchbazhquxcb.', 2),
+    (NULL, 'Lasagnes', '01:30:00', '00:45:00', 'Difficile', 'Etape 1: ezffuhuahfabfia.', 3),
+    (NULL, 'Charlotte aux fraises', '00:45:00', '03:00:00', 'Moyen', 'Etape 1: ejhducabucbu.', 1)
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.recipe_ingredient
 VALUES
 
-    (1, 3, NULL, 1, 1),
-    (2, 1.5, 'kg', 2, 2),
-    (3, 500, 'ml', 3, 3),
-    (4, 2, NULL, 1, 4)
+    (3, NULL, 1, 1),
+    (1.5, 'kg', 2, 2),
+    (500, 'ml', 3, 3),
+    (2, NULL, 1, 4)
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.picture
@@ -168,19 +150,6 @@ VALUES
     (3, 3)
 ;
 
-INSERT INTO le_reseau_des_gourmets_dev.share_type
-VALUES
-
-    (NULL, 'lecture seule'),
-    (NULL, 'modifiable')
-;
-
-INSERT INTO le_reseau_des_gourmets_dev.user_recipe_type
-VALUES
-
-    (1, 1, 1),
-    (3, 2, 2)
-;
 
 
 

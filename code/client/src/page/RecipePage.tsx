@@ -34,8 +34,6 @@ const RecipePage = () => {
 
 	const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
 
-	const [editingField, setEditingField] = useState<string | null>(null);
-
 	//supprime un tag
 	const removeTag = (tag: string) => {
 		setTags(tags.filter((t) => t !== tag));
@@ -53,6 +51,8 @@ const RecipePage = () => {
 		setEditingField(editingField === field ? null : field);
 	};
 
+	const [editingField, setEditingField] = useState<string | null>(null);
+
 	return (
 		<div className={styles.recipeContainer}>
 			{/* partie gauche */}
@@ -60,34 +60,76 @@ const RecipePage = () => {
 				{/* nom de la recette */}
 
 				<h1>
-					{recipeName} <Pencil className={styles.editIcon} />
+					{editingField === "recipeName" ? (
+						<input
+							type="text"
+							value={recipeName}
+							onChange={(e) => setRecipeName(e.target.value)}
+						/>
+					) : (
+						recipeName
+					)}
+					<Pencil
+						className={styles.editIcon}
+						onClick={() => toggleEdit("recipeName")}
+					/>
 				</h1>
 
 				<h3>Temps</h3>
 
 				{/* temps de préparation et cuisson */}
 				<p>
-					Préparation : {preparationTime} min | Cuisson : {cookingTime} min
-					<Pencil className={styles.editIcon} />
+					Préparation :{" "}
+					{editingField === "preparationTime" ? (
+						<input
+							type="number"
+							value={preparationTime}
+							onChange={(e) => setPreparationTime(e.target.value)}
+						/>
+					) : (
+						`${preparationTime} min`
+					)}
+					<Pencil
+						className={styles.editIcon}
+						onClick={() => toggleEdit("preparationTime")}
+					/>
+					| Cuisson :{" "}
+					{editingField === "cookingTime" ? (
+						<input
+							type="text"
+							value={cookingTime}
+							onChange={(e) => setCookingTime(e.target.value)}
+						/>
+					) : (
+						`${cookingTime} min`
+					)}
+					<Pencil
+						className={styles.editIcon}
+						onClick={() => toggleEdit("cookingTime")}
+					/>
 				</p>
 
 				{/* difficulté */}
 				<h3>Difficulté</h3>
 
 				<p>
-					{difficulty} <Pencil className={styles.editIcon} />{" "}
+					{editingField === "difficulty" ? (
+						<select
+							value={difficulty}
+							onChange={(e) => setDifficulty(e.target.value)}
+						>
+							<option value="Facile">Facile</option>
+							<option value="Moyen">Moyen</option>
+							<option value="Difficile">Difficile</option>
+						</select>
+					) : (
+						`${difficulty}`
+					)}
+					<Pencil
+						className={styles.editIcon}
+						onClick={() => toggleEdit("difficulty")}
+					/>
 				</p>
-
-				{/* gestion de l'image */}
-				<img
-					src={
-						image
-							? URL.createObjectURL(image)
-							: "../../public/img/tarte-au-citron-meringuee.jpeg"
-					}
-					alt="Recette"
-					className={styles.previewImage}
-				/>
 
 				{/* tags */}
 				<h3>Tags</h3>
@@ -100,13 +142,25 @@ const RecipePage = () => {
 							</button>
 						</span>
 					))}
+					<Pencil className={styles.editIcon} />
 				</div>
+
+				{/* gestion de l'image */}
+				<img
+					src={
+						image
+							? URL.createObjectURL(image)
+							: "../../public/img/tarte-au-citron-meringuee.jpeg"
+					}
+					alt="Recette"
+					className={styles.previewImage}
+				/>
 			</div>
 
 			{/* pqrtie droite */}
-			{/* ingrédients */}
 
 			<div className={styles.right}>
+				{/* ingrédients */}
 				<h3>Ingrédients</h3>
 				<div className={styles.ingredientsContainer}>
 					{ingredients.map((ingredient) => (
@@ -119,7 +173,7 @@ const RecipePage = () => {
 						</div>
 					))}
 				</div>
-
+				{/* instructions */}
 				<h3>Instructions</h3>
 				<ol>
 					{instructions.map((step) => (

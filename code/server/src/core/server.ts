@@ -14,7 +14,6 @@ import IngredientRouter from "../router/ingredient_router.js";
 import PictureRouter from "../router/picture_router.js";
 import PostRouter from "../router/post_router.js";
 import RecipeRouter from "../router/recipe_router.js";
-import ShareTypeRouter from "../router/share_type_router.js";
 import UserRouter from "../router/user_router.js";
 import ContactRouter from "../router/contact_router.js";
 
@@ -47,10 +46,11 @@ class Server {
 
 		this.router.use("/role", new RoleRouter().getRoutes());
 		this.router.use("/ingredient", new IngredientRouter().getRoutes());
+		this.router.use("/recipe_ingredient", new IngredientRouter().getRoutes());
 		this.router.use("/picture", new PictureRouter().getRoutes());
+		this.router.use("/recipe_picture", new PictureRouter().getRoutes());
 		this.router.use("/post", new PostRouter().getRoutes());
 		this.router.use("/recipe", new RecipeRouter().getRoutes());
-		this.router.use("/share_type", new ShareTypeRouter().getRoutes());
 		this.router.use("/user", new UserRouter().getRoutes());
 		this.router.use("/contact", new ContactRouter().getRoutes());
 
