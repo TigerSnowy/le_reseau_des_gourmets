@@ -104,28 +104,33 @@ const RecipePage = () => {
 				<h3>Temps</h3>
 
 				{/* temps de préparation et cuisson */}
-				<p>
-					Préparation :
-					{isEditing ? (
-						<input
-							type="number"
-							value={preparationTime}
-							onChange={(e) => setPreparationTime(e.target.value)}
-						/>
-					) : (
-						`${preparationTime} min`
-					)}
-					| Cuisson :
-					{isEditing ? (
-						<input
-							type="number"
-							value={cookingTime}
-							onChange={(e) => setCookingTime(e.target.value)}
-						/>
-					) : (
-						`${cookingTime} min`
-					)}
-				</p>
+				<div>
+					<p className={styles.timeTitle}>Préparation :</p>
+					<p className={styles.time}>
+						{isEditing ? (
+							<input
+								type="number"
+								value={preparationTime}
+								onChange={(e) => setPreparationTime(e.target.value)}
+							/>
+						) : (
+							`${preparationTime} min`
+						)}
+					</p>
+
+					<p className={styles.timeTitle}>Cuisson :</p>
+					<p className={styles.time}>
+						{isEditing ? (
+							<input
+								type="number"
+								value={cookingTime}
+								onChange={(e) => setCookingTime(e.target.value)}
+							/>
+						) : (
+							`${cookingTime} min`
+						)}
+					</p>
+				</div>
 
 				{/* difficulté */}
 				<h3>Difficulté</h3>
@@ -192,7 +197,7 @@ const RecipePage = () => {
 						src={
 							image
 								? URL.createObjectURL(image)
-								: "/public/img/tarte-au-citron-meringuee.jpeg"
+								: "/img/tarte-au-citron-meringuee.jpeg"
 						}
 						alt="Recette"
 						className={styles.previewImage}
@@ -230,13 +235,23 @@ const RecipePage = () => {
 										}
 									/>
 
-									<input
-										type="text"
+									<select
 										value={ingredient.unit}
 										onChange={(e) =>
 											updateIngredient(ingredient.id, "unit", e.target.value)
 										}
-									/>
+									>
+										<option value="mg">mg</option>
+										<option value="g">g</option>
+										<option value="kg">kg</option>
+										<option value="ml">ml</option>
+										<option value="cl">cl</option>
+										<option value="l">l</option>
+										<option value="càc">c. à café</option>
+										<option value="càs">c. à soupe</option>
+										<option value="pincée">pincée</option>
+										<option value="Unité">unité</option>
+									</select>
 
 									<button
 										type="button"
@@ -259,7 +274,7 @@ const RecipePage = () => {
 
 				{/* instructions */}
 				<h3>Instructions</h3>
-				<ol>
+				<ol className={styles.instructionsContainer}>
 					{instructions.map((step) => (
 						<li key={step.id} className={styles.instructionItem}>
 							{isEditing ? (
