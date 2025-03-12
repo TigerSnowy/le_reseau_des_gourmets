@@ -1,22 +1,17 @@
 import { useState } from "react";
 import styles from "../assets/scss/recipe.module.scss";
-import { Pencil } from "lucide-react";
 
 const RecipePage = () => {
 	// pour activer/désactiver l'édition
 	// const [isEditing, setIsEditing] = useState(false);
 
 	// pour stocker la recette (sans back pour l'instant)
+	const [isEditing, setIsEditing] = useState(false);
 	const [recipeName, setRecipeName] = useState("Tarte au citron");
-
 	const [image, setImage] = useState<File | null>(null);
-
 	const [preparationTime, setPreparationTime] = useState("20");
-
 	const [cookingTime, setCookingTime] = useState("40");
-
 	const [difficulty, setDifficulty] = useState("Facile");
-
 	const [ingredients, setIngredients] = useState([
 		{ id: crypto.randomUUID(), name: "Farine", quantity: "200", unit: "g" },
 		{ id: crypto.randomUUID(), name: "Oeufs", quantity: "2", unit: "" },
@@ -33,11 +28,7 @@ const RecipePage = () => {
 	]);
 
 	const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
-
-	//supprime un tag
-	const removeTag = (tag: string) => {
-		setTags(tags.filter((t) => t !== tag));
-	};
+	const [newTag, setNewTag] = useState("");
 
 	// gère le changement d'image
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,12 +37,51 @@ const RecipePage = () => {
 		}
 	};
 
-	// pour basculer en mode édition
-	const toggleEdit = (field: string) => {
-		setEditingField(editingField === field ? null : field);
+	// ajoute un tag
+	const addTag = () => {
+		if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
+			setTags([...tags, newTag.trim()]);
+			setNewTag("");
+		}
 	};
 
-	const [editingField, setEditingField] = useState<string | null>(null);
+	// supprime un tag
+	const removeTag = (tag: string) => {
+		setTags(tags.filter((t) => t !== tag));
+	};
+
+	// modifie un ingrédient
+	const updateIngredient = (
+		id: string,
+		field: keyof (typeof ingredients)[0],
+		value: string,
+	) => {
+		setIngredients(
+			ingredients.map((i) => (i.id === id ? { ...i, [field]: value } : i)),
+		);
+	};
+
+	// supprime un ingrédient
+	const removeIngredient = (id: string) => {
+		setIngredients(ingredients.filter((i) => i.id !== id));
+	};
+
+	// modifie une instruction
+	const updateInstruction = (id: string, value: string) => {
+		setInstructions(
+			instructions.map((s) => (s.id === id ? { ...s, text: value } : s)),
+		);
+	};
+
+	// supprime une instruction
+	const removeInstruction = (id: string) => {
+		setInstructions(instructions.filter((step) => step.id !== id));
+	};
+
+	// active/désactive l'édition
+	const toggleEdit = () => {
+		setIsEditing(!isEditing);
+	};
 
 	return (
 		<div className={styles.recipeContainer}>
@@ -60,7 +90,7 @@ const RecipePage = () => {
 				{/* nom de la recette */}
 
 				<h1>
-					{editingField === "recipeName" ? (
+					{isEditing ? (
 						<input
 							type="text"
 							value={recipeName}
@@ -69,18 +99,14 @@ const RecipePage = () => {
 					) : (
 						recipeName
 					)}
-					<Pencil
-						className={styles.editIcon}
-						onClick={() => toggleEdit("recipeName")}
-					/>
 				</h1>
 
 				<h3>Temps</h3>
 
 				{/* temps de préparation et cuisson */}
 				<p>
-					Préparation :{" "}
-					{editingField === "preparationTime" ? (
+					Préparation :
+					{isEditing ? (
 						<input
 							type="number"
 							value={preparationTime}
@@ -89,31 +115,23 @@ const RecipePage = () => {
 					) : (
 						`${preparationTime} min`
 					)}
-					<Pencil
-						className={styles.editIcon}
-						onClick={() => toggleEdit("preparationTime")}
-					/>
-					| Cuisson :{" "}
-					{editingField === "cookingTime" ? (
+					| Cuisson :
+					{isEditing ? (
 						<input
-							type="text"
+							type="number"
 							value={cookingTime}
 							onChange={(e) => setCookingTime(e.target.value)}
 						/>
 					) : (
 						`${cookingTime} min`
 					)}
-					<Pencil
-						className={styles.editIcon}
-						onClick={() => toggleEdit("cookingTime")}
-					/>
 				</p>
 
 				{/* difficulté */}
 				<h3>Difficulté</h3>
 
 				<p>
-					{editingField === "difficulty" ? (
+					{isEditing ? (
 						<select
 							value={difficulty}
 							onChange={(e) => setDifficulty(e.target.value)}
@@ -123,12 +141,8 @@ const RecipePage = () => {
 							<option value="Difficile">Difficile</option>
 						</select>
 					) : (
-						`${difficulty}`
+						difficulty
 					)}
-					<Pencil
-						className={styles.editIcon}
-						onClick={() => toggleEdit("difficulty")}
-					/>
 				</p>
 
 				{/* tags */}
@@ -137,24 +151,53 @@ const RecipePage = () => {
 					{tags.map((tag) => (
 						<span key={tag} className={styles.tag}>
 							{tag}{" "}
-							<button type="button" onClick={() => removeTag(tag)}>
-								×
-							</button>
+							{isEditing && (
+								<button type="button" onClick={() => removeTag(tag)}>
+									×
+								</button>
+							)}
 						</span>
 					))}
-					<Pencil className={styles.editIcon} />
 				</div>
+				{isEditing && (
+					<div className={styles.addTag}>
+						<input
+							type="text"
+							value={newTag}
+							onChange={(e) => setNewTag(e.target.value)}
+						/>
+						<button type="button" onClick={addTag}>
+							Ajouter
+						</button>
+					</div>
+				)}
 
 				{/* gestion de l'image */}
-				<img
-					src={
-						image
-							? URL.createObjectURL(image)
-							: "../../public/img/tarte-au-citron-meringuee.jpeg"
-					}
-					alt="Recette"
-					className={styles.previewImage}
-				/>
+
+				{isEditing ? (
+					<>
+						<label htmlFor="imageUpload" className={styles.customFileUpload}>
+							Modifier l'image
+						</label>
+						<input
+							id="imageUpload"
+							type="file"
+							accept="image/*"
+							onChange={handleImageChange}
+							className={styles.imgInput}
+						/>
+					</>
+				) : (
+					<img
+						src={
+							image
+								? URL.createObjectURL(image)
+								: "/img/tarte-au-citron-meringuee.jpeg"
+						}
+						alt="Recette"
+						className={styles.previewImage}
+					/>
+				)}
 			</div>
 
 			{/* pqrtie droite */}
@@ -165,23 +208,88 @@ const RecipePage = () => {
 				<div className={styles.ingredientsContainer}>
 					{ingredients.map((ingredient) => (
 						<div key={ingredient.id} className={styles.ingredientItem}>
-							<p>{ingredient.name}</p>
-							<p>
-								{ingredient.quantity} {ingredient.unit}
-							</p>
-							<Pencil className={styles.editIcon} />
+							{isEditing ? (
+								<>
+									<input
+										type="text"
+										value={ingredient.name}
+										onChange={(e) =>
+											updateIngredient(ingredient.id, "name", e.target.value)
+										}
+									/>
+
+									<input
+										type="text"
+										value={ingredient.quantity}
+										onChange={(e) =>
+											updateIngredient(
+												ingredient.id,
+												"quantity",
+												e.target.value,
+											)
+										}
+									/>
+
+									<input
+										type="text"
+										value={ingredient.unit}
+										onChange={(e) =>
+											updateIngredient(ingredient.id, "unit", e.target.value)
+										}
+									/>
+
+									<button
+										type="button"
+										onClick={() => removeIngredient(ingredient.id)}
+									>
+										🗑
+									</button>
+								</>
+							) : (
+								<>
+									<p>{ingredient.name}</p>
+									<p>
+										{ingredient.quantity} {ingredient.unit}
+									</p>
+								</>
+							)}
 						</div>
 					))}
 				</div>
+
 				{/* instructions */}
 				<h3>Instructions</h3>
 				<ol>
 					{instructions.map((step) => (
 						<li key={step.id} className={styles.instructionItem}>
-							{step.text} <Pencil className={styles.editIcon} />
+							{isEditing ? (
+								<textarea
+									value={step.text}
+									onChange={(e) => updateInstruction(step.id, e.target.value)}
+								/>
+							) : (
+								step.text
+							)}
+							{isEditing && (
+								<button
+									type="button"
+									onClick={() => removeInstruction(step.id)}
+								>
+									🗑
+								</button>
+							)}
 						</li>
 					))}
 				</ol>
+
+				{/* bouton pour qctiver l'edition */}
+				<button
+					type="button"
+					className={styles.editButton}
+					onClick={toggleEdit}
+				>
+					{isEditing ? "Sauvegarder" : "Modifier"}
+				</button>
 			</div>
 		</div>
 	);
