@@ -192,7 +192,7 @@ const RecipePage = () => {
 						src={
 							image
 								? URL.createObjectURL(image)
-								: "/img/tarte-au-citron-meringuee.jpeg"
+								: "/public/img/tarte-au-citron-meringuee.jpeg"
 						}
 						alt="Recette"
 						className={styles.previewImage}

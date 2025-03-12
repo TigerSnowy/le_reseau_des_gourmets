@@ -12,6 +12,7 @@ class RecipeRouter {
 		this.router.get("/:recipe_id", new RecipeController().one);
 		this.router.post("/", new RecipeController().insert);
 		this.router.put("/", new RecipeController().update);
+		this.router.delete("/", new RecipeController().delete);
 
 		return this.router;
 	};

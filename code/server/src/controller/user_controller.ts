@@ -112,7 +112,7 @@ class UserController {
 		// modifier un enregistrement
 		// req.params permet de récupérer les variables de route
 		const results = await new UserRepository().delete(req.body);
-		console.log(results);
+		// console.log(results);
 
 		// si la requête SQL renvoie une erreur
 		if (results instanceof Error) {

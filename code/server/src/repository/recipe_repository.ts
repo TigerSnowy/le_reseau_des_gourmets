@@ -174,7 +174,7 @@ class RecipeRepository {
 	): Promise<Recipe[] | unknown> => {
 		const connexion = await new MySQLService().connect();
 
-		const sql = `
+		let sql = `
 
 			UPDATE
 				${process.env.MYSQL_DATABASE}.${this.table}
@@ -191,10 +191,78 @@ class RecipeRepository {
         `;
 
 		try {
+			connexion.beginTransaction();
+
+			await connexion.execute(sql, data);
+
+			sql = `
+				DELETE FROM
+					${process.env.MYSQL_DATABASE}.recipe_ingredient
+				WHERE
+					recipe_ingredient.recipe_id = :recipe_id
+			`;
+
+			await connexion.execute(sql, data);
+
+			const values = data.ingredient_ids
+				?.split(",")
+				.map((item) => `(15, NULL, :recipe_id, ${item})`)
+				.join(",");
+
+			sql = `
+			INSERT INTO
+				${process.env.MYSQL_DATABASE}.recipe_ingredient
+			VALUES
+				${values}
+		`;
+
 			const [results] = await connexion.execute(sql, data);
+
+			connexion.commit();
 
 			return results;
 		} catch (error) {
+			connexion.rollback();
+
+			return error;
+		}
+	};
+
+	public delete = async (
+		data: Partial<Recipe>,
+	): Promise<Recipe[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		let sql = `
+
+			DELETE FROM
+				${process.env.MYSQL_DATABASE}.recipe_ingredient
+			WHERE
+				recipe_ingredient.recipe_id = :recipe_id
+			;
+	    `;
+
+		try {
+			connexion.beginTransaction();
+
+			await connexion.execute(sql, data);
+
+			sql = `
+				DELETE FROM
+					${process.env.MYSQL_DATABASE}.${this.table}
+				WHERE
+					${this.table}.recipe_id = :recipe_id
+				;
+			`;
+
+			const [results] = await connexion.execute(sql, data);
+
+			connexion.commit();
+
+			return results;
+		} catch (error) {
+			connexion.rollback();
+
 			return error;
 		}
 	};
