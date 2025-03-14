@@ -64,15 +64,15 @@ CREATE TABLE le_reseau_des_gourmets_dev.recipe_picture(
     PRIMARY KEY (recipe_id, picture_id)
 );
 
-CREATE TABLE le_reseau_des_gourmets_dev.post(
-    post_id TINYINT(2) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(60) NOT NULL,
-    content TEXT NOT NULL,
-    image VARCHAR(255) NULL,
-    publication_date DATE NOT NULL,
-    user_id TINYINT UNSIGNED,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+-- CREATE TABLE le_reseau_des_gourmets_dev.post(
+--     post_id TINYINT(2) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+--     title VARCHAR(60) NOT NULL,
+--     content TEXT NOT NULL,
+--     image VARCHAR(255) NULL,
+--     publication_date DATE NOT NULL,
+--     user_id TINYINT UNSIGNED,
+--     FOREIGN KEY (user_id) REFERENCES user(user_id)
+-- );
 
 
 -- créer des enregistrements
@@ -106,14 +106,14 @@ VALUES
     (NULL, 'Zyny', 'Yakut', 'Zeynep', 'zeynep@gmail.com', 'Bidibabidibou80', 'image1.jpg', 2)
 ;
 
-INSERT INTO le_reseau_des_gourmets_dev.post
-VALUES
+-- INSERT INTO le_reseau_des_gourmets_dev.post
+-- VALUES
 
--- pour la primary key, utiliser NULL pour l'auto-incrémentation
-    (NULL, 'title1', 'content1', NULL, '2024-10-31', 1),
-    (NULL, 'title2', 'content2', 'image1.png', '2024-10-31', 2),
-    (NULL, 'title3', 'content3', 'image2.png', '2024-10-31', 3)
-;
+-- -- pour la primary key, utiliser NULL pour l'auto-incrémentation
+--     (NULL, 'title1', 'content1', NULL, '2024-10-31', 1),
+--     (NULL, 'title2', 'content2', 'image1.png', '2024-10-31', 2),
+--     (NULL, 'title3', 'content3', 'image2.png', '2024-10-31', 3)
+-- ;
 
 INSERT INTO le_reseau_des_gourmets_dev.recipe
 VALUES
