@@ -8,9 +8,6 @@ const Footer = () => {
 			<Link to={"/"} className={styles.contactLink}>
 				À votre écoute
 			</Link>
-			<Link to={"/"} className={styles.blogLink}>
-				Les Saveurs du Réseau
-			</Link>
 			<Link to={"/"} className={styles.legalNoticesLink}>
 				Mentions légales
 			</Link>

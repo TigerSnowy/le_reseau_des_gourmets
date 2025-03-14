@@ -12,9 +12,18 @@ const NavBar = () => {
 	return (
 		<nav className={styles.navbar}>
 			{/* bouton blog */}
-			<Link to="/" className={styles.blogButton}>
+			{isLoggedIn ? (
+				<>
+					{/* <Link to="/recettes" className={styles.blogButton}>Mon Carnet</Link> */}
+					<Link to={"/admin"}>QG des Gourmets</Link>
+				</>
+			) : (
+					<></>
+			)}
+			
+			{/* <Link to="/" className={styles.blogButton}>
 				Les Saveurs du Réseau
-			</Link>
+			</Link> */}
 
 			{/* logo */}
 			<Link to="/accueil" className={styles.logoContainer}>
@@ -45,7 +54,6 @@ const NavBar = () => {
 				{/* menu déroulant */}
 				{isLoggedIn && (
 					<div className={styles.dropdownMenu}>
-						<Link to="/recettes">Mon Carnet</Link>
 						<Link to="/recettes/creation">Créer une recette +</Link>
 						<button
 							className={styles.logoutButton}

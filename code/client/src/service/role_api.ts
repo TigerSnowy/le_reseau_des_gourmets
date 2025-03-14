@@ -3,6 +3,7 @@ class RoleAPI {
     // récupération de tous les enregistrements
     public selectAll = async () => {
         // configurer la requête HTTP / GET par défaut
+        // import.meta.env permet d'accéder aux variables d'environnement
         const request = new Request(`${import.meta.env.VITE_API_URL}/role`);
         
         // exécuter la requête et récupérer la réponse brut

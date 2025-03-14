@@ -31,10 +31,13 @@
     }
   }
 
-  // les saveurs du réseau
+  // mon carnet
 
   .blogButton {
     font-size: 1.3rem;
+    width: 15rem;
+    display: flex;
+    text-align: center;
     color: var(--secondary-color);
     text-decoration: none;
     background-color: var(--quaternary-color);
@@ -53,6 +56,7 @@
 
   .navLinks {
     display: flex;
+    // margin-left: 84%;
     gap: 1rem;
 
     .loginButton{
@@ -64,7 +68,6 @@
       border-radius: 11px;
       border: solid 2.3px var(--quaternary-color);
       transition: background-color 0.3s;
-      margin-right: 4rem;
 
       &:hover {
         color: var(--secondary-color);
@@ -119,7 +122,6 @@
   .dropdownMenu {
     position: absolute;
     top: 95%;
-    right: 20%;
     width: 226px;
     background-color: transparent;
     border-radius: 11px;
