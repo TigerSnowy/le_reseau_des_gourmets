@@ -1,5 +1,5 @@
-import styles from "../assets/scss/themes.module.scss";
-import "../assets/scss/_themes.css";
+import styles from "../assets/scss/profile/themes.module.scss";
+import "../assets/css/_themes.css";
 import { useState, useEffect } from "react";
 
 const ThemesPage = () => {

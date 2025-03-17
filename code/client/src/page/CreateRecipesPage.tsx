@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../assets/scss/createRecipe.module.scss";
+import styles from "../assets/scss/recipe/createRecipe.module.scss";
 
 const CreateRecipePage = () => {
 	// stocke le nomde la recette

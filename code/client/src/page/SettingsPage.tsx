@@ -1,4 +1,4 @@
-import styles from "../assets/scss/settings.module.scss";
+import styles from "../assets/scss/profile/settings.module.scss";
 
 const SettingsPage = () => {
 	return (

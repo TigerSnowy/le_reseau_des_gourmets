@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../assets/scss/recipe.module.scss";
+import styles from "../assets/scss/recipe/recipe.module.scss";
 
 const RecipePage = () => {
 	// pour activer/désactiver l'édition

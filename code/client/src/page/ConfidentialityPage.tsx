@@ -1,4 +1,4 @@
-import styles from "../assets/scss/confidentiality.module.scss";
+import styles from "../assets/scss/profile/confidentiality.module.scss";
 
 const ConfidentialityPage = () => {
 	return (
