@@ -13,7 +13,7 @@ type User = {
 	first_name: string;
 	email: string;
 	password: string;
-	profile_picture?: string | null; // Champ nullable
+	profile_picture?: string; // Champ nullable
 	role_id: number; // Clé étrangère vers Role
 	role: Role;
 };

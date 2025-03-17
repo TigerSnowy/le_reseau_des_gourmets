@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import type User from "../../../model/user";
 import styles from "../../../assets/scss/admin/adminUserForm.module.scss";
+import UserAPI from "../../../service/user_api";
 
 const AdminUserForm = () => {
 	/*
@@ -15,50 +16,146 @@ const AdminUserForm = () => {
 		formState: { errors },
 	} = useForm<User>();
 
+	// const [roles, setRoles] = useState<Role[]>();
+
+	// useEffect(() => {
+	// 	// exécuter en chaine des promesses
+	// 	Promise.allSettled([new RoleAPI().selectAll()]).then((responses) => {
+	// 		// si la première promesse est tenue
+	// 		if (responses[0].status === "fulfilled") {
+	// 			setRoles(responses[0].value.data);
+	// 		}
+	// 		// console.log(responses);
+	// 	});
+	// }, []);
+
 	// soumission du formulaire
 	// values récupère la saisie du formulaire
-	const onSubmitUser = (values: User) => {
-		console.log(values);
+	/* deux types de formulaire : 
+	
+		- sans fichier
+			- la propriété body de la requête HTTP peut être en JSON : JSON.stringify
+			- dans la requête HTTP, utiliser l'en-tête HTTP : Content-Type : application/json
+		- avec fichier 
+			- la propriété body de la requête HTTP doit être en FormDate
+			- la balse HTML <form> doit posséder l'attribut enctype="multipart/form-data"
+	*/
+
+	const onSubmitUser = async (values: User) => {
+		// créer un FormData pour les FORMULAIRES AVEC FICHIER en reprenant strictement le nom des champs
+
+		const formData = new FormData();
+		formData.append("surname", values.surname);
+		formData.append("first_name", values.first_name);
+		formData.append("pseudo", values.pseudo);
+		formData.append("email", values.email);
+		formData.append("password", values.password);
+		formData.append("role_id", "2");
+		if (values.profile_picture?.length) {
+			formData.append("profile_picture", values.profile_picture[0]);
+		}
+
+		// si un champ renvoie un chiffre, ajouter "as unknown as string" ou .toString() après values.qdhddab
+		// un champ file renvoie une liste de fichiers (FileList) ; s'il ne faut envoyer qu'un seul fichier, ajouter [0] après le values.qdhddab
+
+		// console.log(values);
+		// console.log(formData);
+
+		console.log("FormData envoyé :", Object.fromEntries(formData.entries()));
+
+		const request = await new UserAPI().insert(formData);
+		console.log(request);
 	};
 
 	return (
 		<form
 			className={styles.formContainer}
 			onSubmit={handleSubmit(onSubmitUser)}
+			encType="multipart/form-data"
 		>
 			<div>
 				{/* reprendre STRICTEMENT le nom des colonnes SQL */}
 
-				<label htmlFor="name">Nom :</label>
+				<label htmlFor="surname">Nom :</label>
 				<input
 					type="text"
-					id="name"
+					id="surname"
 					{...register("surname", {
-						required: "Le nom est obligatoire.",
+						required: "Ce champ est obligatoire.",
 						minLength: {
 							value: 2,
-							message: "Le nom est trop court.",
+							message: "texte trop court.",
 						},
 					})}
 				/>
 
 				<small>{errors.surname?.message}</small>
 
-				<label htmlFor="fname">Prénom :</label>
-				<input type="text" {...register("first_name")} />
+				<label htmlFor="first_name">Prénom :</label>
+				<input
+					type="text"
+					id="first_name"
+					autoComplete="on"
+					{...register("first_name", {
+						required: "Ce champ est obligatoire.",
+						minLength: {
+							value: 2,
+							message: "Texte trop court.",
+						},
+					})}
+				/>
+				<small>{errors.first_name?.message}</small>
 
 				<label htmlFor="pseudo">Pseudo :</label>
-				<input type="text" {...register("pseudo")} />
+				<input
+					type="text"
+					id="pseudo"
+					{...register("pseudo", {
+						required: "Ce champ est obligatoire.",
+					})}
+				/>
+				<small>{errors.pseudo?.message}</small>
 
 				<label htmlFor="email">Email :</label>
-				<input type="text" {...register("email")} />
+				<input
+					type="email"
+					id="email"
+					autoComplete="email"
+					{...register("email", {
+						required: "Ce champ est obligatoire.",
+						pattern: {
+							value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+							message: "Format d'email invalide.",
+						},
+					})}
+				/>
+				<small>{errors.email?.message}</small>
 
-				<label htmlFor="Mpd">Mot de passe :</label>
-				<input type="text" {...register("password")} />
+				<label htmlFor="password">Mot de passe :</label>
+				<input
+					type="password"
+					id="password"
+					{...register("password", {
+						required: "Ce champ est obligatoire.",
+						minLength: {
+							value: 6,
+							message: "Le mot de passe doit contenir au moins 6 caractères.",
+						},
+					})}
+				/>
+				<small>{errors.password?.message}</small>
+
+				<label htmlFor="profile_picture">Photo de profil :</label>
+				<input
+					type="file"
+					id="profile_picture"
+					{...register("profile_picture")}
+				/>
 			</div>
-			<p>
-				<button type="submit">Soumettre</button>
-			</p>
+
+			<button className={styles.submitButton} type="submit">
+				Soumettre
+			</button>
 		</form>
 	);
 };

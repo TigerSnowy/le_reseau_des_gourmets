@@ -25,7 +25,7 @@ CREATE TABLE le_reseau_des_gourmets_dev.user(
     first_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    profile_picture VARCHAR(100) NULL,
+    profile_picture VARCHAR(100),
     role_id TINYINT(1) UNSIGNED,
     FOREIGN KEY (role_id) REFERENCES role(role_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

@@ -75,6 +75,14 @@ class UserRepository {
 	public insert = async (data: Partial<User>): Promise<User[] | unknown> => {
 		const connexion = await new MySQLService().connect();
 
+		const profilePictureValue = data.profile_picture
+			? "profile_picture"
+			: "NULL";
+
+		// créer une variable qui teste profile_picture
+		// si profile_picture possède une valeur > :profile_picture, sinon > NULL
+		// insérer la variable dans la requête
+
 		//créer ne variable de requête SQL en préfixant le nom d'une variable par :
 		const sql = `
 
@@ -88,7 +96,7 @@ class UserRepository {
 					:first_name,
 					:email,
 					:password,
-					:profile_picture,
+					${profilePictureValue},
 					:role_id
 				)
 			;

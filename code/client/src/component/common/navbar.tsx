@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "../../assets/scss/nav/nav.module.scss";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -23,6 +24,8 @@ const NavBar = () => {
 			toggleMenu();
 		}
 	};
+
+	const navigate = useNavigate();
 
 	return (
 		<nav className={styles.navbar}>
@@ -71,6 +74,13 @@ const NavBar = () => {
 						{/* menu déroulant */}
 
 						<div className={styles.dropdownMenu}>
+							<button
+								type="button"
+								className={styles.qgButton}
+								onClick={() => navigate("/admin")}
+							>
+								QG des Gourmets
+							</button>
 							<button
 								className={styles.logoutButton}
 								onClick={() => setIsLoggedIn(false)}
