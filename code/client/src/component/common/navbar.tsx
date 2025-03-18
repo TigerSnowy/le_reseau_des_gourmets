@@ -61,7 +61,7 @@ const NavBar = () => {
 						<button
 							className={styles.loggedInButton}
 							type="button"
-							onClick={toggleMenu}
+							onClick={() => navigate("/profil/parametres")}
 						>
 							<span className={styles.username}>{user.username}</span>
 							<img

@@ -76,7 +76,7 @@ class UserRepository {
 		const connexion = await new MySQLService().connect();
 
 		const profilePictureValue = data.profile_picture
-			? "profile_picture"
+			? "profile_picture,"
 			: "NULL";
 
 		// créer une variable qui teste profile_picture

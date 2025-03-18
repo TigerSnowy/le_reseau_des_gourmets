@@ -2,6 +2,10 @@ import { useForm } from "react-hook-form";
 import type User from "../../../model/user";
 import styles from "../../../assets/scss/admin/adminUserForm.module.scss";
 import UserAPI from "../../../service/user_api";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import RoleAPI from "../../../service/role_api";
+import type Role from "../../../model/role";
 
 const AdminUserForm = () => {
 	/*
@@ -10,24 +14,38 @@ const AdminUserForm = () => {
     errors permet de gérer les messages d'erreur
     */
 
+	// sur les cases à cocher, il faut absoluement utiliser un array
+
 	const {
 		handleSubmit,
 		register,
 		formState: { errors },
+		reset,
 	} = useForm<User>();
 
-	// const [roles, setRoles] = useState<Role[]>();
+	const { id } = useParams();
 
-	// useEffect(() => {
-	// 	// exécuter en chaine des promesses
-	// 	Promise.allSettled([new RoleAPI().selectAll()]).then((responses) => {
-	// 		// si la première promesse est tenue
-	// 		if (responses[0].status === "fulfilled") {
-	// 			setRoles(responses[0].value.data);
-	// 		}
-	// 		// console.log(responses);
-	// 	});
-	// }, []);
+	const [roles, setRoles] = useState<Role[]>();
+
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		// exécuter en chaine des promesses
+		Promise.allSettled([
+			new RoleAPI().selectAll(),
+			id ? new UserAPI().selectOne(id as unknown as number) : null,
+		]).then((responses) => {
+			// si la première promesse est tenue
+			if (responses[0].status === "fulfilled") {
+				setRoles(responses[0].value.data);
+			}
+
+			if (id && responses[1].status === "fulfilled") {
+				// mettre à jour les données du formulaire
+				reset(responses[1].value.data);
+			}
+		});
+	}, [id, reset]);
 
 	// soumission du formulaire
 	// values récupère la saisie du formulaire
@@ -45,6 +63,7 @@ const AdminUserForm = () => {
 		// créer un FormData pour les FORMULAIRES AVEC FICHIER en reprenant strictement le nom des champs
 
 		const formData = new FormData();
+		formData.append("user_id", values.user_id.toString());
 		formData.append("surname", values.surname);
 		formData.append("first_name", values.first_name);
 		formData.append("pseudo", values.pseudo);
@@ -61,10 +80,16 @@ const AdminUserForm = () => {
 		// console.log(values);
 		// console.log(formData);
 
-		console.log("FormData envoyé :", Object.fromEntries(formData.entries()));
+		// requête HTTP
+		const request = id
+			? await new UserAPI().update(formData)
+			: await new UserAPI().insert(formData);
 
-		const request = await new UserAPI().insert(formData);
-		console.log(request);
+		// tester le code de statut HTTP
+		if ([200, 201].indexOf(request.status) > -1) {
+			// redirection
+			navigate("/admin/utilisateurs");
+		}
 	};
 
 	return (
@@ -76,6 +101,14 @@ const AdminUserForm = () => {
 			<div>
 				{/* reprendre STRICTEMENT le nom des colonnes SQL */}
 
+				<select value="" id="role_id" {...register("role_id")}>
+					<option value="">Rôles</option>
+					{roles?.map((role: Role) => (
+						<option key={role.role_id} value={role.role_id}>
+							{role.name}
+						</option>
+					))}
+				</select>
 				<label htmlFor="surname">Nom :</label>
 				<input
 					type="text"
@@ -151,6 +184,10 @@ const AdminUserForm = () => {
 					id="profile_picture"
 					{...register("profile_picture")}
 				/>
+			</div>
+
+			<div>
+				<input type="hidden" {...register("user_id")} value={id} />
 			</div>
 
 			<button className={styles.submitButton} type="submit">

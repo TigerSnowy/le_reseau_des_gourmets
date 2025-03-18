@@ -13,8 +13,10 @@ class UserRouter {
 	// méthodes
 	public getRoutes = () => {
 		this.router.get("/", new UserController().index);
+
 		// créer une variable de route en la préfixant d'un :
 		this.router.get("/:user_id", new UserController().one);
+
 		this.router.post(
 			"/",
 			this.upload.any(),

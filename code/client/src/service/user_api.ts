@@ -13,6 +13,19 @@ class UserAPI {
         return response.json();
     };
 
+    // récupération d'un enregistrement
+
+    public selectOne = async (user_id: number) => {
+
+        const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}/${user_id}`,
+            
+        );
+
+        const response = await fetch(request);
+
+        return response.json();
+    };
+
     // créer un enregistrement
 
     // si le formulaire contient un fichier, il doit absolument être en FormData
@@ -23,6 +36,34 @@ class UserAPI {
             method: 'POST',
             body: data
         });
+
+        const response = await fetch(request);
+
+        return response.json();
+    };
+
+    // modifier un enregistrement
+
+    public update = async (data:FormData) => {
+
+        const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
+            method: 'PUT',
+            body: data
+        },
+    );
+
+        const response = await fetch(request);
+
+        return response.json();
+    };
+
+    public delete = async (data:FormData) => {
+
+        const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
+            method: 'DELETE',
+            body: data
+        },
+    );
 
         const response = await fetch(request);
 

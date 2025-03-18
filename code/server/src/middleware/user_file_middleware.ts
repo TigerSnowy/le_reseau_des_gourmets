@@ -45,10 +45,27 @@ class UserfileMiddleware {
 
 			// DELETE > supprimer le fichier
 			if (req.method === "DELETE") {
-				await fs.rm(
-					`${process.env.ASSET_DIR}/img/${(user as User).profile_picture}`,
-				);
+				const filePath = `${process.env.ASSET_DIR}/img/${(user as User).profile_picture}`;
+				try {
+					// vérifie si le fichier est accessible
+					await fs.access(filePath);
+					await fs.rm(filePath);
+					console.log("Image supprimée avec succès !");
+				} catch (err: unknown) {
+					const error = err as NodeJS.ErrnoException;
+					if (error.code === "ENOENT") {
+						console.log("Le fichier n'existe pas, saoule pas !");
+					} else {
+						console.error("Erreur de la suppression de l'image:", error);
+					}
+				}
 			}
+
+			// if (req.method === "DELETE") {
+			// 	await fs.rm(
+			// 		`${process.env.ASSET_DIR}/img/${(user as User).profile_picture}`,
+			// 	);
+			// }
 		}
 
 		// passer au middleware suivant
