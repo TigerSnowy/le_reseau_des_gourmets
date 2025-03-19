@@ -24,7 +24,7 @@ CREATE TABLE le_reseau_des_gourmets_dev.user(
     surname VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(150) NOT NULL,
     profile_picture VARCHAR(100),
     role_id TINYINT(1) UNSIGNED,
     FOREIGN KEY (role_id) REFERENCES role(role_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -101,10 +101,14 @@ VALUES
 INSERT INTO le_reseau_des_gourmets_dev.user
 VALUES
 
-    (NULL, 'Tigy', 'Ferreira', 'Ines', 'ines@gmail.com', 'Bidibabidibou92', 'image1.jpg', 1),
-    (NULL, 'Lulu', 'Jalba', 'Ludmila', 'ludmila@gmail.com', 'Bidibabidibou74', 'image1.jpg', 2),
-    (NULL, 'Zyny', 'Yakut', 'Zeynep', 'zeynep@gmail.com', 'Bidibabidibou80', 'image1.jpg', 2)
+    (NULL, 'Tigy', 'Ferreira', 'Ines', 'ines@gmail.com', '$argon2i$v=19$m=16,t=2,p=1$U2ZWOUxnVjFXVTNOOWdhQw$XJfOyxOEvhYfHqB6h50smQ', 'image1.jpg', 1),
+    (NULL, 'Lulu', 'Jalba', 'Ludmila', 'ludmila@gmail.com', '$argon2i$v=19$m=16,t=2,p=1$eDZ3ZW9BOXd6Q2htbDlHeQ$Hk0YRdYqWVKQoXcJDPu/Ng', 'image1.jpg', 2),
+    (NULL, 'Zyny', 'Yakut', 'Zeynep', 'zeynep@gmail.com', '$argon2i$v=19$m=16,t=2,p=1$bXhBeTF0REYwU2k0Z0lSTg$+9dM5tP3tPel833PfUcgQw', 'image1.jpg', 2)
 ;
+
+-- Ines => Bidibabidibou92
+-- Ludmila => Bidibabidibou74
+-- Zeynep => Bidibabidibou80
 
 -- INSERT INTO le_reseau_des_gourmets_dev.post
 -- VALUES

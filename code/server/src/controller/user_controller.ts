@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import UserRepository from "../repository/user_repository.js";
-import User from "../model/user.js";
 
 class UserController {
 	public index = async (req: Request, res: Response) => {
