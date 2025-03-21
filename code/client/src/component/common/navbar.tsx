@@ -1,113 +1,179 @@
-import { useState } from "react";
-import styles from "../../assets/scss/nav.module.scss";
+import { useContext, useEffect, useState } from "react";
+import styles from "../../assets/scss/nav/nav.module.scss";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../provider/UserProvider";
 
 const NavBar = () => {
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
-	const user = {
-		username: "TigerSnowy",
-		avatar: "/img/piti_piaf.jpg",
+	// const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+	// const userTiggy = {
+	// 	username: "TigerSnowy",
+	// 	avatar: "/img/piti_piaf.jpg",
+	// };
+
+	useEffect(() => {
+		const handleResize = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
+	const toggleMenu = () => {
+		setIsMenuOpen(!isMenuOpen);
 	};
+
+	const closeMenu = () => {
+		setIsMenuOpen(false);
+	};
+
+	const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		if (isMobile) {
+			toggleMenu();
+		} else {
+			navigate("/profil");
+		}
+	};
+
+	const handleKeyDown = (event: { key: string }) => {
+		if (event.key === "Enter" || event.key === " ") {
+			toggleMenu();
+		}
+	};
+
+	const navigate = useNavigate();
+
+	// récupérer l'utilisateur
+	const { user, setUser } = useContext(UserContext);
 
 	return (
 		<nav className={styles.navbar}>
-			{/* bouton blog */}
-			<Link to="/" className={styles.blogButton}>
-				Les Saveurs du Réseau
-			</Link>
+			{/* {JSON.stringify(user)} */}
+			{/* Débogage de l'avatar */}
+			<div
+				style={{
+					position: "fixed",
+					top: "5px",
+					left: "5px",
+					background: "white",
+					padding: "5px",
+					zIndex: 1000,
+					fontSize: "12px",
+				}}
+			>
+				Avatar path: {user?.profile_picture || "undefined"}
+			</div>
 
+			<Link to="/accueil" className={styles.siteName}>
+				Le Réseau <br />
+				des Gourmets
+			</Link>
+			{/* bouton Mon Carnet */}
+			{!!user?.user_id && (
+				<div className={styles.recipesMenu}>
+					<Link to="/recettes" className={styles.myRecipesButton}>
+						Mon Carnet
+					</Link>
+					<div className={styles.recipesDropdown}>
+						<Link to="/recettes/creation">Créer une recette +</Link>
+					</div>
+				</div>
+			)}
 			{/* logo */}
-			<div className={styles.logoContainer}>
+			<Link to="/accueil" className={styles.logoContainer}>
 				<img
 					src="/img/logo_noir.svg"
 					alt="Logo - Le Réseau des Gourmets"
 					className={styles.logo}
 				/>
-			</div>
-
-			{/* bouton connexion/connecté */}
+			</Link>
+			{/* bouton connecté */}
 			<div className={styles.navLinks}>
-				{isLoggedIn ? (
-					<div className={styles.loggedInButton}>
-						<span className={styles.username}>{user.username}</span>
-						<img
-							src={user.avatar}
-							alt="Avatar utilisateur"
-							className={styles.avatar}
-						/>
+				{user ? (
+					<div className={styles.profileWrapper}>
+						<button
+							className={styles.loggedInButton}
+							type="button"
+							onClick={handleProfileClick}
+						>
+							<span className={styles.username}>{user.pseudo}</span>
+							<img
+								src={user.profile_picture}
+								alt="Avatar utilisateur"
+								className={styles.avatar}
+								// onError={(e) => {
+								// 	console.error("Erreur de chargement d'image:", e);
+								// 	e.currentTarget.src = "/img/default_avatars/chocolat.jpg"; // Image de secours
+								// }}
+							/>
+						</button>
+
+						{/* menu déroulant */}
+
+						<div className={styles.dropdownMenu}>
+							{user.role?.name === "admin" && (
+								<button
+									type="button"
+									className={styles.qgButton}
+									onClick={() => navigate("/admin")}
+								>
+									QG des Gourmets
+								</button>
+							)}
+							<button
+								className={styles.logoutButton}
+								onClick={() => setUser(null)}
+								type="button"
+							>
+								Déconnexion
+							</button>
+						</div>
 					</div>
 				) : (
+					// non connecté
 					<Link to="/connexion" className={styles.loginButton}>
 						Connexion
 					</Link>
 				)}
+			</div>
 
-				{/* menu déroulant */}
-				{isLoggedIn && (
-					<div className={styles.dropdownMenu}>
-						<Link to="/">Mon Carnet</Link>
-						<Link to="/">Créer une recette +</Link>
+			{user && (
+				<div
+					className={`${styles.fullscreenMenu} ${isMenuOpen ? styles.open : ""}`}
+				>
+					<div className={styles.menuContent}>
+						<Link to="/recettes">Mon Carnet</Link>
+						<Link to="/recettes/creation">Créer une recette +</Link>
+						<Link to="/profil/parametres">Paramètres</Link>
+						<Link to="/profil/securite">Sécurité</Link>
+						<Link to="/profil/themes">Thèmes</Link>
 						<button
-							className={styles.logoutButton}
-							onClick={() => setIsLoggedIn(false)}
 							type="button"
+							className={styles.mobileLogoutButton}
+							onClick={() => {
+								setUser(null);
+								closeMenu();
+							}}
 						>
 							Déconnexion
 						</button>
 					</div>
-				)}
-			</div>
+				</div>
+			)}
+			{isMenuOpen && (
+				<div
+					className={styles.menuOverlay}
+					onClick={closeMenu}
+					onKeyDown={handleKeyDown}
+					aria-label="Fermer le menu"
+				/>
+			)}
 		</nav>
 	);
 };
 
 export default NavBar;
-
-// const Nav = () => {
-// 	// créer une référence : permet de cibler un élément HTML
-// 	// remplace l'utilisation de querySelector / querySelectorAll
-// 	// const référence = useRef<type de l'élément ciblé>(valeur initiale de la référence)
-
-// 	const siteNav = useRef<HTMLDivElement>(null);
-
-// 	// créer un état : useState
-// 	// const [état, setter de l'état] = useState<typer l'état>(valeur initiale de l'état)
-
-// 	const [navMobileIsVisible, setnavMobileIsVisible] = useState<boolean>(false);
-
-// 	// clic sur le bouton de navigatoon mobile
-// 	const click = () => {
-// 		// modifier l'état à l'aide du sette
-// 		setnavMobileIsVisible(!navMobileIsVisible);
-// 		console.log(navMobileIsVisible);
-// 	};
-
-// 	return (
-// 		<>
-// 			{/* la seule condition disponible dans le HTML de react : condition ternaire
-//                     condition ? vraie : faux
-//                 si une autre condition est à utiliser il est nécessaire de créer une fonction externe */}
-// 			<nav
-// 				className={`${styles["site-nav"]} ${navMobileIsVisible ? styles["site-nav-visible"] : ""}`}
-// 				ref={siteNav}
-// 			>
-// 				{/* attribut ref permet de relier une référence à une balise HTML */}
-// 				{/* les balises a sont remplacées par le composant Link et les attributs href sont remplacés par to */}
-
-// 				<Link to={"/"}>Home</Link>
-// 				<Link to={"/contact"}>Contact</Link>
-// 			</nav>
-// 			{/* ajouter des événements :
-//                     - utiliser l'événement directement dans la balise
-//                     - dans le composant, créer une fonction liée à l'événement */}
-
-// 			<button
-// 				className={styles["btn-nav-mobile"]}
-// 				type="button"
-// 				onClick={click}
-// 			>
-// 				Click me
-// 			</button>
-// 		</>
-// 	);
-// };

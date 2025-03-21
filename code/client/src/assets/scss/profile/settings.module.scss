@@ -1,15 +1,10 @@
-$primary-color: #4D4D4D;
-$secondary-color: #F7F3EB;
-$tertiary-color: #E6E0D5;
-$quaternary-color: #6E5D4B;
-$emphasis-color: #FF715B;
 
 .settingsPage {
     display: flex;
     gap: 3rem;
     margin-top: 7rem;
     justify-content: center;
-    color: $primary-color;
+    color: var(--primary-color);
     flex-wrap: nowrap;
     width: 100%;
     max-width: 80vw;
@@ -17,7 +12,7 @@ $emphasis-color: #FF715B;
 
     .newsletter, .general {
         flex: 1;
-        background: $tertiary-color;
+        background: var(--tertiary-color);
         padding: 2.5rem;
         border-radius: 25px;
         max-width: 45%;
@@ -26,7 +21,7 @@ $emphasis-color: #FF715B;
         h2 {
             margin-bottom: 3rem;
             text-align: center;
-            font-size: 25px;
+            font-size: 1.6rem;
         }
     }
 
@@ -37,7 +32,7 @@ $emphasis-color: #FF715B;
         align-self: flex-end;
 
         label {
-            font-size: 21px;
+            font-size: 20px;
             display: flex;
             align-items: center;
         }
@@ -48,8 +43,8 @@ $emphasis-color: #FF715B;
             width: 20px;
             height: 20px;
             border-radius: 5px;
-            border: 2px solid $primary-color;
-            background-color: $secondary-color;
+            border: 2px solid var(--primary-color);
+            background-color: var(--secondary-color);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,12 +52,12 @@ $emphasis-color: #FF715B;
             position: relative;
 
             &:checked {
-                background: $secondary-color;
-                border: 2px solid $primary-color;
+                background: var(--secondary-color);
+                border: 2px solid var(--primary-color);
 
                 &::after {
                     content: "✔";
-                    color: $emphasis-color;
+                    color: var(--emphasis-color);
                     font-size: 14px;
                     font-weight: bold;
                     position: absolute;
@@ -91,19 +86,20 @@ $emphasis-color: #FF715B;
         }
     
         button {
-            background: $emphasis-color;
-            color: $secondary-color;
-            border: solid 1px $secondary-color;
+            background: var(--emphasis-color);
+            color: var(--secondary-color);
+            border: solid 1px var(--secondary-color);
             border-radius: 10px;
             padding: 0.7rem 3rem;
             margin-top: 2rem;
             width: 90%;
-            font-size: 15px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: 0.3s;
     
             &:hover {
-                background: $secondary-color;
-                border: solid 1px $emphasis-color;
+                background: var(--secondary-color);
+                border: solid 1px var(--emphasis-color);
                 color: #FF715B;
             }
         }

@@ -1,0 +1,102 @@
+.authContainer {
+
+    label {
+      display: none;
+    }
+    
+    display: flex;
+    min-height: 100vh;
+    
+    .left, .right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .left {
+      background-color: var(--emphasis-color);
+
+      img {
+        width: 60%;
+        height: auto;
+      }
+    }
+  
+// formulaire
+ 
+    .right {
+      background-color: var(--quaternary-color);
+      color: var(--secondary-color);
+      flex-direction: column;
+      text-align: center;
+      padding: 7rem;
+  
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        text-transform: uppercase;
+      }
+  
+      .loginForm, .registerForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 80%;
+        max-width: 400px;
+
+        
+        input {
+          width: 100%;
+          padding: 0.8rem;
+          border-radius: 10px;
+          border: none;
+          background-color: white;
+        }
+  
+        button {
+          background-color: var(--emphasis-color);
+          color: var(--secondary-color);
+          border: solid 1px var(--secondary-color);
+          border-radius: 10px;
+          padding: 0.7rem 3rem;
+          margin-top: 1rem;
+          font-size: 1rem;
+          cursor: pointer;
+          
+          &:hover {
+            background-color: var(--secondary-color);
+            border: solid 1px var(--emphasis-color);
+            color: #FF715B;
+          }
+        }
+      }
+  
+      p {
+        margin-top: 2rem;
+        font-size: 1.1rem;
+  
+        a {
+          color: var(--emphasis-color);
+          font-size: 1.1rem;
+          text-decoration: none;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      a {
+        color: white;
+        margin-top: 2rem;
+        font-size: 1rem;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  

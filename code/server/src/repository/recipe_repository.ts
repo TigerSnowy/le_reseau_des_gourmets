@@ -18,17 +18,26 @@ class RecipeRepository {
 		const sql = `
             SELECT
                 ${this.table}.*,
-				GROUP_CONCAT(picture.picture_id) AS picture_ids
+				GROUP_CONCAT(picture.picture_id) AS picture_ids,
+				GROUP_CONCAT(ingredient.ingredient_id) AS ingredient_ids
             FROM 
                 ${process.env.MYSQL_DATABASE}.${this.table}
-			JOIN
+			LEFT JOIN
 				${process.env.MYSQL_DATABASE}.recipe_picture
 			ON
 				recipe_picture.recipe_id = ${this.table}.recipe_id
-			JOIN
+			LEFT JOIN
 				${process.env.MYSQL_DATABASE}.picture
 			ON
 				recipe_picture.picture_id = picture.picture_id
+			LEFT JOIN
+				${process.env.MYSQL_DATABASE}.recipe_ingredient
+			ON
+				recipe_ingredient.recipe_id = ${this.table}.recipe_id
+			LEFT JOIN
+				${process.env.MYSQL_DATABASE}.ingredient
+			ON
+				recipe_ingredient.ingredient_id = ingredient.ingredient_id
 			GROUP BY
 				${this.table}.recipe_id 
 			;
@@ -86,6 +95,174 @@ class RecipeRepository {
 
 			return result;
 		} catch (error) {
+			return error;
+		}
+	};
+
+	public insert = async (
+		data: Partial<Recipe>,
+	): Promise<Recipe[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		let sql = `
+
+			INSERT INTO 
+				${process.env.MYSQL_DATABASE}.${this.table}
+			VALUES
+				(
+					NULL,
+					:title,
+					:preparation_time,
+					:cooking_time,
+					:difficulty,
+					:description,
+					:user_id
+				)
+			;
+        `;
+
+		try {
+			// crée une transaction SQL
+			connexion.beginTransaction();
+
+			// exécute la première requête
+			await connexion.execute(sql, data);
+
+			// crée une variable SQL stockant le dernier identifiant créé
+			sql = `
+				SET @id = LAST_INSERT_ID();
+			`;
+
+			// exécute la requête
+			await connexion.execute(sql, data);
+
+			// une autre requête SQL de la transaction
+			// j'ai 5 dans mon body, je veux > (15, NULL, @id, 5), (15, NULL, @id, 6), (15, NULL, @id, 7)
+			const values = data.ingredient_ids
+				?.split(",")
+				.map((item) => `(15, NULL, @id, ${item})`)
+				.join(",");
+
+			// console.log(values);
+
+			sql = `
+				INSERT INTO
+					${process.env.MYSQL_DATABASE}.recipe_ingredient
+				VALUES
+					${values}
+			`;
+
+			// récupère les résultats de la requête
+			const [results] = await connexion.execute(sql, data);
+
+			// valider la transaction lorsque l'ensemble des requêtes d'une transaction ont réussi
+			connexion.commit();
+
+			// si la requête a réussi
+			return results;
+		} catch (error) {
+			// annuler l'ensemble des requêtes de la transaction si l'UNE des requêtes a échoué
+			connexion.rollback();
+
+			// si la requête a échoué
+			return error;
+		}
+	};
+
+	public update = async (
+		data: Partial<Recipe>,
+	): Promise<Recipe[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		let sql = `
+
+			UPDATE
+				${process.env.MYSQL_DATABASE}.${this.table}
+			SET
+				${this.table}.title = :title,
+				${this.table}.preparation_time = :preparation_time,
+				${this.table}.cooking_time = :cooking_time,
+				${this.table}.difficulty = :difficulty,
+				${this.table}.description = :description,
+				${this.table}.user_id = :user_id
+			WHERE
+				${this.table}.recipe_id = :recipe_id
+			;
+        `;
+
+		try {
+			connexion.beginTransaction();
+
+			await connexion.execute(sql, data);
+
+			sql = `
+				DELETE FROM
+					${process.env.MYSQL_DATABASE}.recipe_ingredient
+				WHERE
+					recipe_ingredient.recipe_id = :recipe_id
+			`;
+
+			await connexion.execute(sql, data);
+
+			const values = data.ingredient_ids
+				?.split(",")
+				.map((item) => `(15, NULL, :recipe_id, ${item})`)
+				.join(",");
+
+			sql = `
+			INSERT INTO
+				${process.env.MYSQL_DATABASE}.recipe_ingredient
+			VALUES
+				${values}
+		`;
+
+			const [results] = await connexion.execute(sql, data);
+
+			connexion.commit();
+
+			return results;
+		} catch (error) {
+			connexion.rollback();
+
+			return error;
+		}
+	};
+
+	public delete = async (
+		data: Partial<Recipe>,
+	): Promise<Recipe[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		let sql = `
+
+			DELETE FROM
+				${process.env.MYSQL_DATABASE}.recipe_ingredient
+			WHERE
+				recipe_ingredient.recipe_id = :recipe_id
+			;
+	    `;
+
+		try {
+			connexion.beginTransaction();
+
+			await connexion.execute(sql, data);
+
+			sql = `
+				DELETE FROM
+					${process.env.MYSQL_DATABASE}.${this.table}
+				WHERE
+					${this.table}.recipe_id = :recipe_id
+				;
+			`;
+
+			const [results] = await connexion.execute(sql, data);
+
+			connexion.commit();
+
+			return results;
+		} catch (error) {
+			connexion.rollback();
+
 			return error;
 		}
 	};

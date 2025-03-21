@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import styles from "../../assets/scss/footer.module.scss";
+import styles from "../../assets/scss/nav/footer.module.scss";
 
 const Footer = () => {
 	return (
@@ -7,9 +7,6 @@ const Footer = () => {
 			<div className={styles.copyright}>© 2024 Le Réseau des Gourmets</div>
 			<Link to={"/"} className={styles.contactLink}>
 				À votre écoute
-			</Link>
-			<Link to={"/"} className={styles.blogLink}>
-				Les Saveurs du Réseau
 			</Link>
 			<Link to={"/"} className={styles.legalNoticesLink}>
 				Mentions légales

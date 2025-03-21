@@ -3,9 +3,12 @@
 // ex: table Role => objets = role_id, name, image
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
-type ShareType = {
-    share_type_id: number;
-    type: string;
+import type Picture from "./picture.js";
+
+type RecipePicture = {
+	recipe_id: number;
+	picture_id: number;
+	picture: Picture;
 };
 
-export default ShareType;
+export default RecipePicture;

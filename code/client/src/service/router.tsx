@@ -6,10 +6,17 @@ import ContactPage from "../page/ContactPage";
 import SettingsPage from "../page/SettingsPage";
 import ConfidentialityPage from "../page/ConfidentialityPage";
 import ThemesPage from "../page/ThemesPage";
-import RecipesPage from "../page/RecipesPage";
+import RecipesPage from "../page/RecipePage";
 import CreateRecipePage from "../page/CreateRecipesPage";
+import AllRecipesPage from "../page/AllRecipesPage";
 import LoginPage from "../page/LoginPage";
 import RegisterPage from "../page/RegisterPage";
+import AdminHomePage from "../page/admin/AdminHomePage";
+import AdminUserPage from "../page/admin/users/AdminUserPage";
+import AdminUserFormPage from "../page/admin/users/AdminUserFormPage";
+import AdminUserDeletePage from "../page/admin/users/AdminUserDeletePage";
+import LogoutPage from "../page/LogoutPage";
+import Guard from "../component/common/guard";
 
 const router = createBrowserRouter([
 	{
@@ -35,16 +42,54 @@ const router = createBrowserRouter([
 				element: <LoginPage />,
 			},
 			{
+				path: "deconnexion",
+				element: <LogoutPage />,
+			},
+			{
 				path: "inscription",
 				element: <RegisterPage />,
 			},
 			{
 				path: "recettes",
-				element: <RecipesPage />,
+				element: <AllRecipesPage />,
 			},
 			{
 				path: "recettes/creation",
 				element: <CreateRecipePage />,
+			},
+			{
+				path: "recettes/creation/recette",
+				element: <RecipesPage />,
+			},
+		],
+	},
+
+	{
+		path: "/admin/",
+		element: (
+			<Guard roles={["admin"]}>
+				<BaseLayout>
+					<Outlet />
+				</BaseLayout>
+			</Guard>
+		),
+		children: [
+			{
+				path: "",
+				element: <AdminHomePage />,
+			},
+			{
+				path: "utilisateurs",
+				element: <AdminUserPage />,
+			},
+			{
+				// on créé une variable optionel (:id?) pour diriger vers le formulaire, mais aussi pour modifier la liste d'utilisateurs
+				path: "utilisateurs/formulaire/:id?",
+				element: <AdminUserFormPage />,
+			},
+			{
+				path: "utilisateurs/supprimer/:id",
+				element: <AdminUserDeletePage />,
 			},
 		],
 	},

@@ -1,0 +1,87 @@
+.userListContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding: 2rem;
+    max-width: 90rem;
+    justify-self: center;
+
+    h2 {
+        font-size: 1.5rem;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        color: var(--primary-color);
+    }
+
+    .tableContainer {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .userTable {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--tertiary-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    img {
+        width: 20%;
+        height: auto;
+    }
+
+    th, td {
+        padding: 12px;
+        padding-left: 4rem;
+        text-align: left;
+        border-bottom: 1px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    th {
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    td:last-child {
+        text-align: center;
+    }
+
+    a {
+        font-size: 1rem;
+        color: var(--primary-color);
+        font-weight: 800;
+        margin-left: 5rem;
+
+        &:hover {
+            color: var(--secondary-color);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .userTable {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        display: flex;
+        flex-direction: column;
+        padding: 2rem;
+    }
+
+    td {
+        display: flex;
+        justify-content: left;
+    }
+
+    td:last-child {
+        text-align: left;
+    }
+}

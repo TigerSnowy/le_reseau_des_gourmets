@@ -1,14 +1,9 @@
-$primary-color: #4D4D4D;
-$secondary-color: #F7F3EB;
-$tertiary-color: #E6E0D5;
-$quaternary-color: #6E5D4B;
-$emphasis-color: #FF715B;
 
 .profileLayout {
     display: flex;
     flex-direction: column;
     min-height: 70vh;
-    background-color: $secondary-color;
+    background-color: var(--secondary-color);
 }
 
 .profileContainer {
@@ -26,9 +21,9 @@ $emphasis-color: #FF715B;
 .profileSidebar {
     width: 36rem;
     min-height: 70vh;
-    background: $secondary-color;
-    color: $primary-color;
-    border-right: solid 1px $primary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    border-right: solid 1px var(--primary-color);
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -52,7 +47,7 @@ $emphasis-color: #FF715B;
             width: 150px;
             height: 150px;
             border-radius: 15px;
-            border: solid 2px $primary-color;
+            border: solid 2px var(--primary-color);
             object-fit: cover;
         }
 
@@ -62,8 +57,8 @@ $emphasis-color: #FF715B;
             position: absolute;
             top: 5px;
             right: -35px;
-            background: $secondary-color;
-            border: solid 1px $primary-color;
+            background: var(--secondary-color);
+            border: solid 1px var(--primary-color);
             border-radius: 5px;
             width: 25px;
             height: 25px;
@@ -74,14 +69,14 @@ $emphasis-color: #FF715B;
             transition: background 0.3s;
     
             svg {
-                stroke: $emphasis-color;
+                stroke: var(--emphasis-color);
             }
     
             &:hover {
-                background: $emphasis-color;
+                background: var(--emphasis-color);
     
                 svg {
-                    stroke: $secondary-color;
+                    stroke: var(--secondary-color);
                 }
             }
         }
@@ -108,8 +103,8 @@ $emphasis-color: #FF715B;
 // bouton modification
 
     .editButton {
-        background: $secondary-color;
-        border: solid 1px $primary-color;
+        background: var(--secondary-color);
+        border: solid 1px var(--primary-color);
         border-radius: 5px;
         width: 25px;
         height: 25px;
@@ -120,14 +115,14 @@ $emphasis-color: #FF715B;
         transition: background 0.3s;
 
         svg {
-            stroke: $emphasis-color;
+            stroke: var(--emphasis-color);
         }
 
         &:hover {
-            background: $emphasis-color;
+            background: var(--emphasis-color);
 
             svg {
-                stroke: $secondary-color;
+                stroke: var(--secondary-color);
             }
         }
     }
@@ -136,8 +131,8 @@ $emphasis-color: #FF715B;
 // rôle
 
     .userRole {
-        background-color: $emphasis-color;
-        color: $secondary-color;
+        background-color: var(--emphasis-color);
+        color: var(--secondary-color);
         padding: 0.3rem 1rem;
         border-radius: 20px;
         font-size: 0.8rem;
@@ -156,14 +151,14 @@ $emphasis-color: #FF715B;
         height: 5rem;
         text-align: center;
         align-content: center;
-        background-color: $tertiary-color;
+        background-color: var(--tertiary-color);
         font-size: 1.4rem;
-        border-top: solid 1px $primary-color;
+        border-top: solid 1px var(--primary-color);
         transition: background 0.3s;
     }
 
     nav ul li a {
-        color: $primary-color;
+        color: var(--primary-color);
         text-decoration: none;
         display: block;
         width: 100%;
@@ -174,19 +169,11 @@ $emphasis-color: #FF715B;
     }
 
     nav ul li:hover {
-        background-color: $emphasis-color;
+        background-color: var(--emphasis-color);
     }
 
     .active {
-        background-color: $emphasis-color !important;
-    }
-
-// contenu de sous-page
-
-    .mainContent {
-        flex: 1;
-        padding: 2rem;
-        background-color: $secondary-color;
+        background-color: var(--emphasis-color) !important;
     }
 }
 

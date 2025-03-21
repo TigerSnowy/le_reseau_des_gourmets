@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Pencil } from "lucide-react";
-import styles from "../assets/scss/profileLayout.module.scss";
+import styles from "../assets/scss/profile/profileLayout.module.scss";
 import type React from "react";
 import type { ReactNode } from "react";
 import Footer from "../component/common/footer";

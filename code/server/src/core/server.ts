@@ -12,11 +12,11 @@ import RoleRouter from "../router/role_router.js";
 import cors from "cors";
 import IngredientRouter from "../router/ingredient_router.js";
 import PictureRouter from "../router/picture_router.js";
-import PostRouter from "../router/post_router.js";
+// import PostRouter from "../router/post_router.js";
 import RecipeRouter from "../router/recipe_router.js";
-import ShareTypeRouter from "../router/share_type_router.js";
 import UserRouter from "../router/user_router.js";
 import ContactRouter from "../router/contact_router.js";
+import SecurityRouter from "../router/security_router.js";
 
 class Server {
 	// propriétés
@@ -29,6 +29,12 @@ class Server {
 		// gérer les requêtes multi-origines
 		// CORS : Cross Origin Resource Sharing
 		this.app.use(cors());
+
+		// accéder au contenu d'une requête HTTP - proprété body - au format JSON
+		this.app.use(express.json());
+
+		// définir le dossier public
+		this.app.use(express.static(process.env.ASSET_DIR as string));
 
 		//relier le routeur à l'application
 		this.app.use(this.router);
@@ -44,12 +50,14 @@ class Server {
 
 		this.router.use("/role", new RoleRouter().getRoutes());
 		this.router.use("/ingredient", new IngredientRouter().getRoutes());
+		this.router.use("/recipe_ingredient", new IngredientRouter().getRoutes());
 		this.router.use("/picture", new PictureRouter().getRoutes());
-		this.router.use("/post", new PostRouter().getRoutes());
+		this.router.use("/recipe_picture", new PictureRouter().getRoutes());
+		// this.router.use("/post", new PostRouter().getRoutes());
 		this.router.use("/recipe", new RecipeRouter().getRoutes());
-		this.router.use("/share_type", new ShareTypeRouter().getRoutes());
 		this.router.use("/user", new UserRouter().getRoutes());
 		this.router.use("/contact", new ContactRouter().getRoutes());
+		this.router.use("/", new SecurityRouter().getRoutes());
 
 		// routeur des routes inexistantes doit être obligatoirement en dernière position pour qu'il soit trouvé en dernier
 		this.router.use("*", new NotFoundRouter().getRoutes());

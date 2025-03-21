@@ -1,0 +1,164 @@
+.recipeContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: var(--primary-color);
+    padding: 2rem;
+    gap: 5rem;
+    
+    .left {
+      background: var(--tertiary-color);
+      margin-top: 4rem;
+      width: 25rem;
+      padding: 2.5rem;
+      border-radius: 10px;
+
+      h1 {
+          font-size: 1.8rem;
+          margin-top: 1.4rem;
+          margin-bottom: 3rem;
+          text-transform: uppercase;
+          text-align: center;
+        }
+
+      h3 {
+          font-size: 1.1rem;
+          text-transform: uppercase;
+          margin-bottom: 1.2rem;
+          margin-top: 1rem;
+      }
+
+      .timeTitle {
+        font-size: 1rem;
+        background: none;
+        
+      }
+
+      .time {
+        font-size: 1.1rem;
+        display: flex;
+        
+        // margin-bottom: 1rem;
+        background: var(--secondary-color);
+        padding: 0.6rem;
+        border-radius: 10px;
+        text-align: left;
+        width: 40%;
+      }
+
+      img {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .right {
+      background: var(--tertiary-color);
+      margin-top: 7.5rem;
+      padding: 2.5rem;
+      border-radius: 10px;
+      width: 55rem;
+
+      h3 {
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-top: 1.4rem;
+        margin-bottom: 3rem;
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      background: var(--secondary-color);
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 10px;
+      padding-left: 2rem;
+    }
+      
+    }
+  
+    .customFileUpload {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+      transition: 0.3s;
+      margin-top: 1rem;
+    }
+  
+    .customFileUpload:hover {
+      background-color: var(--emphasis-color);
+      color: var(--secondary-color);
+    }
+  
+    .imgInput {
+      display: none;
+    }
+  
+    .previewImage {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 1rem;
+      border: 2px solid var(--primary-color);
+    }
+  
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+  
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+  
+    .ingredientRow, .instructionRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+  
+      input, textarea {
+        flex: 1;
+      }
+    }
+  
+    .editButton {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+  
+    .editButton:hover {
+      background-color: var(--emphasis-color);
+      color: var(--secondary-color);
+      border: 1px solid var(--secondary-color);
+    }
+  
+    .deleteButton {
+      background-color: var(--emphasis-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+  }

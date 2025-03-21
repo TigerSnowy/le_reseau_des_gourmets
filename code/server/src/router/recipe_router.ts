@@ -10,6 +10,9 @@ class RecipeRouter {
 		this.router.get("/", new RecipeController().index);
 		// créer une variable de route en la préfixant d'un :
 		this.router.get("/:recipe_id", new RecipeController().one);
+		this.router.post("/", new RecipeController().insert);
+		this.router.put("/", new RecipeController().update);
+		this.router.delete("/", new RecipeController().delete);
 
 		return this.router;
 	};
