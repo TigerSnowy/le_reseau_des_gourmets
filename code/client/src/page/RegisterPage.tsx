@@ -4,7 +4,8 @@ import RegisterIllustration from "/img/cut.png";
 import type User from "../model/user";
 import { useForm } from "react-hook-form";
 import SecurityAPI from "../service/security_api";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const RegisterPage = () => {
 	const {
@@ -13,7 +14,9 @@ const RegisterPage = () => {
 		formState: { errors },
 	} = useForm<User>();
 
-	// const navigate = useNavigate();
+	const navigate = useNavigate();
+
+	const [message, setMessage] = useState<string>();
 
 	const onSubmit = async (values: User) => {
 		console.log(values);
@@ -24,10 +27,16 @@ const RegisterPage = () => {
 		console.log(request);
 
 		// tester le code de statut HTTP
-		// if ([200, 201].indexOf(request.status) > -1) {
-		// 	// redirection
-		// 	navigate("/profil");
-		// }
+		if ([200, 201].includes(request.status)) {
+			// s'il n'y a pas d'erreur => stocker un message en session
+			window.sessionStorage.setItem("notice", "Compte créé");
+
+			// redirection
+			navigate("/connexion");
+		} else {
+			// s'il n'y a une erreur =>
+			setMessage("Erreur - Email déjà enregistré");
+		}
 	};
 
 	return (
@@ -37,13 +46,16 @@ const RegisterPage = () => {
 			</div>
 			<div className={styles.right}>
 				<h1>INSCRIPTION</h1>
+
+				{message ? <p>{message}</p> : null}
+
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.registerForm}>
 					<label htmlFor="surname">Nom :</label>
 					<input
 						type="text"
 						id="surname"
 						placeholder="Nom"
-						aria-required
+						aria-required="true"
 						{...register("surname", {
 							required: "Ce champ est obligatoire.",
 							minLength: {
@@ -60,7 +72,7 @@ const RegisterPage = () => {
 						id="first_name"
 						placeholder="Prénom"
 						autoComplete="on"
-						aria-required
+						aria-required="true"
 						{...register("first_name", {
 							required: "Ce champ est obligatoire.",
 							minLength: {
@@ -76,7 +88,7 @@ const RegisterPage = () => {
 						type="text"
 						id="pseudo"
 						placeholder="Pseudo"
-						aria-required
+						aria-required="true"
 						{...register("pseudo", {
 							required: "Ce champ est obligatoire.",
 						})}
@@ -89,7 +101,7 @@ const RegisterPage = () => {
 						id="email"
 						placeholder="Email"
 						autoComplete="email"
-						aria-required
+						aria-required="true"
 						{...register("email", {
 							required: "Ce champ est obligatoire.",
 							pattern: {
@@ -105,7 +117,7 @@ const RegisterPage = () => {
 						type="password"
 						id="password"
 						placeholder="Mot de passe"
-						aria-required
+						aria-required="true"
 						{...register("password", {
 							required: "Ce champ est obligatoire.",
 							minLength: {

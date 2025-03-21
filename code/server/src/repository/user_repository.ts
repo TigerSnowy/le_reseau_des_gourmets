@@ -2,11 +2,26 @@ import type User from "../model/user.js";
 import type Role from "../model/role.js";
 import MySQLService from "../service/mysql_service.js";
 import RoleRepository from "./role_repository.js";
-import type Recipe from "../model/recipe.js";
-import RecipeRepository from "./recipe_repository.js";
 
 class UserRepository {
 	private table = "user";
+
+	// si profile_picture est vide, on le met à NULL explicitement
+	private getRandomDefaultAvatar = (): string => {
+		const defaultAvatars = [
+			"/img/default_avatars/chocolat.jpg",
+			"/img/default_avatars/cookies.jpg",
+			"/img/default_avatars/kiwi.jpg",
+			"/img/default_avatars/lasagna.jpg",
+			"/img/default_avatars/lollipop.jpg",
+			"/img/default_avatars/pizza.jpg",
+			"/img/default_avatars/strawberries.jpg",
+		];
+
+		// sélection aléatoire
+		const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+		return defaultAvatars[randomIndex];
+	};
 
 	public selectAll = async (): Promise<User[] | unknown> => {
 		const connexion = await new MySQLService().connect();
@@ -32,9 +47,15 @@ class UserRepository {
 			for (let i = 0; i < (results as User[]).length; i++) {
 				const result = (results as User[])[i];
 
-				result.role = (await new RoleRepository().selectOne({
-					role_id: result.role_id,
-				})) as Role;
+				if (result?.role_id) {
+					result.role = (await new RoleRepository().selectOne({
+						role_id: result.role_id,
+					})) as Role;
+				}
+
+				// result.role = (await new RoleRepository().selectOne({
+				// 	role_id: result.role_id,
+				// })) as Role;
 			}
 
 			return results;
@@ -43,7 +64,9 @@ class UserRepository {
 		}
 	};
 
-	public selectOne = async (data: Partial<User>): Promise<User[] | unknown> => {
+	public selectOne = async (data: Partial<User>): Promise<User | null> => {
+		if (!data || !data.user_id) return null;
+
 		const connexion = await new MySQLService().connect();
 
 		const sql = `
@@ -59,11 +82,47 @@ class UserRepository {
 		try {
 			const [results] = await connexion.execute(sql, data);
 
+			if (!results || !(results as User[]).length) return null;
+
 			const result = (results as User[]).shift() as User;
 
-			result.role = (await new RoleRepository().selectOne({
-				role_id: result.role_id,
-			})) as Role;
+			// if (!result) return null;
+
+			if (result?.role_id) {
+				result.role = (await new RoleRepository().selectOne({
+					role_id: result.role_id,
+				})) as Role;
+			}
+
+			// result.role = (await new RoleRepository().selectOne({
+			// 	role_id: result.role_id,
+			// })) as Role;
+
+			return result;
+		} catch (error) {
+			return null;
+		}
+	};
+
+	public selectOneByEmail = async (email: string): Promise<User | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+            SELECT
+                ${this.table}.*
+            FROM 
+                ${process.env.MYSQL_DATABASE}.${this.table}
+			WHERE
+				${this.table}.email = :email
+				;
+        `;
+
+		try {
+			const [results] = await connexion.execute(sql, {
+				email,
+			});
+
+			const result = (results as User[]).shift() as User;
 
 			return result;
 		} catch (error) {
@@ -73,11 +132,25 @@ class UserRepository {
 
 	//créer un enregistrement
 	public insert = async (data: Partial<User>): Promise<User[] | unknown> => {
+		// vérifie que data existe
+		const userData = data || {};
+
+		// applique un avatar par défaut
+		if (!userData.profile_picture) {
+			userData.profile_picture = this.getRandomDefaultAvatar();
+			console.log(`Avatar attribué: ${userData.profile_picture}`);
+		}
+
+		// définit un rôle par défaut
+		if (!userData.role_id) {
+			userData.role_id = 2;
+		}
+
 		const connexion = await new MySQLService().connect();
 
-		const profilePictureValue = data.profile_picture
-			? "profile_picture,"
-			: "NULL";
+		// const profilePictureValue = data.profile_picture
+		// 	? "profile_picture,"
+		// 	: "NULL";
 
 		// créer une variable qui teste profile_picture
 		// si profile_picture possède une valeur > :profile_picture, sinon > NULL
@@ -88,17 +161,27 @@ class UserRepository {
 
 			INSERT INTO 
 				${process.env.MYSQL_DATABASE}.${this.table}
+			(
+				user_id,
+				pseudo,
+				surname,
+				first_name,
+				email,
+				password,
+				profile_picture,
+				role_id
+			)
 			VALUES
-				(
-					NULL,
-					:pseudo,
-					:surname,
-					:first_name,
-					:email,
-					:password,
-					${profilePictureValue},
-					:role_id
-				)
+			(
+				NULL,
+				:pseudo,
+				:surname,
+				:first_name,
+				:email,
+				:password,
+				:profile_picture,
+				:role_id
+			)
 			;
         `;
 
@@ -107,6 +190,7 @@ class UserRepository {
 
 			return results;
 		} catch (error) {
+			console.error(error);
 			return error;
 		}
 	};

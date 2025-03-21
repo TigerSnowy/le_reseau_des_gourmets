@@ -3,7 +3,6 @@
 // ex: table Role => objets = role_id, name, image
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
-import type Recipe from "./recipe.js";
 import type Role from "./role.js";
 
 type User = {
@@ -13,9 +12,9 @@ type User = {
 	first_name: string;
 	email: string;
 	password: string;
-	profile_picture?: string; // Champ nullable
+	profile_picture?: string | null; // Champ nullable
 	role_id: number; // Clé étrangère vers Role
 	role: Role;
-};
+} | null;
 
 export default User;

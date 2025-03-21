@@ -8,6 +8,7 @@ import "./assets/scss/style.scss";
 import { RouterProvider } from "react-router-dom";
 import router from "./service/router";
 import { useEffect } from "react";
+import { UserProvider } from "./provider/UserProvider";
 
 const App = () => {
 	// applique immédiatement le thème au body avant le premier rendu
@@ -23,7 +24,11 @@ const App = () => {
 		document.body.classList.add(savedTheme);
 	}, []);
 
-	return <RouterProvider router={router} />;
+	return (
+		<UserProvider>
+			<RouterProvider router={router} />
+		</UserProvider>
+	);
 };
 
 export default App;

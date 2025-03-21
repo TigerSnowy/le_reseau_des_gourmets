@@ -7,14 +7,22 @@ class UserfileMiddleware {
 	public process = async (req: Request, res: Response, next: NextFunction) => {
 		console.log("user file middleware");
 
+		const files = req.files as Express.Multer.File[] | undefined;
+		const file = files && files.length > 0 ? files[0] : undefined;
+
 		// console.log(req.body);
 		// console.log(req.files);
 
 		// récupérer le fichier transféré
-		const file = (req.files as Express.Multer.File[])[0];
+		// const file = (req.files as Express.Multer.File[])[0];
 
 		// récupérer le fichier transféré
-		const user = await new UserRepository().selectOne(req.body);
+		let user: User | null = null;
+		if (req?.body.user_id) {
+			const result = await new UserRepository().selectOne(req.body);
+			user = result as User;
+		}
+		// const user = await new UserRepository().selectOne(req.body);
 
 		// si un fichier a été sélectionné
 		if (file) {
@@ -31,21 +39,28 @@ class UserfileMiddleware {
 
 			// récupérer la méthode HTTP
 			// si une modification est effectuée, supprimer l'ancien  fichier
-			if (req.method === "PUT") {
-				await fs.rm(`${file.destination}/${(user as User).profile_picture}`);
+			if (req.method === "PUT" && user && user.profile_picture) {
+				try {
+					await fs.rm(`${file.destination}/${user.profile_picture}`);
+				} catch (err) {
+					console.error(
+						"Erreur lors de la suppression de l'ancien fichier:",
+						err,
+					);
+				}
 			}
 		}
 
 		// si aucun fichier n'a été sélectionné
 		else {
 			// PUT > récupérer le nom de l'ancienn image et l'affecter à la propriété gérant le fichier
-			if (req.method === "PUT") {
-				req.body.profile_picture = (user as User).profile_picture;
+			if (req.method === "PUT" && user) {
+				req.body.profile_picture = user.profile_picture;
 			}
 
 			// DELETE > supprimer le fichier
-			if (req.method === "DELETE") {
-				const filePath = `${process.env.ASSET_DIR}/img/${(user as User).profile_picture}`;
+			else if (req.method === "DELETE" && user && user.profile_picture) {
+				const filePath = `${process.env.ASSET_DIR}/img/${user.profile_picture}`;
 				try {
 					// vérifie si le fichier est accessible
 					await fs.access(filePath);

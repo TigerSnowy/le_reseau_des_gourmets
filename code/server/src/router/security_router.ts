@@ -8,6 +8,7 @@ class SecurityRouter {
 	// méthodes
 	public getRoutes = () => {
 		this.router.post("/register", new SecurityController().register);
+		this.router.post("/login", new SecurityController().login);
 
 		return this.router;
 	};

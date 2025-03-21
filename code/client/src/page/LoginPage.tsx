@@ -3,7 +3,11 @@ import styles from "../assets/scss/auth/auth.module.scss";
 import LoginIllustration from "/img/pinch.png";
 import type User from "../model/user";
 import { useForm } from "react-hook-form";
-// import { useNavigate } from "react-router-dom";
+// import Notice from "../component/common/notice";
+import { useNavigate } from "react-router-dom";
+import SecurityAPI from "../service/security_api";
+import { useContext, useState } from "react";
+import { UserContext } from "../provider/UserProvider";
 
 const LoginPage = () => {
 	const {
@@ -12,35 +16,33 @@ const LoginPage = () => {
 		formState: { errors },
 	} = useForm<User>();
 
-	// const navigate = useNavigate();
+	const navigate = useNavigate();
+
+	const [message, setMessage] = useState<string>();
+
+	const { setUser } = useContext(UserContext);
 
 	const onSubmit = async (values: User) => {
-		console.log(values);
-
-		// const formData = new FormData();
-		// formData.append("user_id", values.user_id.toString());
-		// formData.append("surname", values.surname);
-		// formData.append("first_name", values.first_name);
-		// formData.append("pseudo", values.pseudo);
-		// formData.append("email", values.email);
-		// formData.append("password", values.password);
-		// formData.append("role_id", "2");
-		// if (values.profile_picture?.length) {
-		// 	formData.append("profile_picture", values.profile_picture[0]);
-		// }
-		// si un champ renvoie un chiffre, ajouter "as unknown as string" ou .toString() après values.qdhddab
-		// un champ file renvoie une liste de fichiers (FileList) ; s'il ne faut envoyer qu'un seul fichier, ajouter [0] après le values.qdhddab
 		// console.log(values);
-		// console.log(formData);
-		// requête HTTP
-		// const request = id
-		// 	? await new UserAPI().update(formData)
-		// 	: await new UserAPI().insert(formData);
-		// tester le code de statut HTTP
-		// if ([200, 201].indexOf(request.status) > -1) {
-		// 	// redirection
-		// 	navigate("/admin/utilisateurs");
-		// }
+
+		const request = await new SecurityAPI().login(values);
+
+		console.log(request);
+
+		if ([200, 201].includes(request.status)) {
+			// stocker l'utilisateur dans le contexte
+			setUser(request.data);
+
+			// redirection
+			if (request.data.role.name === "admin") {
+				navigate("/admin");
+			} else {
+				navigate("/");
+			}
+		} else {
+			// s'il n'y a une erreur =>
+			setMessage("Erreur - Email ou mot de passe erroné");
+		}
 	};
 
 	return (
@@ -52,6 +54,11 @@ const LoginPage = () => {
 			{/* formulaire */}
 			<div className={styles.right}>
 				<h1>CONNEXION</h1>
+
+				{/* <Notice /> */}
+
+				{message ? <p>{message}</p> : null}
+
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.loginForm}>
 					<label htmlFor="email">Email :</label>
 					<input

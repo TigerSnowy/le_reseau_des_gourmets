@@ -15,6 +15,8 @@ import AdminHomePage from "../page/admin/AdminHomePage";
 import AdminUserPage from "../page/admin/users/AdminUserPage";
 import AdminUserFormPage from "../page/admin/users/AdminUserFormPage";
 import AdminUserDeletePage from "../page/admin/users/AdminUserDeletePage";
+import LogoutPage from "../page/LogoutPage";
+import Guard from "../component/common/guard";
 
 const router = createBrowserRouter([
 	{
@@ -40,6 +42,10 @@ const router = createBrowserRouter([
 				element: <LoginPage />,
 			},
 			{
+				path: "deconnexion",
+				element: <LogoutPage />,
+			},
+			{
 				path: "inscription",
 				element: <RegisterPage />,
 			},
@@ -61,9 +67,11 @@ const router = createBrowserRouter([
 	{
 		path: "/admin/",
 		element: (
-			<BaseLayout>
-				<Outlet />
-			</BaseLayout>
+			<Guard roles={["admin"]}>
+				<BaseLayout>
+					<Outlet />
+				</BaseLayout>
+			</Guard>
 		),
 		children: [
 			{

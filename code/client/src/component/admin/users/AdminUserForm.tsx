@@ -69,7 +69,7 @@ const AdminUserForm = () => {
 		formData.append("pseudo", values.pseudo);
 		formData.append("email", values.email);
 		formData.append("password", values.password);
-		formData.append("role_id", "2");
+		formData.append("role_id", values.role_id.toString());
 		if (values.profile_picture?.length) {
 			formData.append("profile_picture", values.profile_picture[0]);
 		}
@@ -101,7 +101,7 @@ const AdminUserForm = () => {
 			<div>
 				{/* reprendre STRICTEMENT le nom des colonnes SQL */}
 
-				<select value="" id="role_id" {...register("role_id")}>
+				<select id="role_id" {...register("role_id")}>
 					<option value="">Rôles</option>
 					{roles?.map((role: Role) => (
 						<option key={role.role_id} value={role.role_id}>
@@ -109,6 +109,7 @@ const AdminUserForm = () => {
 						</option>
 					))}
 				</select>
+
 				<label htmlFor="surname">Nom :</label>
 				<input
 					type="text"
