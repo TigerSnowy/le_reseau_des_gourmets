@@ -9,17 +9,121 @@
   }
 
   .theme-cottonCandy {
-    --primary-color: #F29191;
+    --primary-color: #f97d7d;
     --secondary-color: #F2F2F2;
-    --tertiary-color: #F2D7D0;
-    --quaternary-color: #F7BDC9;
-    --emphasis-color: #F2385A;
+    --tertiary-color: #f0dcdf;
+    --quaternary-color: #f595a8;
+    --emphasis-color: #6ae8f6;
   }
 
   .theme-autumn {
-    --primary-color: #A65B2D;
-    --secondary-color: #FFD699;
-    --tertiary-color: #FFB366;
-    --quaternary-color: #CC5500;
-    --emphasis-color: #8B3A3A;
+    --primary-color: #5A3E36;
+    --secondary-color: #FAF3E0;
+    --tertiary-color: #E8C07D;
+    --quaternary-color: #A97155;
+    --emphasis-color: #D94F30;
 }
+
+/* .theme-kawaiiPastel {
+  --primary-color: #E9AFA3;      
+  --secondary-color: #FDF1F3;  
+  --tertiary-color: #F4D6CC;       
+  --quaternary-color: #C3BFD9;     
+  --emphasis-color: #FF8FAB; 
+} */
+
+/* .theme-autumn {
+  --primary-color: #e6541f;
+  --secondary-color: #FFF1F1;
+  --tertiary-color: #f5deb2;
+  --quaternary-color: #780116;
+  --emphasis-color: #C32F27;
+} */
+
+/* .theme-bloomingSpring {
+  --primary-color: #ADC178;
+  --secondary-color: #FAF8F1;
+  --tertiary-color: #FFE5EC;
+  --quaternary-color: #DDBEA9;
+  --emphasis-color: #EF476F;
+} */
+
+/* .theme-natureChic {
+  --primary-color: #2F3E46;
+  --secondary-color: #CAD2C5;
+  --tertiary-color: #EDEDE9;
+  --quaternary-color: #52796F;
+  --emphasis-color: #d6a21d;
+} */
+
+/* .theme-berryPie{
+  --primary-color: #702963;
+  --secondary-color: #fff5f7;
+  --tertiary-color: #fcefee;
+  --quaternary-color: #b56576;
+  --emphasis-color: #ffb4a2;
+} */
+
+/* .theme-cyberPop {
+  --primary-color: #2d00f7;
+  --secondary-color: #f1f1f1;
+  --tertiary-color: #e0e0ff;
+  --quaternary-color: #3a0ca3;
+  --emphasis-color: #ff006e;
+} */
+
+/* .theme-retroCafe {
+  --primary-color: #735D58;
+  --secondary-color: #FDF6E3;
+  --tertiary-color: #F5E1A4;
+  --quaternary-color: #D4A373;
+  --emphasis-color: #C44900;
+} */
+
+/* .theme-fallWhisper {
+  --primary-color: #85586F;
+  --secondary-color: #FDF7F0;
+  --tertiary-color: #FFE6A7;
+  --quaternary-color: #D4A276;
+  --emphasis-color: #B23A48;
+} */
+
+/* .theme-matchaPeace {
+  --primary-color: #587B6C;
+  --secondary-color: #F5F9F4;
+  --tertiary-color: #E3EFE3;
+  --quaternary-color: #A3B18A;
+  --emphasis-color: #C8553D;
+} */
+
+/* .theme-starryNight {
+  --primary-color: #1B1B3A;
+  --secondary-color: #F4F4F9;
+  --tertiary-color: #D2DAFF;
+  --quaternary-color: #3D348B;
+  --emphasis-color: #FFB400;
+} */
+
+/* .theme-snowyForest {
+  --primary-color: #3B5A4C;
+  --secondary-color: #F8F9FA;
+  --tertiary-color: #E1EBE4;
+  --quaternary-color: #7B9E89;
+  --emphasis-color: #A63446;
+} */
+
+/* .theme-seasideDream {
+  --primary-color: #0077B6;
+  --secondary-color: #F1FAFF;
+  --tertiary-color: #CAF0F8;
+  --quaternary-color: #90E0EF;
+  --emphasis-color: #F77F00;
+} */
+
+/* .theme-kawaiiTwilight {
+  --primary-color: #6A5ACD;
+  --secondary-color: #F5F0FF;
+  --tertiary-color: #E8DFF5;
+  --quaternary-color: #BFA2DB;
+  --emphasis-color: #FF82A9;
+} */

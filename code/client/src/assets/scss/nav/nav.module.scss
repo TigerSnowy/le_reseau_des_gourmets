@@ -12,6 +12,7 @@
   background-color: var(--primary-color);
   padding: 3.5rem;
   position: relative;
+  border-bottom: 2px solid var(--quaternary-color);
 
   .siteName {
     display: none;
@@ -213,17 +214,18 @@
       .logoutButton {
         width: 100%;
         font-size: 1.1rem;
-        color: var(--emphasis-color);
+        color: var(--primary-color);
         background: none;
-        background-color: var(--primary-color);
-        border: 2px solid var(--secondary-color);
+        background-color: var(--secondary-color);
+        border: 2px solid var(--emphasis-color);
         border-radius: 11px;
         padding: 0.8rem;
         cursor: pointer;
 
         &:hover {
           background-color: var(--secondary-color);
-          border: 2px solid var(--primary-color);
+          border: 2px solid var(--emphasis-color);
+          color: var(--emphasis-color);
         }
       }
     }

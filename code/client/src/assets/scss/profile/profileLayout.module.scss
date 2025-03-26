@@ -175,6 +175,9 @@
     .active {
         background-color: var(--emphasis-color) !important;
     }
+
+    nav ul li.active a {
+        color: var(--secondary-color) !important;
+    }
+    
 }
-
-
