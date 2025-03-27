@@ -1,3 +1,5 @@
+
+
 .footer {
     display: flex;
     justify-content: space-between;
@@ -8,9 +10,68 @@
     padding-right: 15%;
     border-top: 2px solid var(--primary-color);
 
-    .contactLink, .blogLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
+    .contactLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
         text-decoration: none;
         color: var(--secondary-color);
         font-size: 1.1rem;
+    }
+}
+
+// MOYEN
+
+@media (max-width: 1300px) {
+    .footer {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+// TABLETTE
+
+@media (max-width: 950px) {
+    .footer {
+        padding: 3rem;
+        padding-left: 5%;
+        padding-right: 5%;
+    
+        .contactLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
+            font-size: 1rem;
+        }
+    }
+}
+
+// MOBILE
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 2.5rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+
+    .copyright {
+        width: 100%;
+        text-align: center;
+        order: 2;
+    }
+
+    .contactLink, .legalNoticesLink, .privacyPolicyLink {
+        flex: 0 0 auto;
+        order: 1;
+        margin: 1rem 1rem;
+    }   
+  }
+}
+
+@media (max-width: 500px) {
+    .footer {
+        padding: 2rem 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        
+        .contactLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
+            font-size: 0.9rem;
+            margin: 0.3rem 0;
+        }
     }
 }

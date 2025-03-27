@@ -5,13 +5,25 @@ const Footer = () => {
 	return (
 		<footer className={styles.footer}>
 			<div className={styles.copyright}>© 2024 Le Réseau des Gourmets</div>
-			<Link to={"/"} className={styles.contactLink}>
+			<Link
+				to={"/"}
+				className={styles.contactLink}
+				aria-label="À votre écoute - Contactez-nous"
+			>
 				À votre écoute
 			</Link>
-			<Link to={"/"} className={styles.legalNoticesLink}>
+			<Link
+				to={"/"}
+				className={styles.legalNoticesLink}
+				aria-label="Mentions légales"
+			>
 				Mentions légales
 			</Link>
-			<Link to={"/"} className={styles.privacyPolicyLink}>
+			<Link
+				to={"/"}
+				className={styles.privacyPolicyLink}
+				aria-label="Politique de confidentialité"
+			>
 				Politique de confidentialité
 			</Link>
 		</footer>

@@ -5,17 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../provider/UserProvider";
 
 const NavBar = () => {
-	// const [isLoggedIn, setIsLoggedIn] = useState(true);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-	// const userTiggy = {
-	// 	username: "TigerSnowy",
-	// 	avatar: "/img/piti_piaf.jpg",
-	// };
+	const [isMobile, setIsMobile] = useState(window.innerWidth <= 950);
 
 	useEffect(() => {
 		const handleResize = () => {
-			setIsMobile(window.innerWidth <= 768);
+			setIsMobile(window.innerWidth <= 950);
 		};
 
 		window.addEventListener("resize", handleResize);
@@ -52,37 +47,26 @@ const NavBar = () => {
 
 	return (
 		<nav className={styles.navbar}>
-			{/* {JSON.stringify(user)} */}
-			{/* Débogage de l'avatar */}
-			<div
-				style={{
-					position: "fixed",
-					top: "5px",
-					left: "5px",
-					background: "white",
-					padding: "5px",
-					zIndex: 1000,
-					fontSize: "12px",
-				}}
-			>
-				Avatar path: {user?.profile_picture || "undefined"}
-			</div>
+			{/* Nous retirons le débuggage d'avatar pour la production */}
 
 			<Link to="/accueil" className={styles.siteName}>
 				Le Réseau <br />
 				des Gourmets
 			</Link>
-			{/* bouton Mon Carnet */}
+
+			{/* bouton Mon Carnet - visible uniquement en desktop */}
 			{!!user?.user_id && (
 				<div className={styles.recipesMenu}>
 					<Link to="/recettes" className={styles.myRecipesButton}>
 						Mon Carnet
 					</Link>
+					{/* bouton Créer une recette */}
 					<div className={styles.recipesDropdown}>
 						<Link to="/recettes/creation">Créer une recette +</Link>
 					</div>
 				</div>
 			)}
+
 			{/* logo */}
 			<Link to="/accueil" className={styles.logoContainer}>
 				<img
@@ -91,6 +75,7 @@ const NavBar = () => {
 					className={styles.logo}
 				/>
 			</Link>
+
 			{/* bouton connecté */}
 			<div className={styles.navLinks}>
 				{user ? (
@@ -99,21 +84,23 @@ const NavBar = () => {
 							className={styles.loggedInButton}
 							type="button"
 							onClick={handleProfileClick}
+							aria-label={isMobile ? "Ouvrir le menu" : "Voir le profil"}
 						>
 							<span className={styles.username}>{user.pseudo}</span>
 							<img
-								src={user.profile_picture}
+								src={
+									user.profile_picture || "/img/default_avatars/chocolat.jpg"
+								}
 								alt="Avatar utilisateur"
 								className={styles.avatar}
-								// onError={(e) => {
-								// 	console.error("Erreur de chargement d'image:", e);
-								// 	e.currentTarget.src = "/img/default_avatars/chocolat.jpg"; // Image de secours
-								// }}
+								onError={(e) => {
+									console.error("Erreur de chargement d'image:", e);
+									e.currentTarget.src = "/img/default_avatars/chocolat.jpg"; // Image de secours
+								}}
 							/>
 						</button>
 
-						{/* menu déroulant */}
-
+						{/* menu déroulant - visible uniquement en desktop */}
 						<div className={styles.dropdownMenu}>
 							{user.role?.name === "admin" && (
 								<button
@@ -141,16 +128,36 @@ const NavBar = () => {
 				)}
 			</div>
 
+			{/* Menu plein écran pour mobile */}
 			{user && (
 				<div
 					className={`${styles.fullscreenMenu} ${isMenuOpen ? styles.open : ""}`}
+					aria-hidden={!isMenuOpen}
 				>
 					<div className={styles.menuContent}>
-						<Link to="/recettes">Mon Carnet</Link>
-						<Link to="/recettes/creation">Créer une recette +</Link>
-						<Link to="/profil/parametres">Paramètres</Link>
-						<Link to="/profil/securite">Sécurité</Link>
-						<Link to="/profil/themes">Thèmes</Link>
+						<Link to="/recettes" onClick={closeMenu}>
+							Mon Carnet
+						</Link>
+						<Link to="/recettes/creation" onClick={closeMenu}>
+							Créer une recette +
+						</Link>
+						<Link to="/profil" onClick={closeMenu}>
+							Mon Profil
+						</Link>
+						<Link to="/profil/parametres" onClick={closeMenu}>
+							Paramètres
+						</Link>
+						<Link to="/profil/securite" onClick={closeMenu}>
+							Sécurité
+						</Link>
+						<Link to="/profil/themes" onClick={closeMenu}>
+							Thèmes
+						</Link>
+						{user.role?.name === "admin" && (
+							<Link to="/admin" onClick={closeMenu}>
+								QG des Gourmets
+							</Link>
+						)}
 						<button
 							type="button"
 							className={styles.mobileLogoutButton}
@@ -164,11 +171,14 @@ const NavBar = () => {
 					</div>
 				</div>
 			)}
+
 			{isMenuOpen && (
 				<div
 					className={styles.menuOverlay}
 					onClick={closeMenu}
 					onKeyDown={handleKeyDown}
+					tabIndex={0}
+					role="button"
 					aria-label="Fermer le menu"
 				/>
 			)}
