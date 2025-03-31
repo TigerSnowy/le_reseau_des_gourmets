@@ -1,0 +1,79 @@
+.contactFormContainer {
+    max-width: 800px;
+    margin: 9rem auto;
+    padding: 2rem;
+    background-color: var(--secondary-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+  
+      &:focus {
+        outline: none;
+        border-color: #ff8888;
+        box-shadow: 0 0 0 2px rgba(255, 136, 136, 0.2);
+      }
+    }
+  
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+  
+    button {
+      align-self: center;
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: var(--emphasis-color);
+      color: var(--secondary-color);
+      border: 1px solid var(--quaternary-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: var(--tertiary-color);
+        color: var(--quaternary-color);
+        border: solid 1px var(--quaternary-color);
+      }
+    }
+  }
+  
+  .success {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--emphasis-color);
+    font-weight: 500;
+  }
+  
+  .hideLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    border: 0;
+  }
+  

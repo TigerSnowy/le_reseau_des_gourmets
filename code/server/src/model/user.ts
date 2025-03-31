@@ -15,6 +15,8 @@ type User = {
 	profile_picture?: string | null; // Champ nullable
 	role_id: number; // Clé étrangère vers Role
 	role: Role;
+	// partie aléatoire de la clé de décryptage
+	key: string;
 } | null;
 
 export default User;

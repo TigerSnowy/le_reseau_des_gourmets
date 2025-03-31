@@ -1,13 +1,14 @@
-// import Header from "../component/common/header";
-// import Footer from "../component/common/footer";
-
-import Notice from "../component/common/notice";
+// import Carousel from "../component/home/carousel";
+import Description from "../component/home/sectionDescription";
+import Introduction from "../component/home/sectionIntroduction";
 
 const HomePage = () => {
 	// Fragment : balise anonyme <></>
 	return (
 		<div>
-			<Notice />
+			{/* <Carousel /> */}
+			<Introduction />
+			<Description />
 		</div>
 	);
 };

@@ -64,20 +64,31 @@ CREATE TABLE le_reseau_des_gourmets_dev.recipe_picture(
     PRIMARY KEY (recipe_id, picture_id)
 );
 
--- CREATE TABLE le_reseau_des_gourmets_dev.post(
---     post_id TINYINT(2) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
---     title VARCHAR(60) NOT NULL,
---     content TEXT NOT NULL,
---     image VARCHAR(255) NULL,
---     publication_date DATE NOT NULL,
---     user_id TINYINT UNSIGNED,
---     FOREIGN KEY (user_id) REFERENCES user(user_id)
--- );
+CREATE TABLE le_reseau_des_gourmets_dev.tag (
+    tag_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL,
+    user_id TINYINT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES le_reseau_des_gourmets_dev.user(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE (name, user_id) -- Pour éviter les doublons par utilisateur
+);
+
+CREATE TABLE le_reseau_des_gourmets_dev.recipe_tag (
+    recipe_id SMALLINT UNSIGNED NOT NULL,
+    tag_id SMALLINT UNSIGNED NOT NULL,
+    PRIMARY KEY (recipe_id, tag_id),
+    FOREIGN KEY (recipe_id) REFERENCES le_reseau_des_gourmets_dev.recipe(recipe_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES le_reseau_des_gourmets_dev.tag(tag_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
 
 
 -- créer des enregistrements
 -- commencer par les tables n'ayant pas de clés étrangères
-
 
 
 INSERT INTO le_reseau_des_gourmets_dev.role
@@ -154,6 +165,17 @@ VALUES
     (3, 3)
 ;
 
+INSERT INTO le_reseau_des_gourmets_dev.tag (name, user_id)
+VALUES 
+    ('dessert', 2),
+    ('rapide', 2),
+    ('citron', 2);
+
+INSERT INTO le_reseau_des_gourmets_dev.recipe_tag (recipe_id, tag_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3);
 
 
 

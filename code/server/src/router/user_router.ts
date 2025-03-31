@@ -2,6 +2,7 @@ import express, { type Request, type Response } from "express";
 import UserController from "../controller/user_controller.js";
 import multer from "multer";
 import UserfileMiddleware from "../middleware/user_file_middleware.js";
+import AuthorizationMiddleware from "../middleware/authorization_middleware.js";
 
 class UserRouter {
 	// propriétés
@@ -19,6 +20,7 @@ class UserRouter {
 
 		this.router.post(
 			"/",
+			new AuthorizationMiddleware().check(["admin"]),
 			this.upload.any(),
 			new UserfileMiddleware().process,
 			new UserController().insert,

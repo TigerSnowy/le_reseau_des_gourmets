@@ -54,6 +54,8 @@ const NavBar = () => {
 				des Gourmets
 			</Link>
 
+			{/* {JSON.stringify(user)} */}
+
 			{/* bouton Mon Carnet - visible uniquement en desktop */}
 			{!!user?.user_id && (
 				<div className={styles.recipesMenu}>
@@ -108,7 +110,7 @@ const NavBar = () => {
 									className={styles.qgButton}
 									onClick={() => navigate("/admin")}
 								>
-									QG des Gourmets
+									QG
 								</button>
 							)}
 							<button
