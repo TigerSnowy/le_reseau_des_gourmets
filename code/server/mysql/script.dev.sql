@@ -4,19 +4,20 @@ DROP DATABASE IF EXISTS le_reseau_des_gourmets_dev;
 
 -- créer une base de données
 CREATE DATABASE le_reseau_des_gourmets_dev; 
+USE le_reseau_des_gourmets_dev;
+
 
 -- créer les tables
 -- commencer par les tables n'ayant pas de clé étrangère
+
+-- ROLE
 
 CREATE TABLE le_reseau_des_gourmets_dev.role(
     role_id TINYINT(1) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE le_reseau_des_gourmets_dev.ingredient(
-    ingredient_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL
-);
+-- USER
 
 CREATE TABLE le_reseau_des_gourmets_dev.user(
     user_id TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -30,66 +31,83 @@ CREATE TABLE le_reseau_des_gourmets_dev.user(
     FOREIGN KEY (role_id) REFERENCES role(role_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+-- RECIPE
+
 CREATE TABLE le_reseau_des_gourmets_dev.recipe(
     recipe_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(50) NOT NULL UNIQUE,
-    preparation_time TIME NULL,
-    cooking_time TIME NULL,
+    preparation_time TIME,
+    cooking_time TIME,
     difficulty ENUM('Facile', 'Moyen', 'Difficile') DEFAULT NULL,
-    description TEXT NULL,
+    description TEXT,
     user_id TINYINT UNSIGNED,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE le_reseau_des_gourmets_dev.recipe_ingredient(
-    quantity DECIMAL(5,1) NULL,
-    unit ENUM('g', 'kg', 'ml', 'l', 'càs', 'càc', 'pincée(s)', 'oz', 'lb') DEFAULT NULL,
-    recipe_id SMALLINT UNSIGNED,
-    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id),
-    ingredient_id SMALLINT UNSIGNED,
-    FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id),
-    PRIMARY KEY (recipe_id, ingredient_id)
+-- INGREDIENT
+
+CREATE TABLE le_reseau_des_gourmets_dev.ingredient(
+    ingredient_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL,
+    quantity VARCHAR(10),
+    unit ENUM('mg', 'g', 'kg', 'ml', 'cl', 'l', 'càc', 'càs', 'pincée', 'oz', 'lb', 'unité') DEFAULT NULL,
+    recipe_id SMALLINT UNSIGNED NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- INSTRUCTION
+
+CREATE TABLE le_reseau_des_gourmets_dev.instruction (
+    instruction_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    step_number TINYINT UNSIGNED,
+    text TEXT NOT NULL,
+    recipe_id SMALLINT UNSIGNED NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- TAG
+
+CREATE TABLE le_reseau_des_gourmets_dev.tag (
+    tag_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    user_id TINYINT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (name, user_id)
+);
+
+-- RECIPE_TAG
+
+CREATE TABLE le_reseau_des_gourmets_dev.recipe_tag (
+    recipe_id SMALLINT UNSIGNED NOT NULL,
+    tag_id SMALLINT UNSIGNED NOT NULL,
+    PRIMARY KEY (recipe_id, tag_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tag(tag_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- PICTURE
 
 CREATE TABLE le_reseau_des_gourmets_dev.picture(
     picture_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     image VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE le_reseau_des_gourmets_dev.recipe_picture(
-    recipe_id SMALLINT UNSIGNED,
-    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE,
-    picture_id SMALLINT UNSIGNED,
-    FOREIGN KEY (picture_id) REFERENCES picture(picture_id) ON DELETE CASCADE,
-    PRIMARY KEY (recipe_id, picture_id)
-);
+-- RECIPE_PICTURE
 
-CREATE TABLE le_reseau_des_gourmets_dev.tag (
-    tag_id SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    user_id TINYINT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES le_reseau_des_gourmets_dev.user(user_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    UNIQUE (name, user_id) -- Pour éviter les doublons par utilisateur
-);
-
-CREATE TABLE le_reseau_des_gourmets_dev.recipe_tag (
+CREATE TABLE le_reseau_des_gourmets_dev.recipe_picture (
     recipe_id SMALLINT UNSIGNED NOT NULL,
-    tag_id SMALLINT UNSIGNED NOT NULL,
-    PRIMARY KEY (recipe_id, tag_id),
-    FOREIGN KEY (recipe_id) REFERENCES le_reseau_des_gourmets_dev.recipe(recipe_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES le_reseau_des_gourmets_dev.tag(tag_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    picture_id SMALLINT UNSIGNED NOT NULL,
+    PRIMARY KEY (recipe_id, picture_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (picture_id) REFERENCES picture(picture_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
--- créer des enregistrements
+-- créer des enregistrements (insertions)
 -- commencer par les tables n'ayant pas de clés étrangères
 
+-- ROLE
 
 INSERT INTO le_reseau_des_gourmets_dev.role
 VALUES
@@ -99,15 +117,7 @@ VALUES
     (NULL, 'user')
 ;
 
-INSERT INTO le_reseau_des_gourmets_dev.ingredient
-VALUES
-
-    (NULL, 'Citron'),
-    (NULL, 'Viande hachée'),
-    (NULL, 'Boudoire'),
-    (NULL, 'Oeuf'),
-    (NULL, 'Cerise')
-;
+-- USER
 
 INSERT INTO le_reseau_des_gourmets_dev.user
 VALUES
@@ -121,31 +131,36 @@ VALUES
 -- Ludmila => Bidibabidibou74
 -- Zeynep => Bidibabidibou80
 
--- INSERT INTO le_reseau_des_gourmets_dev.post
--- VALUES
-
--- -- pour la primary key, utiliser NULL pour l'auto-incrémentation
---     (NULL, 'title1', 'content1', NULL, '2024-10-31', 1),
---     (NULL, 'title2', 'content2', 'image1.png', '2024-10-31', 2),
---     (NULL, 'title3', 'content3', 'image2.png', '2024-10-31', 3)
--- ;
+-- RECIPE
 
 INSERT INTO le_reseau_des_gourmets_dev.recipe
 VALUES
 
-    (NULL, 'Tarte au citron', '01:00:00', '00:30:00', 'Facile', 'Etape 1: zhafhazbfchbazhquxcb.', 2),
-    (NULL, 'Lasagnes', '01:30:00', '00:45:00', 'Difficile', 'Etape 1: ezffuhuahfabfia.', 3),
-    (NULL, 'Charlotte aux fraises', '00:45:00', '03:00:00', 'Moyen', 'Etape 1: ejhducabucbu.', 1)
+    (NULL, 'Tarte au citron', '01:00:00', '00:30:00', 'Facile', 'Une tarte délicieuse au citron.', 2),
+    (NULL, 'Lasagnes', '01:30:00', '00:45:00', 'Difficile', 'Des lasagnes maison bien gratinées.', 3),
+    (NULL, 'Charlotte aux fraises', '00:45:00', '03:00:00', 'Moyen', 'Un dessert frais et fruité.', 1)
 ;
 
-INSERT INTO le_reseau_des_gourmets_dev.recipe_ingredient
+-- INGREDIENT
+
+INSERT INTO le_reseau_des_gourmets_dev.ingredient
 VALUES
 
-    (3, NULL, 1, 1),
-    (1.5, 'kg', 2, 2),
-    (500, 'ml', 3, 3),
-    (2, NULL, 1, 4)
+    (NULL, 'Citron', '3', 'unité', 1),
+    (NULL, 'Viande hachée', '1.5', 'kg', 2),
+    (NULL, 'Boudoire', '500', 'ml', 3),
+    (NULL, 'Oeuf', '2', 'unité', 1)
 ;
+
+-- INSTRUCTION
+
+INSERT INTO le_reseau_des_gourmets_dev.instruction VALUES
+    (NULL, 1, 'Préchauffez le four à 180°C.', 1),
+    (NULL, 2, 'Mélangez les ingrédients dans un bol.', 1),
+    (NULL, 3, 'Versez la préparation dans un moule.', 1)
+;
+
+-- PICTURE
 
 INSERT INTO le_reseau_des_gourmets_dev.picture
 VALUES
@@ -161,22 +176,33 @@ VALUES
 
     (1, 1),
     (1, 2),
-    (2, 2),
-    (3, 3)
+    (2, 3),
+    (3, 4)
 ;
 
 INSERT INTO le_reseau_des_gourmets_dev.tag (name, user_id)
 VALUES 
     ('dessert', 2),
     ('rapide', 2),
-    ('citron', 2);
+    ('citron', 2)
+;
 
 INSERT INTO le_reseau_des_gourmets_dev.recipe_tag (recipe_id, tag_id)
 VALUES
     (1, 1),
     (1, 2),
-    (1, 3);
+    (1, 3)
+;
 
+
+-- INSERT INTO le_reseau_des_gourmets_dev.post
+-- VALUES
+
+-- -- pour la primary key, utiliser NULL pour l'auto-incrémentation
+--     (NULL, 'title1', 'content1', NULL, '2024-10-31', 1),
+--     (NULL, 'title2', 'content2', 'image1.png', '2024-10-31', 2),
+--     (NULL, 'title3', 'content3', 'image2.png', '2024-10-31', 3)
+-- ;
 
 
 -- modifier des enregistrements :

@@ -5,7 +5,6 @@
 
 import type Ingredient from "./ingredient.js";
 import type Picture from "./picture.js";
-import type RecipeIngredient from "./recipe_ingredient.js";
 import type User from "./user.js";
 
 type Recipe = {
@@ -16,16 +15,11 @@ type Recipe = {
 	difficulty?: "Facile" | "Moyen" | "Difficile" | null;
 	description?: string | null;
 	user_id: number;
-	user: User;
+	user?: User;
 
-	picture_ids: string;
-	pictures: Picture[];
+	pictures?: Picture[];
 
-	ingredient_ids: string;
-	ingredients: Ingredient[];
-
-	recipe_ingredient_ids: string;
-	recipe_ingredients: RecipeIngredient[];
+	ingredients?: Ingredient[];
 };
 
 export default Recipe;

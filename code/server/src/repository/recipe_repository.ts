@@ -1,12 +1,10 @@
 import type Ingredient from "../model/ingredient.js";
 import type Picture from "../model/picture.js";
 import type Recipe from "../model/recipe.js";
-import type RecipeIngredient from "../model/recipe_ingredient.js";
 import type User from "../model/user.js";
 import MySQLService from "../service/mysql_service.js";
 import IngredientRepository from "./ingredient_repository.js";
 import PictureRepository from "./picture_repository.js";
-import RecipeIngredientRepository from "./recipe_ingredient_repository.js";
 import UserRepository from "./user_repository.js";
 
 class RecipeRepository {

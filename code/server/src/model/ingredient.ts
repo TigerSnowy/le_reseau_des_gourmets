@@ -4,8 +4,24 @@
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
 type Ingredient = {
-    ingredient_id: number;
-    name: string;
+	ingredient_id: number;
+	name: string;
+	quantity?: string;
+	unit?:
+		| "mg"
+		| "g"
+		| "kg"
+		| "ml"
+		| "cl"
+		| "l"
+		| "càc"
+		| "càs"
+		| "pincée"
+		| "oz"
+		| "lb"
+		| "unité"
+		| null;
+	recipe_id: number;
 };
 
 export default Ingredient;
