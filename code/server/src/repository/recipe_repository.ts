@@ -1,4 +1,6 @@
 import type Ingredient from "../model/ingredient.js";
+import type Instruction from "../model/instruction.js";
+import type Tag from "../model/tag.js";
 import type Picture from "../model/picture.js";
 import type Recipe from "../model/recipe.js";
 import type User from "../model/user.js";
@@ -6,6 +8,8 @@ import MySQLService from "../service/mysql_service.js";
 import IngredientRepository from "./ingredient_repository.js";
 import PictureRepository from "./picture_repository.js";
 import UserRepository from "./user_repository.js";
+import InstructionRepository from "./instruction_repository.js";
+import TagRepository from "./tag_repository.js";
 
 class RecipeRepository {
 	private table = "recipe";
@@ -15,29 +19,9 @@ class RecipeRepository {
 
 		const sql = `
             SELECT
-                ${this.table}.*,
-				GROUP_CONCAT(picture.picture_id) AS picture_ids,
-				GROUP_CONCAT(ingredient.ingredient_id) AS ingredient_ids
+                ${this.table}.*
             FROM 
                 ${process.env.MYSQL_DATABASE}.${this.table}
-			LEFT JOIN
-				${process.env.MYSQL_DATABASE}.recipe_picture
-			ON
-				recipe_picture.recipe_id = ${this.table}.recipe_id
-			LEFT JOIN
-				${process.env.MYSQL_DATABASE}.picture
-			ON
-				recipe_picture.picture_id = picture.picture_id
-			LEFT JOIN
-				${process.env.MYSQL_DATABASE}.recipe_ingredient
-			ON
-				recipe_ingredient.recipe_id = ${this.table}.recipe_id
-			LEFT JOIN
-				${process.env.MYSQL_DATABASE}.ingredient
-			ON
-				recipe_ingredient.ingredient_id = ingredient.ingredient_id
-			GROUP BY
-				${this.table}.recipe_id 
 			;
         `;
 
@@ -51,14 +35,23 @@ class RecipeRepository {
 					user_id: result.user_id,
 				})) as User;
 
-				result.pictures = (await new PictureRepository().selectInList(
-					result.picture_ids,
-				)) as Picture[];
+				const pictures = await new PictureRepository().selectByRecipeId(
+					result.recipe_id,
+				);
+				result.picture = (pictures as Picture[])[0];
 
-				result.recipe_ingredients =
-					(await new RecipeIngredientRepository().selectByRecipeId(
+				result.ingredients = (await new IngredientRepository().selectByRecipeId(
+					result.recipe_id,
+				)) as Ingredient[];
+
+				result.instructions =
+					(await new InstructionRepository().selectByRecipeId(
 						result.recipe_id,
-					)) as RecipeIngredient[];
+					)) as Instruction[];
+
+				result.tags = (await new TagRepository().selectByRecipeId(
+					result.recipe_id,
+				)) as Tag[];
 			}
 
 			return results;
@@ -70,6 +63,8 @@ class RecipeRepository {
 	public selectOne = async (
 		data: Partial<Recipe>,
 	): Promise<Recipe[] | unknown> => {
+		if (!data.recipe_id) return [];
+
 		const connexion = await new MySQLService().connect();
 
 		const sql = `
@@ -91,6 +86,23 @@ class RecipeRepository {
 				user_id: result.user_id,
 			})) as User;
 
+			const pictures = await new PictureRepository().selectByRecipeId(
+				result.recipe_id,
+			);
+			result.picture = (pictures as Picture[])[0];
+
+			result.ingredients = (await new IngredientRepository().selectByRecipeId(
+				result.recipe_id,
+			)) as Ingredient[];
+
+			result.instructions = (await new InstructionRepository().selectByRecipeId(
+				result.recipe_id,
+			)) as Instruction[];
+
+			result.tags = (await new TagRepository().selectByRecipeId(
+				result.recipe_id,
+			)) as Tag[];
+
 			return result;
 		} catch (error) {
 			return error;
@@ -100,79 +112,107 @@ class RecipeRepository {
 	public insert = async (
 		data: Partial<Recipe>,
 	): Promise<Recipe[] | unknown> => {
+		if (!data.user_id) return [];
+
 		const connexion = await new MySQLService().connect();
 
-		let sql = `
-
-			INSERT INTO 
-				${process.env.MYSQL_DATABASE}.${this.table}
-			VALUES
-				(
-					NULL,
-					:title,
-					:preparation_time,
-					:cooking_time,
-					:difficulty,
-					:description,
-					:user_id
-				)
-			;
-        `;
-
 		try {
-			// crée une transaction SQL
-			connexion.beginTransaction();
+			await connexion.beginTransaction();
 
-			// exécute la première requête
+			const sql = `
+				INSERT INTO 
+					${process.env.MYSQL_DATABASE}.${this.table}
+				(
+					recipe_id, title, preparation_time, cooking_time, difficulty, description, user_id	
+				)
+				VALUES (
+					NULL, :title, :preparation_time, :cooking_time, :difficulty, :description, :user_id
+				);
+			`;
 			await connexion.execute(sql, data);
 
-			// crée une variable SQL stockant le dernier identifiant créé
-			sql = `
-				SET @id = LAST_INSERT_ID();
-			`;
+			const [isResult] = await connexion.execute(
+				"SELECT LAST_INSERT_ID() as id;",
+			);
+			const recipe_id = (isResult as { id: number }[])[0].id;
 
-			// exécute la requête
-			await connexion.execute(sql, data);
+			// insert Ingredients
 
-			// une autre requête SQL de la transaction
-			// j'ai 5 dans mon body, je veux > (15, NULL, @id, 5), (15, NULL, @id, 6), (15, NULL, @id, 7)
-			const values = data.ingredient_ids
-				?.split(",")
-				.map((item) => `(15, NULL, @id, ${item})`)
-				.join(",");
+			if (data.ingredients?.length) {
+				for (const ingredient of data.ingredients) {
+					await connexion.execute(
+						"INSERT INTO ingredient (name, quantity, unit, recipe_id) VALUES (:name, :quantity, :unit, :recipe_id);",
+						{ ...ingredient, recipe_id },
+					);
+				}
+			}
 
-			// console.log(values);
+			// insert Instructions
 
-			sql = `
-				INSERT INTO
-					${process.env.MYSQL_DATABASE}.recipe_ingredient
-				VALUES
-					${values}
-			`;
+			if (data.instructions?.length) {
+				for (const instruction of data.instructions) {
+					await connexion.execute(
+						"INSERT INTO instruction (step_number, text, recipe_id) VALUES (:step_number, :text, :recipe_id);",
+						{ ...instruction, recipe_id },
+					);
+				}
+			}
 
-			// récupère les résultats de la requête
-			const [results] = await connexion.execute(sql, data);
+			// insert Tags
 
-			// valider la transaction lorsque l'ensemble des requêtes d'une transaction ont réussi
-			connexion.commit();
+			if (data.tags?.length) {
+				const tagRepo = new TagRepository();
 
-			// si la requête a réussi
-			return results;
+				for (const tag of data.tags) {
+					let existingTag = await tagRepo.findByNameAndUser(
+						tag.name,
+						data.user_id,
+					);
+
+					if (!existingTag) {
+						const newTagId = await tagRepo.insert({
+							name: tag.name,
+							user_id: data.user_id,
+						});
+						if (newTagId) {
+							existingTag = {
+								tag_id: newTagId,
+								name: tag.name,
+								user_id: data.user_id,
+							};
+						}
+					}
+
+					if (existingTag?.tag_id) {
+						await tagRepo.linkToRecipe(recipe_id, existingTag.tag_id);
+					}
+				}
+			}
+
+			await connexion.commit();
+			return { success: true };
 		} catch (error) {
-			// annuler l'ensemble des requêtes de la transaction si l'UNE des requêtes a échoué
-			connexion.rollback();
-
-			// si la requête a échoué
+			await connexion.rollback();
 			return error;
 		}
 	};
 
 	public update = async (
 		data: Partial<Recipe>,
-	): Promise<Recipe[] | unknown> => {
+		requestingUserId: number,
+	): Promise<unknown> => {
+		if (!data.user_id || !data.recipe_id) return { error: "Missing IDs" };
+
+		if (requestingUserId && requestingUserId !== data.user_id) {
+			return { error: "Unauthorized: you don't own this recipe" };
+		}
+
 		const connexion = await new MySQLService().connect();
 
-		let sql = `
+		try {
+			await connexion.beginTransaction();
+
+			const sql = `
 
 			UPDATE
 				${process.env.MYSQL_DATABASE}.${this.table}
@@ -188,81 +228,133 @@ class RecipeRepository {
 			;
         `;
 
-		try {
-			connexion.beginTransaction();
-
 			await connexion.execute(sql, data);
 
-			sql = `
-				DELETE FROM
-					${process.env.MYSQL_DATABASE}.recipe_ingredient
-				WHERE
-					recipe_ingredient.recipe_id = :recipe_id
-			`;
+			// delete et reinsert ingredients
 
-			await connexion.execute(sql, data);
+			await connexion.execute(
+				"DELETE FROM ingredient WHERE recipe_id = :recipe_id",
+				{ recipe_id: data.recipe_id },
+			);
+			if (data.ingredients?.length) {
+				for (const ingredient of data.ingredients) {
+					await connexion.execute(
+						"INSERT INTO ingredient (name, quantity, unit, recipe_id) VALUES (:name, :quantity, :unit, :recipe_id);",
+						{ ...ingredient, recipe_id: data.recipe_id },
+					);
+				}
+			}
 
-			const values = data.ingredient_ids
-				?.split(",")
-				.map((item) => `(15, NULL, :recipe_id, ${item})`)
-				.join(",");
+			// delete and reinsert instructions
 
-			sql = `
-			INSERT INTO
-				${process.env.MYSQL_DATABASE}.recipe_ingredient
-			VALUES
-				${values}
-		`;
+			await connexion.execute(
+				"DELETE FROM instruction WHERE recipe_id = :recipe_id",
+				{ recipe_id: data.recipe_id },
+			);
+			if (data.instructions?.length) {
+				for (const instruction of data.instructions) {
+					await connexion.execute(
+						"INSERT INTO instruction (step_number, text, recipe_id) VALUES (:step_number, :text, :recipe_id);",
+						{ ...instruction, recipe_id: data.recipe_id },
+					);
+				}
+			}
 
-			const [results] = await connexion.execute(sql, data);
+			// delete and reinsert tags
 
-			connexion.commit();
+			await connexion.execute(
+				"DELETE FROM recipe_tag WHERE recipe_id = :recipe_id",
+				{ recipe_id: data.recipe_id },
+			);
+			if (data.tags?.length) {
+				const tagRepo = new TagRepository();
 
-			return results;
+				for (const tag of data.tags) {
+					let existingTag = await tagRepo.findByNameAndUser(
+						tag.name,
+						data.user_id,
+					);
+
+					if (!existingTag) {
+						const newTagId = await tagRepo.insert({
+							name: tag.name,
+							user_id: data.user_id,
+						});
+						if (newTagId) {
+							existingTag = {
+								tag_id: newTagId,
+								name: tag.name,
+								user_id: data.user_id,
+							};
+						}
+					}
+
+					if (existingTag?.tag_id) {
+						await tagRepo.linkToRecipe(data.recipe_id, existingTag.tag_id);
+					}
+				}
+			}
+
+			await connexion.commit();
+
+			return { success: true };
 		} catch (error) {
-			connexion.rollback();
-
+			await connexion.rollback();
 			return error;
 		}
 	};
 
 	public delete = async (
 		data: Partial<Recipe>,
-	): Promise<Recipe[] | unknown> => {
+		requestingUserId?: number,
+	): Promise<unknown> => {
+		if (!data.recipe_id) return { error: "Missing recipe_id" };
+
 		const connexion = await new MySQLService().connect();
 
-		let sql = `
+		try {
+			if (requestingUserId) {
+				const [ownerCheck] = await connexion.execute(
+					`SELECT user_id FROM ${process.env.MYSQL_DATABASE}.${this.table} WHERE recipe_id = :recipe_id`,
+					{ recipe_id: data.recipe_id },
+				);
+
+				interface RecipeOwner {
+					user_id: number;
+				}
+
+				const recipe = (ownerCheck as RecipeOwner[])[0];
+				if (!recipe) {
+					return { error: "Recipe not found" };
+				}
+
+				if (recipe.user_id !== requestingUserId) {
+					return { error: "Unauthorized: you don't own this recipe" };
+				}
+			}
+
+			await connexion.beginTransaction();
+
+			const sql = `
 
 			DELETE FROM
-				${process.env.MYSQL_DATABASE}.recipe_ingredient
+				${process.env.MYSQL_DATABASE}.${this.table}
 			WHERE
-				recipe_ingredient.recipe_id = :recipe_id
+				${this.table}.recipe_id = :recipe_id
 			;
 	    `;
 
-		try {
-			connexion.beginTransaction();
-
-			await connexion.execute(sql, data);
-
-			sql = `
-				DELETE FROM
-					${process.env.MYSQL_DATABASE}.${this.table}
-				WHERE
-					${this.table}.recipe_id = :recipe_id
-				;
-			`;
-
 			const [results] = await connexion.execute(sql, data);
 
-			connexion.commit();
+			await connexion.commit();
 
 			return results;
 		} catch (error) {
-			connexion.rollback();
+			await connexion.rollback();
 
 			return error;
 		}
 	};
 }
+
 export default RecipeRepository;

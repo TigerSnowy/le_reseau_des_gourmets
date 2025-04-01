@@ -3,9 +3,11 @@ import type User from "../../../model/user";
 import styles from "../../../assets/scss/admin/adminUserForm.module.scss";
 import UserAPI from "../../../service/user_api";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import RoleAPI from "../../../service/role_api";
 import type Role from "../../../model/role";
+import { UserContext } from "../../../provider/UserProvider";
+import SecurityAPI from "../../../service/security_api";
 
 const AdminUserForm = () => {
 	/*
@@ -28,6 +30,8 @@ const AdminUserForm = () => {
 	const [roles, setRoles] = useState<Role[]>();
 
 	const navigate = useNavigate();
+
+	const { user } = useContext(UserContext);
 
 	useEffect(() => {
 		// exécuter en chaine des promesses
@@ -80,10 +84,14 @@ const AdminUserForm = () => {
 		// console.log(values);
 		// console.log(formData);
 
+		const auth = await new SecurityAPI().auth(user as User);
+
+		console.log(auth.data.token);
+
 		// requête HTTP
 		const request = id
-			? await new UserAPI().update(formData)
-			: await new UserAPI().insert(formData);
+			? await new UserAPI().update(formData, auth.data.token)
+			: await new UserAPI().insert(formData, auth.data.token);
 
 		// tester le code de statut HTTP
 		if ([200, 201].indexOf(request.status) > -1) {

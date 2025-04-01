@@ -1,10 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import UserAPI from "../../../service/user_api";
+import SecurityAPI from "../../../service/security_api";
+import { UserContext } from "../../../provider/UserProvider";
+import { useContext } from "react";
+import type User from "../../../model/user";
 
 const AdminUserDeletePage = () => {
 	// récupérer l'id dans l'URL
 	const { id } = useParams();
+
+	const { user } = useContext(UserContext);
 
 	const navigate = useNavigate();
 
@@ -13,10 +19,14 @@ const AdminUserDeletePage = () => {
 		const formData = new FormData();
 		formData.append("user_id", id as unknown as string);
 
-		new UserAPI().delete(formData).then((response) => {
+		new SecurityAPI().auth(user as User).then((authResponse) => {
+			console.log(authResponse.data.token);
+		});
+
+		new UserAPI().delete(formData, authResponse.data.token).then((response) => {
 			navigate("/admin/utilisateurs");
 		});
-	}, [id, navigate]);
+	}, [id, navigate, user]);
 
 	return <></>;
 };

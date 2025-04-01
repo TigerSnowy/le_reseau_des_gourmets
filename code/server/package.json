@@ -16,15 +16,16 @@
   "description": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.9.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "-": "^0.0.1",
     "@types/cors": "^2.8.17",
+    "@types/express-serve-static-core": "^5.0.6",
     "argon2": "^0.41.1",
     "cors": "^2.8.5",
     "D": "^1.0.0",

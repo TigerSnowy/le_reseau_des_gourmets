@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
 import RecipeRepository from "../repository/recipe_repository.js";
 import Recipe from "../model/recipe.js";
+import type User from "../model/user.js";
 
 class RecipeController {
-	public index = async (req: Request, res: Response) => {
+	public index = async (req: Request, res: Response): Promise<void> => {
 		// récupérer tous les enregistrements
 		const results = await new RecipeRepository().selectAll();
 
@@ -29,7 +30,7 @@ class RecipeController {
 		});
 	};
 
-	public one = async (req: Request, res: Response) => {
+	public one = async (req: Request, res: Response): Promise<void> => {
 		// récupérer un enregistrement
 		// req.params permet de récupérer les variables de route
 		const results = await new RecipeRepository().selectOne(req.params);
@@ -55,7 +56,7 @@ class RecipeController {
 		});
 	};
 
-	public insert = async (req: Request, res: Response) => {
+	public insert = async (req: Request, res: Response): Promise<void> => {
 		// récupérer un enregistrement
 		// req.params permet de récupérer les variables de route
 		const results = await new RecipeRepository().insert(req.body);
@@ -81,10 +82,23 @@ class RecipeController {
 		});
 	};
 
-	public update = async (req: Request, res: Response) => {
+	public update = async (req: Request, res: Response): Promise<void> => {
 		// récupérer un enregistrement
 		// req.params permet de récupérer les variables de route
-		const results = await new RecipeRepository().update(req.body);
+		// const requestingUserId = (req as Request & { user?: User }).user?.user_id;
+		const requestingUserId = req.body.user_id;
+
+		if (!requestingUserId) {
+			res.status(401).json({
+				status: 401,
+				message: "Unauthorized - Missing user_id",
+			});
+			return;
+		}
+		const results = await new RecipeRepository().update(
+			req.body,
+			requestingUserId,
+		);
 		// console.log(results);
 
 		// si la requête SQL renvoie une erreur
@@ -108,7 +122,7 @@ class RecipeController {
 		});
 	};
 
-	public delete = async (req: Request, res: Response) => {
+	public delete = async (req: Request, res: Response): Promise<void> => {
 		// récupérer un enregistrement
 		// req.params permet de récupérer les variables de route
 		const results = await new RecipeRepository().delete(req.body);

@@ -42,6 +42,10 @@ class AuthorizationMiddleware {
 				});
 				return;
 			}
+
+			// injecter l'utilisateur dans req
+			(req as Request & { user?: User }).user = tokenDecoded.user;
+
 			// vérifier le rôle de l'utilisateur
 			// passer au middleware suivant
 			next();

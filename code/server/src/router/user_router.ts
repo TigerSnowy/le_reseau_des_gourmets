@@ -21,13 +21,13 @@ class UserRouter {
 		this.router.post(
 			"/",
 			new AuthorizationMiddleware().check(["admin"]),
-
 			this.upload.any(),
 			new UserfileMiddleware().process,
 			new UserController().insert,
 		);
 		this.router.put(
 			"/",
+			new AuthorizationMiddleware().check(["admin"]),
 			this.upload.any(),
 			new UserfileMiddleware().process,
 			new UserController().update,

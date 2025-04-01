@@ -22,20 +22,37 @@ class SecurityRepository {
 	};
 
 	// enregistrer un utilisateur
-	public register = async (data: Partial<User>): Promise<User[] | unknown> => {
-		// connexion au serveur MySQL
-		const connexion = await new MySQLService().connect();
+	public register = async (data: Partial<User>): Promise<unknown> => {
+		const validationErrors = [];
 
-		const userData = data || {};
-
-		if (!userData.profile_picture) {
-			userData.profile_picture = this.getRandomDefaultAvatar();
-			console.log(`Avatar attribué: ${userData.profile_picture}`);
+		if (!data) validationErrors.push("Aucune donnée fournie");
+		else {
+			if (!data.pseudo) validationErrors.push("Le pseudo est requis");
+			if (!data.surname) validationErrors.push("Le nom est requis");
+			if (!data.first_name) validationErrors.push("Le prénom est requis");
+			if (!data.email) validationErrors.push("L'email est requis");
+			else if (!this.isValidEmail(data.email))
+				validationErrors.push("Format d'email invalide");
+			if (!data.password) validationErrors.push("Le mot de passe est requis");
+			else if (data.password.length < 8)
+				validationErrors.push(
+					"Le mot de passe doit contenir au moins 8 caractères",
+				);
 		}
 
-		// const profilePictureValue = data.profile_picture
-		// 	? "profile_picture,"
-		// 	: "NULL";
+		if (validationErrors.length > 0) {
+			return { error: validationErrors.join(", ") };
+		}
+
+		const userData: Partial<User> = {
+			...data,
+			profile_picture: data?.profile_picture || this.getRandomDefaultAvatar(),
+			role_id: 2,
+		};
+
+		// connexion au serveur MySQL
+
+		const connexion = await new MySQLService().connect();
 
 		// requête SQL
 		// SELECT school.* FROM le_reseau_des_gourmets_dev
@@ -61,7 +78,7 @@ class SecurityRepository {
                 :email,
                 :password,
                 :profile_picture,
-                2
+                :role_id
             )
 			;
         `;
@@ -80,5 +97,10 @@ class SecurityRepository {
 			return error;
 		}
 	};
+
+	private isValidEmail(email: string): boolean {
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		return emailRegex.test(email);
+	}
 }
 export default SecurityRepository;

@@ -30,10 +30,13 @@ class UserAPI {
 
     // si le formulaire contient un fichier, il doit absolument être en FormData
 
-    public insert = async (data:FormData) => {
+    public insert = async (data:FormData, token: string) => {
 
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'POST',
+            headers: {
+                Authorization: `Brearer ${token}`
+            },
             body: data
         });
 
@@ -44,10 +47,13 @@ class UserAPI {
 
     // modifier un enregistrement
 
-    public update = async (data:FormData) => {
+    public update = async (data:FormData, token: string) => {
 
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'PUT',
+            headers: {
+                Authorization: `Brearer ${token}`
+            },
             body: data
         },
     );
@@ -57,10 +63,13 @@ class UserAPI {
         return response.json();
     };
 
-    public delete = async (data:FormData) => {
+    public delete = async (data:FormData, token: string) => {
 
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'DELETE',
+            headers: {
+                Authorization: `Brearer ${token}`
+            },
             body: data
         },
     );

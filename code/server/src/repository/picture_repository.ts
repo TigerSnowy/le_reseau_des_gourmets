@@ -70,5 +70,31 @@ class PictureRepository {
 			return error;
 		}
 	};
+
+	public selectByRecipeId = async (
+		recipe_id: number,
+	): Promise<Picture[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			SELECT
+				picture.*
+			FROM
+				${process.env.MYSQL_DATABASE}.recipe_picture
+			JOIN
+				${process.env.MYSQL_DATABASE}.picture
+			ON
+				recipe_picture.picture_id = picture.picture_id
+			WHERE
+				recipe_picture.recipe_id = :recipe_id
+		`;
+
+		try {
+			const [results] = await connexion.execute(sql, { recipe_id });
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
 }
 export default PictureRepository;

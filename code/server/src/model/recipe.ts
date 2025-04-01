@@ -6,6 +6,8 @@
 import type Ingredient from "./ingredient.js";
 import type Picture from "./picture.js";
 import type User from "./user.js";
+import type Instruction from "./instruction.js";
+import type Tag from "./tag.js";
 
 type Recipe = {
 	recipe_id: number;
@@ -17,9 +19,12 @@ type Recipe = {
 	user_id: number;
 	user?: User;
 
-	pictures?: Picture[];
+	picture?: Picture;
+	pictures?: Picture[]; // V2
 
 	ingredients?: Ingredient[];
+	instructions?: Instruction[];
+	tags?: Tag[];
 };
 
 export default Recipe;

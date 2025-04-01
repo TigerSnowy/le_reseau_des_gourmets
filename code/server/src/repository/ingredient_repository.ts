@@ -23,33 +23,33 @@ class IngredientRepository {
 		}
 	};
 
-	public selectInList = async (
-		list: string,
-	): Promise<Ingredient[] | unknown> => {
-		const connexion = await new MySQLService().connect();
+	// public selectInList = async (
+	// 	list: string,
+	// ): Promise<Ingredient[] | unknown> => {
+	// 	const connexion = await new MySQLService().connect();
 
-		const sql = `
-            SELECT
-                ${this.table}.*
-            FROM 
-                ${process.env.MYSQL_DATABASE}.${this.table}
-			WHERE
-				${this.table}.ingredient_id IN (${list})
-			;
-        `;
+	// 	const sql = `
+	//         SELECT
+	//             ${this.table}.*
+	//         FROM
+	//             ${process.env.MYSQL_DATABASE}.${this.table}
+	// 		WHERE
+	// 			${this.table}.ingredient_id IN (${list})
+	// 		;
+	//     `;
 
-		try {
-			const [results] = await connexion.execute(sql);
+	// 	try {
+	// 		const [results] = await connexion.execute(sql);
 
-			return results;
-		} catch (error) {
-			return error;
-		}
-	};
+	// 		return results;
+	// 	} catch (error) {
+	// 		return error;
+	// 	}
+	// };
 
 	public selectOne = async (
 		data: Partial<Ingredient>,
-	): Promise<Ingredient[] | unknown> => {
+	): Promise<Ingredient | null> => {
 		const connexion = await new MySQLService().connect();
 
 		const sql = `
@@ -67,7 +67,31 @@ class IngredientRepository {
 
 			const result = (results as Ingredient[]).shift();
 
-			return result;
+			return result || null;
+		} catch (error) {
+			return null;
+		}
+	};
+
+	// charger les ingrédients d'une recette
+
+	public selectByRecipeId = async (
+		recipe_id: number,
+	): Promise<Ingredient[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			SELECT
+				${this.table}.*
+			FROM
+				${process.env.MYSQL_DATABASE}.${this.table}
+			WHERE
+				${this.table}.recipe_id = :recipe_id;
+		`;
+
+		try {
+			const [results] = await connexion.execute(sql, { recipe_id });
+			return results;
 		} catch (error) {
 			return error;
 		}
