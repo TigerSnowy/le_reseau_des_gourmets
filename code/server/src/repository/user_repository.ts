@@ -270,6 +270,60 @@ class UserRepository {
 			return error;
 		}
 	};
+
+	public checkPseudoExists = async (
+		// si excludeUserId est fourni, on exclut cet utilisateur de la vérification, sinon on vérifie simplement si le pseudo existe
+		pseudo: string,
+		excludeUserId?: number,
+	): Promise<boolean> => {
+		const connexion = await new MySQLService().connect();
+
+		// sinon, on vérifie simplement si le pseudo existe
+		// on utilise une requête préparée pour éviter les injections SQL
+		const sql = excludeUserId
+			? `SELECT COUNT(*) as count FROM ${process.env.MYSQL_DATABASE}.${this.table} 
+		 WHERE ${this.table}.pseudo = :pseudo AND ${this.table}.user_id != :user_id`
+			: `SELECT COUNT(*) as count FROM ${process.env.MYSQL_DATABASE}.${this.table} 
+		 WHERE ${this.table}.pseudo = :pseudo`;
+
+		const params = excludeUserId
+			? { pseudo, user_id: excludeUserId }
+			: { pseudo };
+
+		try {
+			const [results] = await connexion.execute(sql, params);
+			const count = (results as [{ count: number }])[0].count;
+			return count > 0;
+		} catch (error) {
+			console.error("Error checking pseudo:", error);
+			return true;
+			// en cas d'erreur, on suppose que le pseudo existe déjà (par sécurité)
+		}
+	};
+
+	// ajous d'une méthode pour mettre à jour uniquement le pseudo
+	public updatePseudo = async (
+		userId: number,
+		newPseudo: string,
+	): Promise<unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+	  UPDATE ${process.env.MYSQL_DATABASE}.${this.table}
+	  SET ${this.table}.pseudo = :pseudo
+	  WHERE ${this.table}.user_id = :user_id
+	`;
+
+		try {
+			const [results] = await connexion.execute(sql, {
+				pseudo: newPseudo,
+				user_id: userId,
+			});
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
 }
 
 export default UserRepository;

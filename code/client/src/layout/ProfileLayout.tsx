@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import styles from "../assets/scss/profile/profileLayout.module.scss";
@@ -16,13 +16,15 @@ type ProfileLayoutProps = {
 
 const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 	const location = useLocation();
+	const { user, setUser, updateUserAvatar } = useContext(UserContext);
 
-	// const [avatar, setAvatar] = useState("/img/piti_piaf.jpg");
-	const { user, updateUserAvatar } = useContext(UserContext);
+	// états pour l'édition du pseudo
+	const [isEditingUsername, setIsEditingUsername] = useState(false);
+	const [newPseudo, setNewPseudo] = useState(user?.pseudo || "");
+	const [errorMessage, setErrorMessage] = useState("");
+	const [successMessage, setSuccessMessage] = useState("");
 
-	// gestion du changement de photo de profil
-
-	const fileInputRef = useRef<HTMLInputElement>(null);
+	const fileInputRef = useRef<HTMLInputElement>(null); // gestion du changement de photo de profil
 
 	// récupérer l'avatar de l'user connecté ou utiliser une image par défaut
 	const avatarSrc = user?.profile_picture
@@ -110,7 +112,93 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 	// gestion du changement de pseudo
 
 	const handleEditUsername = () => {
-		console.log("Modifier le pseudo");
+		setIsEditingUsername(true);
+		setNewPseudo(user?.pseudo || "");
+		setErrorMessage("");
+		setSuccessMessage("");
+	};
+
+	const handleSaveUsername = async () => {
+		if (!user || !user.user_id) return;
+
+		// Validation basique
+		if (!newPseudo.trim()) {
+			setErrorMessage("Le pseudo ne peut pas être vide");
+			return;
+		}
+
+		try {
+			// Récupérer le token JWT depuis le localStorage
+			const token = localStorage.getItem("token");
+
+			if (!token) {
+				setErrorMessage("Veuillez vous reconnecter");
+
+				try {
+					const authResponse = await new SecurityAPI().auth(user);
+					if (authResponse.status === 200) {
+						const newToken = authResponse.data.token;
+						localStorage.setItem("token", newToken);
+						console.log("Nouveau token obtenu:", newToken);
+
+						// Utiliser le nouveau token pour mettre à jour le pseudo
+						await updatePseudoWithToken(newToken);
+					} else {
+						console.error("Échec de la réauthentification");
+						setErrorMessage("Échec de la réauthentification");
+					}
+				} catch (error) {
+					console.error("Erreur lors de la réauthentification:", error);
+					setErrorMessage("Erreur lors de la réauthentification");
+				}
+				return;
+			}
+
+			// Mettre à jour le pseudo avec le token existant
+			await updatePseudoWithToken(token);
+		} catch (error) {
+			console.error("Error updating pseudo:", error);
+			setErrorMessage("Une erreur est survenue lors de la mise à jour");
+		}
+	};
+
+	const updatePseudoWithToken = async (token: string) => {
+		if (!user) return;
+
+		const response = await new UserAPI().updatePseudo(
+			user.user_id,
+			newPseudo,
+			token,
+		);
+
+		if (response.status === 200) {
+			// Mise à jour réussie
+			setSuccessMessage("Pseudo mis à jour avec succès");
+			setIsEditingUsername(false);
+
+			// Mettre à jour l'utilisateur dans le contexte
+			if (setUser && response.data) {
+				setUser(response.data);
+
+				// Mettre à jour l'utilisateur dans localStorage
+				const updatedUser = {
+					...user,
+					pseudo: newPseudo,
+				};
+				localStorage.setItem("user", JSON.stringify(updatedUser));
+			}
+		} else if (response.status === 409) {
+			// Pseudo déjà utilisé
+			setErrorMessage("Ce pseudo est déjà utilisé");
+		} else {
+			setErrorMessage(response.message || "Une erreur est survenue");
+		}
+	};
+
+	const handleCancelEdit = () => {
+		setIsEditingUsername(false);
+		setErrorMessage("");
+		setSuccessMessage("");
 	};
 
 	return (
@@ -140,14 +228,52 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 						</div>
 						{/* pseudo */}
 						<div className={styles.usernameContainer}>
-							<h2 className={styles.username}>{user?.pseudo || "Gourmet"}</h2>
-							<button
-								className={styles.editButton}
-								onClick={handleEditUsername}
-								type="button"
-							>
-								<Pencil size={16} stroke="currentColor" />
-							</button>
+							{isEditingUsername ? (
+								<div className={styles.editUsernameForm}>
+									<input
+										type="text"
+										value={newPseudo}
+										onChange={(e) => setNewPseudo(e.target.value)}
+										className={styles.usernameInput}
+										maxLength={30}
+									/>
+									{errorMessage && (
+										<p className={styles.errorMessage}>{errorMessage}</p>
+									)}
+									{successMessage && (
+										<p className={styles.successMessage}>{successMessage}</p>
+									)}
+									<div className={styles.usernameButtons}>
+										<button
+											type="button"
+											onClick={handleSaveUsername}
+											className={styles.saveButton}
+										>
+											Enregistrer
+										</button>
+										<button
+											type="button"
+											onClick={handleCancelEdit}
+											className={styles.cancelButton}
+										>
+											Annuler
+										</button>
+									</div>
+								</div>
+							) : (
+								<>
+									<h2 className={styles.username}>
+										{user?.pseudo || "Gourmet"}
+									</h2>
+									<button
+										className={styles.editButton}
+										onClick={handleEditUsername}
+										type="button"
+									>
+										<Pencil size={16} stroke="currentColor" />
+									</button>
+								</>
+							)}
 						</div>
 						{/* rôle */}
 						<span className={styles.userRole}>

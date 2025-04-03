@@ -34,7 +34,7 @@ class UserRouter {
 		);
 		this.router.put(
 			"/avatar",
-			this.upload.any(),
+			this.upload.single("profile_picture"),
 			new UserfileMiddleware().process,
 			new UserController().updateAvatar,
 		);
@@ -45,6 +45,7 @@ class UserRouter {
 			new UserfileMiddleware().process,
 			new UserController().delete,
 		);
+		this.router.patch("/pseudo", new UserController().updatePseudo);
 
 		return this.router;
 	};

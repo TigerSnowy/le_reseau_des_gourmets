@@ -8,16 +8,17 @@ const LogoutPage = () => {
 
 	useEffect(() => {
 		// supprimer l'utilisateur
-		setUser(null);
 
 		localStorage.removeItem("token");
 		localStorage.removeItem("user");
+
+		setUser(null);
 
 		// redirection
 		navigate("/");
 	}, [setUser, navigate]);
 
-	return <></>;
+	return <div>Déconnexion en cours...</div>;
 };
 
 export default LogoutPage;

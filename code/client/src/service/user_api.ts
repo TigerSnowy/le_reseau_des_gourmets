@@ -63,6 +63,8 @@ class UserAPI {
         return response.json();
     };
 
+    // supprimer un enregistrement
+
     public delete = async (data:FormData, token: string) => {
 
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
@@ -79,6 +81,8 @@ class UserAPI {
         return response.json();
     };
 
+    // récupérer l'avatar d'un utilisateur
+    
     public updateAvatar = async (data: FormData, token: string) => {
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}/avatar`, {
             method: 'PUT',
@@ -88,6 +92,25 @@ class UserAPI {
             body: data
         });
 
+        const response = await fetch(request);
+        return response.json();
+    };
+
+    // récupérer le pseudo d'un utilisateur
+
+    public updatePseudo = async (userId: number, newPseudo: string, token: string) => {
+        const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}/pseudo`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            pseudo: newPseudo
+        })
+        });
+    
         const response = await fetch(request);
         return response.json();
     };

@@ -40,10 +40,18 @@ const NavBar = () => {
 		}
 	};
 
+	// deconnexion et redirection
+
 	const navigate = useNavigate();
 
+	const handleLogout = () => {
+		closeMenu();
+
+		navigate("/deconnexion");
+	};
+
 	// récupérer l'utilisateur
-	const { user, setUser } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 
 	return (
 		<nav className={styles.navbar}>
@@ -117,7 +125,7 @@ const NavBar = () => {
 							)}
 							<button
 								className={styles.logoutButton}
-								onClick={() => setUser(null)}
+								onClick={handleLogout}
 								type="button"
 							>
 								Déconnexion
@@ -159,16 +167,13 @@ const NavBar = () => {
 						</Link>
 						{user.role?.name === "admin" && (
 							<Link to="/admin" onClick={closeMenu}>
-								QG des Gourmets
+								QG
 							</Link>
 						)}
 						<button
 							type="button"
 							className={styles.mobileLogoutButton}
-							onClick={() => {
-								setUser(null);
-								closeMenu();
-							}}
+							onClick={handleLogout}
 						>
 							Déconnexion
 						</button>

@@ -86,5 +86,9 @@ describe("user controller tests suite", () => {
 			.field("email", Math.random() + values.email)
 			.field("password", values.password)
 			.field("role", values.role_id);
+
+		const actual = sut.status;
+
+		expect(actual).toBe(expected);
 	});
 });
