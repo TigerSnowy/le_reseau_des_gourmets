@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import styles from "../assets/scss/profile/profileLayout.module.scss";
@@ -6,7 +6,9 @@ import type React from "react";
 import type { ReactNode } from "react";
 import Footer from "../component/common/footer";
 import NavBar from "../component/common/navbar";
-// import RoleList from "../component/home/RoleList";
+import { UserContext } from "../provider/UserProvider";
+import UserAPI from "../service/user_api";
+import SecurityAPI from "../service/security_api";
 
 type ProfileLayoutProps = {
 	children?: ReactNode;
@@ -14,12 +16,18 @@ type ProfileLayoutProps = {
 
 const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 	const location = useLocation();
-	// const [username, setUsername] = useState("TigerSnowy");
-	const [avatar, setAvatar] = useState("/img/piti_piaf.jpg");
+
+	// const [avatar, setAvatar] = useState("/img/piti_piaf.jpg");
+	const { user, updateUserAvatar } = useContext(UserContext);
 
 	// gestion du changement de photo de profil
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	// récupérer l'avatar de l'user connecté ou utiliser une image par défaut
+	const avatarSrc = user?.profile_picture
+		? `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
+		: "/img/default_avatars/cookies.jpg";
 
 	const handleEditAvatar = () => {
 		if (fileInputRef.current) {
@@ -27,15 +35,79 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 		}
 	};
 
-	const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleAvatarChange = async (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		const file = event.target.files?.[0];
-		if (file) {
-			const imageUrl = URL.createObjectURL(file);
-			setAvatar(imageUrl);
+		if (file && user) {
+			// FormData pour envoyer le fichier
+			const formData = new FormData();
+
+			formData.append("profile_picture", file);
+			formData.append("user_id", user.user_id.toString());
+
+			try {
+				// récupérer le token depuis le localStorage
+				const token = localStorage.getItem("token");
+				console.log("Token récupéré", token);
+
+				if (!token) {
+					console.error("Token not found");
+
+					try {
+						const authResponse = await new SecurityAPI().auth(user);
+						if (authResponse.status === 200) {
+							const newToken = authResponse.data.token;
+							localStorage.setItem("token", newToken);
+							console.log("Nouveau token obtenu:", newToken);
+
+							// Utiliser le nouveau token
+							const response = await new UserAPI().updateAvatar(
+								formData,
+								newToken,
+							);
+							if (response.status === 200) {
+								updateUserAvatar(response.data.profile_picture);
+								console.log("Avatar mis à jour avec succès");
+							} else {
+								console.error(
+									"Erreur lors de la mise à jour:",
+									response.message,
+								);
+							}
+						} else {
+							console.error("Échec de la réauthentification");
+						}
+					} catch (error) {
+						console.error("Erreur lors de la réauthentification:", error);
+					}
+					return;
+				}
+
+				// appeler l'API pour mettre l'avatar à jour
+				const response = await new UserAPI().updateAvatar(formData, token);
+
+				if (response.status === 200) {
+					// mets à jour l'état local avec le nouveau nom de fichier
+					updateUserAvatar(response.data.profile_picture);
+					console.log("Avatar mis à jour avec succès");
+
+					// mets à jour l'utilisateur dans localStorage
+					const updateUser = {
+						...user,
+						profile_picture: response.data.profile_picture,
+					};
+					localStorage.setItem("user", JSON.stringify(updateUser));
+				} else {
+					console.error("Erreur lors de la mise à jour:", response.message);
+				}
+			} catch (error) {
+				console.error("Erreur lors de la mise à jour de l'avatar:", error);
+			}
 		}
 	};
 
-	// gestion du changement de photo de pseudo
+	// gestion du changement de pseudo
 
 	const handleEditUsername = () => {
 		console.log("Modifier le pseudo");
@@ -50,7 +122,7 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 					{/* photo de profil */}
 					<div className={styles.profileInfo}>
 						<div className={styles.avatarContainer}>
-							<img src={avatar} alt="Avatar" className={styles.avatar} />
+							<img src={avatarSrc} alt="Avatar" className={styles.avatar} />
 							<button
 								className={styles.editButton}
 								onClick={handleEditAvatar}
@@ -68,7 +140,7 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 						</div>
 						{/* pseudo */}
 						<div className={styles.usernameContainer}>
-							<h2 className={styles.username}>TigerSnowy</h2>
+							<h2 className={styles.username}>{user?.pseudo || "Gourmet"}</h2>
 							<button
 								className={styles.editButton}
 								onClick={handleEditUsername}
@@ -78,7 +150,9 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 							</button>
 						</div>
 						{/* rôle */}
-						<span className={styles.userRole}>Utilisateur</span>
+						<span className={styles.userRole}>
+							{user?.role?.name || "User"}
+						</span>
 					</div>
 
 					{/* navigation */}

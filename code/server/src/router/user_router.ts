@@ -32,8 +32,15 @@ class UserRouter {
 			new UserfileMiddleware().process,
 			new UserController().update,
 		);
+		this.router.put(
+			"/avatar",
+			this.upload.any(),
+			new UserfileMiddleware().process,
+			new UserController().updateAvatar,
+		);
 		this.router.delete(
 			"/",
+			new AuthorizationMiddleware().check(["admin"]),
 			this.upload.any(),
 			new UserfileMiddleware().process,
 			new UserController().delete,

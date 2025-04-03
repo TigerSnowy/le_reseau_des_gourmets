@@ -91,7 +91,9 @@ const NavBar = () => {
 							<span className={styles.username}>{user.pseudo}</span>
 							<img
 								src={
-									user.profile_picture || "/img/default_avatars/chocolat.jpg"
+									user.profile_picture
+										? `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
+										: "/img/default_avatars/chocolat.jpg"
 								}
 								alt="Avatar utilisateur"
 								className={styles.avatar}

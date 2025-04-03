@@ -133,6 +133,46 @@ class UserController {
 			data: results,
 		});
 	};
+
+	public updateAvatar = async (req: Request, res: Response) => {
+		if (!req.body.user_id) {
+			res.status(401).json({
+				status: 401,
+				message: "Unauthorized - User not authenticated",
+			});
+			return;
+		}
+
+		// récupérer l'utilisateur pour vérifier s'il existe et récupérer ses données
+		const currentUser = await new UserRepository().selectOne({
+			user_id: req.body.user_id,
+		});
+
+		if (!currentUser) {
+			res.status(404).json({
+				status: 404,
+				message: "User not found",
+			});
+			return;
+		}
+
+		// mettre à jour l'avatar
+		const results = await new UserRepository().updateAvatar(req.body);
+
+		if (results instanceof Error) {
+			res.status(400).json({
+				status: 400,
+				message: process.env.NODE_ENV === "prod" ? "Error" : results,
+			});
+			return;
+		}
+
+		res.status(200).json({
+			status: 200,
+			message: "Avatar updated succefully",
+			data: { profile_picture: req.body.profile_picture },
+		});
+	};
 }
 
 export default UserController;

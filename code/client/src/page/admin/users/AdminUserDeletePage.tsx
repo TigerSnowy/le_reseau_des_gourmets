@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import UserAPI from "../../../service/user_api";
 import SecurityAPI from "../../../service/security_api";
 import { UserContext } from "../../../provider/UserProvider";
 import { useContext } from "react";
 import type User from "../../../model/user";
+import UserAPI from "../../../service/user_api";
 
 const AdminUserDeletePage = () => {
 	// récupérer l'id dans l'URL
@@ -21,12 +21,25 @@ const AdminUserDeletePage = () => {
 
 		new SecurityAPI().auth(user as User).then((authResponse) => {
 			console.log(authResponse.data.token);
+
+			new UserAPI()
+				.delete(formData, authResponse.data.token)
+				.then((response) => {
+					window.sessionStorage.setItem("notice", "Utilisateur supprimé");
+
+					// redirection
+					navigate("/admin/utilisateur");
+				});
 		});
 
-		new UserAPI().delete(formData, authResponse.data.token).then((response) => {
-			navigate("/admin/utilisateurs");
-		});
-	}, [id, navigate, user]);
+		// new SecurityAPI().auth(user as User).then((authResponse) => {
+		// 	console.log(authResponse.data.token);
+		// });
+
+		// new UserAPI().delete(formData, authResponse.data.token).then((response) => {
+		// 	navigate("/admin/utilisateurs");
+		// });
+	}, [id, user, navigate]);
 
 	return <></>;
 };

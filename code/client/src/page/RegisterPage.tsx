@@ -35,7 +35,7 @@ const RegisterPage = () => {
 			navigate("/connexion");
 		} else {
 			// s'il n'y a une erreur =>
-			setMessage("Erreur - Email déjà enregistré");
+			setMessage("Erreur lors de l'inscription");
 		}
 	};
 

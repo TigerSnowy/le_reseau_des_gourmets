@@ -13,8 +13,21 @@ const UserProvider = ({ children }: UserProviderProps) => {
 	// état stockant l'utilisateur connecté
 	const [user, setUser] = useState<User | null>(null);
 
+	const updateUserAvatar = (newAvatar: string) => {
+		if (user) {
+			const updatedUser = {
+				...user,
+				profile_picture: newAvatar,
+			};
+			setUser(updatedUser);
+
+			// Mettre à jour dans localStorage
+			localStorage.setItem("user", JSON.stringify(updatedUser));
+		}
+	};
+
 	return (
-		<UserContext.Provider value={{ user, setUser }}>
+		<UserContext.Provider value={{ user, setUser, updateUserAvatar }}>
 			{children}
 		</UserContext.Provider>
 	);

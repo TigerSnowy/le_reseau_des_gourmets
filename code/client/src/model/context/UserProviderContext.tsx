@@ -6,6 +6,7 @@ import type User from "../user";
 type UserProviderContext = {
 	user: User | null;
 	setUser: Dispatch<SetStateAction<User | null>>;
+	updateUserAvatar: (newAvatar: string) => void;
 };
 
 export default UserProviderContext;

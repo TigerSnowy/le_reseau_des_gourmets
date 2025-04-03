@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { UserContext } from "../provider/UserProvider";
-import type User from "../model/user";
 import { useNavigate } from "react-router-dom";
 
 const LogoutPage = () => {
@@ -9,11 +8,15 @@ const LogoutPage = () => {
 
 	useEffect(() => {
 		// supprimer l'utilisateur
-		setUser({} as User);
+		setUser(null);
+
+		localStorage.removeItem("token");
+		localStorage.removeItem("user");
 
 		// redirection
 		navigate("/");
 	}, [setUser, navigate]);
+
 	return <></>;
 };
 

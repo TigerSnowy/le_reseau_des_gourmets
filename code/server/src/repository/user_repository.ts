@@ -247,5 +247,29 @@ class UserRepository {
 			return error;
 		}
 	};
+
+	public updateAvatar = async (
+		data: Partial<User>,
+	): Promise<User[] | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			UPDATE
+				${process.env.MYSQL_DATABASE}.${this.table}
+			SET
+				${this.table}.profile_picture = :profile_picture
+			WHERE
+				${this.table}.user_id = :user_id
+			;
+		`;
+
+		try {
+			const [results] = await connexion.execute(sql, data);
+			return results;
+		} catch (error) {
+			return error;
+		}
+	};
 }
+
 export default UserRepository;

@@ -7,10 +7,12 @@ import "./assets/scss/reset_css.scss";
 import "./assets/scss/style.scss";
 import { RouterProvider } from "react-router-dom";
 import router from "./service/router";
-import { useEffect } from "react";
-import { UserProvider } from "./provider/UserProvider";
+import { useContext, useEffect } from "react";
+import { UserContext, UserProvider } from "./provider/UserProvider";
 
-const App = () => {
+const AppContent = () => {
+	const { setUser } = useContext(UserContext);
+
 	// applique immédiatement le thème au body avant le premier rendu
 	useEffect(() => {
 		// récupére le dernier thème sélectionné dans localStorage
@@ -22,11 +24,28 @@ const App = () => {
 			"theme-autumn",
 		);
 		document.body.classList.add(savedTheme);
-	}, []);
 
+		// récupérer l'utilisateur
+		const storeUser = localStorage.getItem("user");
+
+		if (storeUser) {
+			try {
+				const parsedUser = JSON.parse(storeUser);
+				setUser(parsedUser);
+				console.log("utilisateur récupéré du localStorage");
+			} catch (error) {
+				console.error("Erreur lors de la récupération de l'utilisateur");
+			}
+		}
+	}, [setUser]);
+
+	return <RouterProvider router={router} />;
+};
+
+const App = () => {
 	return (
 		<UserProvider>
-			<RouterProvider router={router} />
+			<AppContent />
 		</UserProvider>
 	);
 };

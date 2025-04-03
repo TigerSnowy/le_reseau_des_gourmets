@@ -35,7 +35,7 @@ class UserAPI {
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'POST',
             headers: {
-                Authorization: `Brearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: data
         });
@@ -52,7 +52,7 @@ class UserAPI {
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'PUT',
             headers: {
-                Authorization: `Brearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: data
         },
@@ -68,7 +68,7 @@ class UserAPI {
         const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: 'DELETE',
             headers: {
-                Authorization: `Brearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: data
         },
@@ -79,6 +79,18 @@ class UserAPI {
         return response.json();
     };
 
+    public updateAvatar = async (data: FormData, token: string) => {
+        const request = new Request(`${import.meta.env.VITE_API_URL}/${this.route}/avatar`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: data
+        });
+
+        const response = await fetch(request);
+        return response.json();
+    };
 }
 
 export default UserAPI;
