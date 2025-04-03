@@ -15,7 +15,7 @@
 ## Description 
 
 <p style="text-align: center">
-<img src= "https://raw.githubusercontent.com/TigerSnowy/le_reseau_des_gourmets/refs/heads/master/code/client/public/img/logo_noir.svg?token=GHSAT0AAAAAADA3OZUHUOBDXZTIBA6YFE6IZ7OSK7Q" style="width: 15rem">
+<img src= "code/client/public/img/logo_noir.svg" style="width: 15rem">
 </p>
 
 texte
