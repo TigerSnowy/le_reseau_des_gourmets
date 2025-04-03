@@ -1,0 +1,27 @@
+.featuresSection {
+    background-color: var(--tertiary-color);
+    padding: 4rem 0;
+    
+    @media (max-width: 950px) {
+      padding: 3rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      padding: 2rem 0;
+    }
+  }
+  
+  .featuresContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    
+    @media (max-width: 768px) {
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+  }
