@@ -143,6 +143,10 @@
     object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 950px) {
+      order: 2;
+    }
   }
   
   .decorativeElement {
@@ -165,12 +169,12 @@
 
     @media (max-width: 830px) {
       left: 100%;
-      bottom: 155%;
+      bottom: 160%;
     }
 
     @media (max-width: 800px) {
-      left: 95%;
-      bottom: 168%;
+      left: 100%;
+      bottom: 163%;
     }
 
     @media (max-width: 770px) {
@@ -185,37 +189,22 @@
 
     @media (max-width: 593px) {
       left: 90%;
-      bottom: 192%;
-      width: 60%;
-      max-width: 110px;
+      bottom: 180%;
     }
 
     @media (max-width: 580px) {
       left: 94%;
-      bottom: 197%;
-      width: 60%;
-      max-width: 110px;
+      bottom: 180%;
     }
 
     @media (max-width: 565px) {
       left: 94%;
-      bottom: 209%;
-      width: 60%;
-      max-width: 110px;
+      bottom: 190%;
     }
 
     @media (max-width: 555px) {
       left: 94%;
-      bottom: 195%;
-      width: 60%;
-      max-width: 110px;
-    }
-
-    @media (max-width: 545px) {
-      left: 94%;
-      bottom: 205%;
-      width: 60%;
-      max-width: 110px;
+      bottom: 192%;
     }
 
     @media (max-width: 545px) {
