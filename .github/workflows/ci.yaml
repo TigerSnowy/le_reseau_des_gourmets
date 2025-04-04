@@ -29,3 +29,10 @@ jobs:
               run: |
                 cd code/client
                 npm run build
+
+            - name: Instal test database
+              run: |
+                sudo service mysql start
+                cd code/server/mysql
+                mysql -uroot -proot -e 'SOURCE script.test.sql;'
+                mysql -uroot -proot -e 'SHOW DATABASES;'
