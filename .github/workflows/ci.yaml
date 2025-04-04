@@ -17,7 +17,7 @@ jobs:
 
             - name: Install client dependencies
               run: |
-                cd code/server
+                cd code/client
                 npm ci
 
             - name: Compile server TypeScript files
@@ -27,5 +27,5 @@ jobs:
 
             - name: Compile client TypeScript files
               run: |
-                cd code/server
+                cd code/client
                 npm run build
