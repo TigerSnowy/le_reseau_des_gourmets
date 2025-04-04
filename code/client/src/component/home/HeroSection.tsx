@@ -2,9 +2,9 @@ import styles from "../../assets/scss/home/sectionHero.module.scss";
 
 const HeroSection: React.FC = () => {
 	return (
-		<section className={styles.heroSection}>
+		<section className={styles.heroSection} aria-labelledby="titre-hero">
 			<div className={styles.heroContent}>
-				<h1 className={styles.heroTitle}>
+				<h1 className={styles.heroTitle} id="titre-hero">
 					Bienvenue sur
 					<span>Le Réseau des Gourmets</span>
 				</h1>

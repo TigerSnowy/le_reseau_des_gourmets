@@ -20,8 +20,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 			</div>
 
 			<div className={styles.featureContent}>
-				<h2 className={styles.featureTitle}>{title}</h2>
-				<p className={styles.featureDescription}>{description}</p>
+				<div>
+					<h2 className={styles.featureTitle}>{title}</h2>
+				</div>
+				<div>
+					<p className={styles.featureDescription}>{description}</p>
+				</div>
 			</div>
 		</div>
 	);

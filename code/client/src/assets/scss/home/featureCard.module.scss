@@ -2,9 +2,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 45%;
+    width: 50%;
     max-width: 500px;
     padding: 1rem;
+
+    @media (max-width: 1100px) {
+      width: 60%;
+    }
     
     @media (max-width: 950px) {
       width: 80%;
@@ -12,21 +16,44 @@
     
     @media (max-width: 768px) {
       width: 100%;
+      padding: 2rem;
+    }
+
+    @media (max-width: 425px) {
+      width: 100%;
+      padding: 2rem 2.3rem;
     }
   }
   
   .featureImageContainer {
     width: 100%;
-    max-width: 350px;
-    height: 63%;
+    max-width: 300px;
+    height: 65%;
     margin-bottom: 1.5rem;
     overflow: hidden;
-    border-radius: 130px;
-    border: 1px solid var(--primary-color);
+    border-radius: 140px;
+    // border: 1px solid var(--primary-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    
-    @media (max-width: 768px) {
+
+    @media (max-width: 1110px) {
+      width: 100%;
       max-width: 280px;
+      height: 100%;
+      max-height: 350px;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      max-width: 270px;
+      height: 100%;
+      max-height: 350px;
+    }
+
+    @media (max-width: 425px) {
+      width: 100%;
+      max-width: 230px;
+      height: 100%;
+      max-height: 310px;
     }
   }
   
@@ -42,8 +69,10 @@
   }
   
   .featureContent {
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    max-width: 350px;
+    max-width: 480px;
   }
   
   .featureTitle {
@@ -52,18 +81,24 @@
     margin-bottom: 1rem;
     color: var(--primary-color);
     text-transform: uppercase;
+    margin-top: 2rem;
     
     @media (max-width: 768px) {
       font-size: 1.2rem;
     }
+
+    @media (max-width: 425px) {
+      font-size: 1rem;
+    }
   }
   
   .featureDescription {
-    font-size: 1rem;
+    font-size: 1.2rem;
     line-height: 1.5;
     color: var(--primary-color);
     
     @media (max-width: 768px) {
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
+  
   }

@@ -11,6 +11,25 @@
       margin-bottom: 2rem;
       font-size: 1.8rem;
       color: var(--primary-color);
+
+      @media (max-width: 425px) {
+        font-size: 1.4rem;
+      }
+      
+      @media (max-width: 320px) {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      margin: 4rem 4rem;
+      padding: 1.5rem;
+    }
+
+    @media (max-width: 320px) {
+      margin: 3rem 2rem;
+      padding: 1.5rem;
+      font-size: 0.7;
     }
   }
   
@@ -31,7 +50,11 @@
       &:focus {
         outline: none;
         border-color: #ff8888;
-        box-shadow: 0 0 0 2px rgba(255, 136, 136, 0.2);
+        box-shadow: 0 0 0 2px black;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 0.9rem;
       }
     }
   

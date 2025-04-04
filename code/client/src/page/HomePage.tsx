@@ -15,14 +15,14 @@ const HomePage: React.FC = () => {
 				<FeatureCard
 					title="DES THÈMES POUR TOUS LES GOÛTS"
 					description="Choisissez le design qui vous correspond pour personnaliser vos recettes et créer l'atmosphère qui vous plaît."
-					imageUrl="../../public/img/home/card - themes.png"
+					imageUrl="/img/home/card - themes.png"
 					altText="Illustration de différents thèmes colorés"
 				/>
 				<FeatureCard
 					title="UNE CUISINE ADAPTÉE À CHAQUE HUMEUR"
 					description="Que vous ayez envie de comfort food ou de légèreté, trouvez la recette qui correspond à votre humeur et à votre moment."
-					imageUrl="../../public/img/home/buche.jpg"
-					altText="Plats cuisinés appétissants"
+					imageUrl="/img/home/buche.jpg"
+					altText="Bûche de Noël fruitée"
 				/>
 			</FeaturesSection>
 

@@ -10,6 +10,8 @@ const ContactPage = () => {
 	});
 
 	const [submitted, setSubmitted] = useState(false);
+	const [error, setError] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -18,11 +20,37 @@ const ContactPage = () => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		console.log("Form submitted:", formData);
-		// Tu pourras ici appeler ton endpoint vers MongoDB
-		setSubmitted(true);
+		setIsLoading(true);
+		setError("");
+
+		try {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				console.log("Message envoyé avec succès:", data);
+				setSubmitted(true);
+			} else {
+				console.error("Erreur lors de l'envoi du message:", data);
+				setError("Une erreur est survenue. Veuillez réessayer.");
+			}
+		} catch (err) {
+			console.error("Erreur lors de l'envoi du message:", err);
+			setError(
+				"Une erreur est survenue. Veuillez vérifier votre connexion internet et réessayer.",
+			);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -32,6 +60,8 @@ const ContactPage = () => {
 				<p className={styles.success}>Merci pour votre message !</p>
 			) : (
 				<form onSubmit={handleSubmit} className={styles.form}>
+					{error && <p className={styles.error}>{error}</p>}
+
 					<label htmlFor="name" className={styles.hideLabel}>
 						Nom
 					</label>
@@ -82,7 +112,9 @@ const ContactPage = () => {
 						required
 					/>
 
-					<button type="submit">Envoyer</button>
+					<button type="submit" disabled={isLoading}>
+						{isLoading ? "Envoi en cours..." : "Envoyer"}
+					</button>
 				</form>
 			)}
 		</div>

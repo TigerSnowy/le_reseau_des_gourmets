@@ -45,7 +45,7 @@ const RegisterPage = () => {
 				<img src={RegisterIllustration} alt="Illustration inscription" />
 			</div>
 			<div className={styles.right}>
-				<h1>INSCRIPTION</h1>
+				<h1 className={styles.inscription}>INSCRIPTION</h1>
 
 				{message ? <p>{message}</p> : null}
 
@@ -130,7 +130,7 @@ const RegisterPage = () => {
 
 					<button type="submit">S'inscrire</button>
 				</form>
-				<p>
+				<p className={styles.compte}>
 					Déjà un compte ? <Link to="/connexion">Se connecter</Link>
 				</p>
 			</div>

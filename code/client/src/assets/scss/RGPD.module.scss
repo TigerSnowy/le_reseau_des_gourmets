@@ -1,0 +1,46 @@
+.container {
+    padding: 5em 6rem;
+    margin-top: 5rem;
+    color: var(--primary-color);
+
+    @media (max-width: 768px) {
+        padding: 2em 5rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 426px) {
+        padding: 2em 3.5rem;
+        margin-top: 2rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 4rem;
+        text-align: center;
+
+        @media (max-width: 376px) {
+            font-size: 1.6rem;
+        }
+    }
+
+    h3 {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+
+    ul {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+
+        li {
+            margin-bottom: 1rem;
+        }
+    }
+}

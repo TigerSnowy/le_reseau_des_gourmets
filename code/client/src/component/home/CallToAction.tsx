@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styles from "../../assets/scss/home/callToAction.module.scss";
 
 const CallToAction: React.FC = () => {
@@ -13,9 +12,15 @@ const CallToAction: React.FC = () => {
 					préférées dès aujourd'hui.
 				</p>
 				<div className={styles.ctaButtons}>
-					<Link to="/inscription" className={styles.ctaPrimaryButton}>
+					<button
+						onClick={() => {
+							window.location.href = "/inscription";
+						}}
+						type="button"
+						className={styles.ctaPrimaryButton}
+					>
 						Créer un compte
-					</Link>
+					</button>
 					{/* <Link to="/recettes" className={styles.ctaSecondaryButton}>
 						Découvrir les recettes
 					</Link> */}

@@ -17,6 +17,8 @@ import AdminUserFormPage from "../page/admin/users/AdminUserFormPage";
 import AdminUserDeletePage from "../page/admin/users/AdminUserDeletePage";
 import LogoutPage from "../page/LogoutPage";
 import Guard from "../component/common/guard";
+import LegalNoticePage from "../page/LegalNoticePage";
+import PrivacyPolicyPage from "../page/PrivacyPolicyPage";
 
 const router = createBrowserRouter([
 	{
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
 		// référencer les pages utilisant la mise en page
 		children: [
 			{
-				path: "accueil",
+				path: "/",
 				element: <HomePage />,
 			},
 			{
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
 			{
 				path: "recettes/creation/recette",
 				element: <RecipesPage />,
+			},
+			{
+				path: "mentions-legales",
+				element: <LegalNoticePage />,
+			},
+			{
+				path: "politique-de-confidentialite",
+				element: <PrivacyPolicyPage />,
 			},
 		],
 	},

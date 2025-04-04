@@ -6,7 +6,13 @@ type FeaturesSectionProps = {
 
 const FeaturesSection: React.FC<FeaturesSectionProps> = ({ children }) => {
 	return (
-		<section className={styles.featuresSection}>
+		<section
+			className={styles.featuresSection}
+			aria-labelledby="titre-fonctionnalites"
+		>
+			<h2 id="titre-fonctionnalites" className={styles.visuallyHidden}>
+				Nos fonctionnalités
+			</h2>
 			<div className={styles.featuresContainer}>{children}</div>
 		</section>
 	);

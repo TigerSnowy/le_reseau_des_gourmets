@@ -21,6 +21,10 @@
         width: 60%;
         height: auto;
       }
+
+      @media (max-width: 768px) {
+        display: none;
+      }
     }
   
 // formulaire
@@ -31,11 +35,55 @@
       flex-direction: column;
       text-align: center;
       padding: 7rem;
+
+      @media (max-width: 768px) {
+        padding: 4rem;
+      }
+
+      @media (max-width: 376px) {
+        padding: 3rem;
+      }
+
+      @media (max-width: 321px) {
+        padding: 2rem;
+      }
+
+      .inscription {
+        margin-top: 2rem;
+
+        @media (max-width: 768px) {
+          margin-top: 0.5rem;
+        }
+
+        @media (max-width: 376px) {
+          margin-top: 1rem;
+        }
+
+        @media (max-width: 321px) {
+          margin-top: 1rem;
+        }
+      }
+
+      .compte {
+        margin-bottom: 2rem;
+      }
   
       h1 {
         font-size: 2rem;
         margin-bottom: 3rem;
         text-transform: uppercase;
+
+        @media (max-width: 768px) {
+          font-size: 1.7rem;
+        }
+
+        @media (max-width: 376px) {
+          font-size: 1.5rem;
+        }
+
+        @media (max-width: 321px) {
+          font-size: 1.3rem;
+        }
       }
   
       .loginForm, .registerForm {
@@ -63,6 +111,10 @@
           margin-top: 1rem;
           font-size: 1rem;
           cursor: pointer;
+
+          @media (max-width: 376px) {
+            font-size: 0.9rem;
+          }
           
           &:hover {
             background-color: var(--tertiary-color);

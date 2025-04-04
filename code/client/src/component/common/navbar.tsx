@@ -57,7 +57,7 @@ const NavBar = () => {
 		<nav className={styles.navbar}>
 			{/* Nous retirons le débuggage d'avatar pour la production */}
 
-			<Link to="/accueil" className={styles.siteName}>
+			<Link to="/" className={styles.siteName}>
 				Le Réseau <br />
 				des Gourmets
 			</Link>
@@ -78,7 +78,7 @@ const NavBar = () => {
 			)}
 
 			{/* logo */}
-			<Link to="/accueil" className={styles.logoContainer}>
+			<Link to="/" className={styles.logoContainer}>
 				<img
 					src="/img/logo_noir.svg"
 					alt="Logo - Le Réseau des Gourmets"

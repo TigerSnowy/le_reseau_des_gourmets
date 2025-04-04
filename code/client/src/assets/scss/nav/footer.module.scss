@@ -56,6 +56,7 @@
     }
 
     .contactLink, .legalNoticesLink, .privacyPolicyLink {
+        font-size: 1.1rem;
         flex: 0 0 auto;
         order: 1;
         margin: 1rem 1rem;
@@ -70,7 +71,7 @@
         gap: 1rem;
         
         .contactLink, .legalNoticesLink, .privacyPolicyLink, .copyright {
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin: 0.3rem 0;
         }
     }
