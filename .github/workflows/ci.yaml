@@ -10,4 +10,11 @@ jobs:
             - name: Clone github repository
               uses: actions/checkout@v4
 
+            - name: Install server dependencies
+              uses: 
+                cd code/server
+                npm ci
+
+
+
             
