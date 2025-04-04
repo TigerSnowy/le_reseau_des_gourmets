@@ -31,13 +31,13 @@ const HeroSection: React.FC = () => {
 
 			<div className={styles.heroImageContainer}>
 				<img
-					src="../../../public/img/home/carnet 4.jpg"
+					src="/img/home/carnet 4.jpg"
 					alt="Livre de recettes ouvert avec des ingrédients frais"
 					className={styles.heroImage}
 				/>
 				<div className={styles.decorativeElement}>
 					<img
-						src="../../../public/img/home/grenadine 1.png"
+						src="/img/home/grenadine 1.png"
 						alt="Personnage smoothie"
 						className={styles.smoothieCharacter}
 					/>
