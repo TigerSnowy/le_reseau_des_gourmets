@@ -1,7 +1,8 @@
 name: Le Réseau des Gourmets CI
 
 on:
-    workflow_dispatch:
+    push:
+        branches: ['master']
 
 jobs:
     build:
@@ -30,9 +31,14 @@ jobs:
                 cd code/client
                 npm run build
 
-            - name: Instal test database
+            - name: Install test database
               run: |
                 sudo service mysql start
                 cd code/server/mysql
                 mysql -uroot -proot -e 'SOURCE script.test.sql;'
                 mysql -uroot -proot -e 'SHOW DATABASES;'
+
+            - name: Execute tests
+              run: |
+                cd code/server
+                npm run test
