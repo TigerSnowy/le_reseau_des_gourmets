@@ -15,11 +15,7 @@ jobs:
                 cd code/server
                 npm ci
 
-            - name: Compile server TypeScript files
+            - name: Compile client TypeScript files
               run: |
                 cd code/server
-                npm run compile
-
-
-
-            
+                npm run build
