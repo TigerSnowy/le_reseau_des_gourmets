@@ -22,14 +22,12 @@ const AdminUserDeletePage = () => {
 		new SecurityAPI().auth(user as User).then((authResponse) => {
 			console.log(authResponse.data.token);
 
-			new UserAPI()
-				.delete(formData, authResponse.data.token)
-				.then((response) => {
-					window.sessionStorage.setItem("notice", "Utilisateur supprimé");
+			new UserAPI().delete(formData, authResponse.data.token).then(() => {
+				window.sessionStorage.setItem("notice", "Utilisateur supprimé");
 
-					// redirection
-					navigate("/admin/utilisateur");
-				});
+				// redirection
+				navigate("/admin/utilisateur");
+			});
 		});
 
 		// new SecurityAPI().auth(user as User).then((authResponse) => {

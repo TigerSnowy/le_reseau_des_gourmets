@@ -15,6 +15,11 @@ jobs:
                 cd code/server
                 npm ci
 
+            - name: Compile server TypeScript files
+              run: |
+                cd code/server
+                npm run compile
+
 
 
             

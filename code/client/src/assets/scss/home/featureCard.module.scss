@@ -18,10 +18,12 @@
   .featureImageContainer {
     width: 100%;
     max-width: 350px;
-    height: auto;
+    height: 68%;
     margin-bottom: 1.5rem;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 130px;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     
     @media (max-width: 768px) {
       max-width: 280px;
