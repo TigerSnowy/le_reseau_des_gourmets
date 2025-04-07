@@ -3,9 +3,9 @@
 // ex: table Role => objets = role_id, name, image
 //                   propriétés = admin, user, logo-admin.png,logo-user.png
 
-type Role = {
-	role_id: number;
-	name: string;
+type Picture = {
+    picture_id: number;
+    image: string;
 };
 
-export default Role;
+export default Picture;

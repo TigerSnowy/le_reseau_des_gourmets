@@ -55,8 +55,6 @@ const NavBar = () => {
 
 	return (
 		<nav className={styles.navbar}>
-			{/* Nous retirons le débuggage d'avatar pour la production */}
-
 			<Link to="/" className={styles.siteName}>
 				Le Réseau <br />
 				des Gourmets
@@ -64,7 +62,7 @@ const NavBar = () => {
 
 			{/* {JSON.stringify(user)} */}
 
-			{/* bouton Mon Carnet - visible uniquement en desktop */}
+			{/* bouton Mon Carnet - visible uniquement connecté et en desktop */}
 			{!!user?.user_id && (
 				<div className={styles.recipesMenu}>
 					<Link to="/recettes" className={styles.myRecipesButton}>
@@ -100,14 +98,17 @@ const NavBar = () => {
 							<img
 								src={
 									user.profile_picture
-										? `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
-										: "/img/default_avatars/chocolat.jpg"
+										? user.profile_picture.startsWith("/img/") ||
+											user.profile_picture.startsWith("img/")
+											? `${import.meta.env.VITE_API_URL}${user.profile_picture}`
+											: `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
+										: "/img/default_avatars/cookies.jpg"
 								}
 								alt="Avatar utilisateur"
 								className={styles.avatar}
 								onError={(e) => {
 									console.error("Erreur de chargement d'image:", e);
-									e.currentTarget.src = "/img/default_avatars/chocolat.jpg"; // Image de secours
+									e.currentTarget.src = "/img/default_avatars/cookies.jpg"; // image de secours
 								}}
 							/>
 						</button>

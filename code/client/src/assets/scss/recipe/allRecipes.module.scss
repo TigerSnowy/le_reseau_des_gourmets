@@ -1,0 +1,88 @@
+.allRecipesContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 7.5rem auto 3rem;
+    color: var(--primary-color);
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+    margin-bottom: 4rem;
+    text-align: center;
+    color: var(--primary-color);
+    text-transform: uppercase;
+  }
+  
+  .recipesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    
+    @media (max-width: 950px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+  
+  .errorContainer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--emphasis-color);
+    background: var(--tertiary-color);
+    border-radius: 8px;
+    margin: 2rem auto;
+    max-width: 600px;
+  }
+  
+  .emptyState {
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--tertiary-color);
+    border-radius: 10px;
+    margin: 2rem auto;
+    max-width: 600px;
+    
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+  }
+  
+  .createRecipeButton {
+    display: inline-block;
+    background-color: var(--emphasis-color);
+    color: var(--secondary-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+    }
+  }
+  
+  // Add a small animation for loading state
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .recipesGrid {
+    animation: fadeIn 0.5s ease-in;
+  }

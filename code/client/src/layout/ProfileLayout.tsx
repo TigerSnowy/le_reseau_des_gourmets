@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import styles from "../assets/scss/profile/profileLayout.module.scss";
@@ -15,6 +15,10 @@ type ProfileLayoutProps = {
 };
 
 const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
+	useEffect(() => {
+		console.log("URL de l'API:", import.meta.env.VITE_API_URL);
+	}, []);
+
 	const location = useLocation();
 	const { user, setUser, updateUserAvatar } = useContext(UserContext);
 
@@ -28,7 +32,10 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 
 	// récupérer l'avatar de l'user connecté ou utiliser une image par défaut
 	const avatarSrc = user?.profile_picture
-		? `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
+		? user.profile_picture.startsWith("/img/") ||
+			user.profile_picture.startsWith("img/")
+			? `${import.meta.env.VITE_API_URL}${user.profile_picture}`
+			: `${import.meta.env.VITE_API_URL}/img/${user.profile_picture}`
 		: "/img/default_avatars/cookies.jpg";
 
 	const handleEditAvatar = () => {
@@ -88,7 +95,12 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 
 				// appeler l'API pour mettre l'avatar à jour
 				const response = await new UserAPI().updateAvatar(formData, token);
-
+				// Dans handleAvatarChange, avant d'appeler updateUserAvatar
+				console.log("Réponse complète de l'API:", response);
+				console.log(
+					"Valeur exacte de profile_picture:",
+					response.data.profile_picture,
+				);
 				if (response.status === 200) {
 					// mets à jour l'état local avec le nouveau nom de fichier
 					updateUserAvatar(response.data.profile_picture);

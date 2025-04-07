@@ -5,7 +5,11 @@ import type User from "../model/user.js";
 
 class UserfileMiddleware {
 	public process = async (req: Request, res: Response, next: NextFunction) => {
-		console.log("user file middleware");
+		console.log("user file middleware starting");
+		console.log("req.file:", req.file);
+		console.log("req.files:", req.files);
+		console.log("req.body:", req.body);
+		// console.log("user file middleware");
 
 		const files = req.files as Express.Multer.File[] | undefined;
 		const file = files && files.length > 0 ? files[0] : undefined;
@@ -26,6 +30,7 @@ class UserfileMiddleware {
 
 		// si un fichier a été sélectionné
 		if (file) {
+			console.log("Processing file:", file);
 			// créé le nom final du fichier en y ajoutant son extension
 			const filename = `${file.filename}.${file.mimetype.split("/")[1]}`;
 
@@ -33,6 +38,9 @@ class UserfileMiddleware {
 
 			// renomme le fichier transféré
 			await fs.rename(file.path, `${file.destination}/${filename}`);
+
+			console.log("File renamed to:", filename);
+			console.log("Final req.body:", req.body);
 
 			// remplir la propriété de body en relation avec le ficheir
 			req.body[file.fieldname] = filename;

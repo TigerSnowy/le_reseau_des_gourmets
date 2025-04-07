@@ -1,164 +1,355 @@
 .recipeContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    color: var(--primary-color);
-    padding: 2rem;
-    gap: 5rem;
-    
-    .left {
-      background: var(--tertiary-color);
-      margin-top: 4rem;
-      width: 25rem;
-      padding: 2.5rem;
-      border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--primary-color);
+  padding: 2rem;
+  gap: 5rem;
+  
+  .left {
+    background: var(--tertiary-color);
+    margin-top: 4rem;
+    width: 25rem;
+    padding: 2.5rem;
+    border-radius: 10px;
 
-      h1 {
-          font-size: 1.8rem;
-          margin-top: 1.4rem;
-          margin-bottom: 3rem;
-          text-transform: uppercase;
-          text-align: center;
+    h1 {
+      font-size: 1.8rem;
+      margin-top: 1.4rem;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      margin-top: 1rem;
+    }
+
+// TEMPS DE CUISSON ET PREPARATION
+
+    .timeContainer {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      
+      .timeBlock {
+        width: 48%;
+        
+        .timeTitle {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
         }
-
-      h3 {
+        
+        .time {
           font-size: 1.1rem;
-          text-transform: uppercase;
-          margin-bottom: 1.2rem;
-          margin-top: 1rem;
+          background: var(--secondary-color);
+          padding: 0.6rem;
+          border-radius: 10px;
+          text-align: center;
+          width: 100%;
+          
+          input {
+            width: 90%;
+            text-align: center;
+          }
+        }
       }
+    }
 
-      .timeTitle {
-        font-size: 1rem;
-        background: none;
-        
-      }
+// DIFFICULTE
 
-      .time {
+    .difficultyContainer {
+      margin-bottom: 1.5rem;
+      
+      .difficulty {
         font-size: 1.1rem;
-        display: flex;
-        
-        // margin-bottom: 1rem;
         background: var(--secondary-color);
         padding: 0.6rem;
         border-radius: 10px;
-        text-align: left;
-        width: 40%;
-      }
-
-      img {
-        margin-bottom: 1rem;
-      }
-    }
-
-    .right {
-      background: var(--tertiary-color);
-      margin-top: 7.5rem;
-      padding: 2.5rem;
-      border-radius: 10px;
-      width: 55rem;
-
-      h3 {
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        margin-bottom: 1.5rem;
-        margin-top: 2rem;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-        margin-top: 1.4rem;
-        margin-bottom: 3rem;
-        text-transform: uppercase;
         text-align: center;
+        width: 100%;
+        margin-top: 0.5rem;
+        
+        select {
+          width: 90%;
+          text-align: center;
+        }
       }
+    }
 
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-      background: var(--secondary-color);
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 10px;
-      padding-left: 2rem;
-    }
+//  TAGS
+
+    .tagsContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
       
+      .tag {
+        background: var(--secondary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        
+        button {
+          background: none;
+          border: none;
+          color: var(--emphasis-color);
+          margin-left: 0.5rem;
+          cursor: pointer;
+        }
+      }
     }
-  
+    
+    .addTag {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      
+      input {
+        flex: 1;
+      }
+      
+      button {
+        background-color: var(--secondary-color);
+        color: var(--emphasis-color);
+        border: 1px solid var(--emphasis-color);
+        border-radius: 10px;
+        padding: 0.5rem;
+        cursor: pointer;
+        
+        &:hover {
+          background-color: var(--emphasis-color);
+          color: var(--secondary-color);
+        }
+      }
+    }
+
+// IMAGE
+
     .customFileUpload {
-      background-color: var(--secondary-color);
+      background: var(--secondary-color);
       color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
       padding: 10px;
-      border-radius: 5px;
+      border-radius: 10px;
       cursor: pointer;
       display: inline-block;
       text-align: center;
       transition: 0.3s;
       margin-top: 1rem;
+      width: 100%;
+
+      &:hover {
+        background: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+      }
     }
-  
-    .customFileUpload:hover {
-      background-color: var(--emphasis-color);
-      color: var(--secondary-color);
-    }
-  
+
     .imgInput {
       display: none;
     }
-  
+
     .previewImage {
-      max-width: 100%;
-      border-radius: 5px;
-      margin-top: 1rem;
+      width: 100%;
+      border-radius: 10px;
+      margin: 1rem 0;
       border: 2px solid var(--primary-color);
     }
-  
-    select, input, textarea {
+    
+    .deleteImage {
+      background: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+      font-size: 0.9rem;
+      padding: 0.6rem;
+      border-radius: 10px;
+      margin-top: 0.5rem;
       width: 100%;
-      padding: 10px;
-      border: 1px solid var(--primary-color);
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-  
-    ul, ol {
-      padding-left: 1.5rem;
-    }
-  
-    .ingredientRow, .instructionRow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-  
-      input, textarea {
-        flex: 1;
+      
+      &:hover {
+        background: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
       }
     }
-  
-    .editButton {
+  }
+
+  .right {
+    background: var(--tertiary-color);
+    margin-top: 7.5rem;
+    padding: 2.5rem;
+    border-radius: 10px;
+    width: 55rem;
+
+    h3 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      margin-top: 2rem;
+    }
+
+// INGREDIENTS
+
+    .ingredientsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      
+      .ingredientItem {
+        display: grid;
+        grid-template-columns: 60% 20% 20%;
+        gap: 0.5rem;
+        
+        &.editing {
+          display: flex;
+          align-items: center;
+          gap: 0.7rem;
+          background: transparent;
+          padding: 0;
+          
+          input, select {
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: none;
+          }
+          
+          input:first-child {
+            flex: 2;
+          }
+          
+          input:nth-child(2), select {
+            flex: 1;
+          }
+        }
+        
+        p {
+          margin: 0;
+          padding: 0.8rem;
+          border-radius: 10px;
+          background: var(--secondary-color); 
+        }
+        
+        .ingredientName {
+          text-align: left;
+          font-weight: 500;
+        }
+        
+        .ingredientQuantity {
+          text-align: center;
+        }
+        
+        .ingredientUnit {
+          text-align: center;
+        }
+      }
+    }
+    
+    .addIngredientButton {
       background-color: var(--secondary-color);
       color: var(--emphasis-color);
       border: 1px solid var(--emphasis-color);
-      padding: 10px;
-      border-radius: 5px;
+      padding: 0.8rem;
+      border-radius: 10px;
       cursor: pointer;
       transition: 0.3s;
       width: 100%;
       margin-top: 1rem;
+      
+      &:hover {
+        background-color: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+      }
     }
-  
-    .editButton:hover {
-      background-color: var(--emphasis-color);
-      color: var(--secondary-color);
-      border: 1px solid var(--secondary-color);
+
+// INSTRUCTIONS
+
+    .instructionsContainer {
+      list-style-type: decimal;
+      padding-left: 1.5rem;
+      
+      .instructionItem {
+        background: var(--secondary-color);
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        
+        &.editing {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.7rem;
+          background: transparent;
+          padding: 0;
+          
+          textarea {
+            flex: 1;
+            min-height: 80px;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: none;
+            resize: vertical;
+          }
+        }
+      }
     }
-  
-    .deleteButton {
-      background-color: var(--emphasis-color);
-      color: var(--secondary-color);
-      border: none;
-      padding: 5px 10px;
+
+    .addInstructionButton {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+      padding: 0.8rem;
       border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      margin-top: 1rem;
+      
+      &:hover {
+        background-color: var(--emphasis-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+      }
     }
   }
+
+// BOUTON MODIFIER
+  
+  .editButton {
+    background-color: var(--emphasis-color);
+    color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    padding: 0.8rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 2rem;
+    font-size: 1rem;
+    
+    &:hover {
+      background-color: var(--secondary-color);
+      color: var(--emphasis-color);
+      border: 1px solid var(--emphasis-color);
+    }
+  }
+  
+// BOUTON SUPPRIMER
+
+  .deleteButton {
+    background-color: var(--emphasis-color);
+    color: var(--secondary-color);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    min-width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

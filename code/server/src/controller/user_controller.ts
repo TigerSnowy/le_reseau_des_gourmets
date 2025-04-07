@@ -135,7 +135,11 @@ class UserController {
 	};
 
 	public updateAvatar = async (req: Request, res: Response) => {
-		if (!req.file) {
+		console.log("updateAvatar controller starting");
+		console.log("req.body:", req.body);
+		console.log("req.file:", req.file);
+		console.log("req.files:", req.files);
+		if (!req.body.user_id) {
 			res.status(401).json({
 				status: 401,
 				message: "Unauthorized - User not authenticated",
@@ -166,6 +170,11 @@ class UserController {
 			});
 			return;
 		}
+
+		console.log(
+			"Sending response with profile_picture:",
+			req.body.profile_picture,
+		);
 
 		res.status(200).json({
 			status: 200,

@@ -26,7 +26,7 @@ const AdminUserDeletePage = () => {
 				window.sessionStorage.setItem("notice", "Utilisateur supprimé");
 
 				// redirection
-				navigate("/admin/utilisateur");
+				navigate("/admin/utilisateurs");
 			});
 		});
 
