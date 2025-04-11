@@ -56,13 +56,17 @@ const router = createBrowserRouter([
 				element: <AllRecipesPage />,
 			},
 			{
+				path: "recettes/:recipe_id",
+				element: <RecipesPage />,
+			},
+			{
 				path: "recettes/creation",
 				element: <CreateRecipePage />,
 			},
-			{
-				path: "recettes/creation/recette",
-				element: <RecipesPage />,
-			},
+			// {
+			// 	path: "recettes/creation/recette",
+			// 	element: <RecipesPage />,
+			// },
 			{
 				path: "mentions-legales",
 				element: <LegalNoticePage />,

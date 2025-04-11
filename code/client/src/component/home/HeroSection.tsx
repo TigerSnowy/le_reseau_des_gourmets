@@ -5,8 +5,10 @@ const HeroSection: React.FC = () => {
 		<section className={styles.heroSection} aria-labelledby="titre-hero">
 			<div className={styles.heroContent}>
 				<h1 className={styles.heroTitle} id="titre-hero">
-					Bienvenue sur
-					<span>Le Réseau des Gourmets</span>
+					Le Réseau des Gourmets <br />{" "}
+					<span>
+						Ta cuisine, ton mood, <br /> tes recettes.
+					</span>
 				</h1>
 
 				<div className={styles.heroDescription}>
@@ -31,13 +33,13 @@ const HeroSection: React.FC = () => {
 
 			<div className={styles.heroImageContainer}>
 				<img
-					src="/img/home/carnet 4.jpg"
+					src="/img/home/carnet.jpg"
 					alt="Livre de recettes ouvert avec des ingrédients frais"
 					className={styles.heroImage}
 				/>
 				<div className={styles.decorativeElement}>
 					<img
-						src="/img/home/grenadine 1.png"
+						src="/img/home/grenadine.png"
 						alt="Personnage smoothie"
 						className={styles.smoothieCharacter}
 					/>

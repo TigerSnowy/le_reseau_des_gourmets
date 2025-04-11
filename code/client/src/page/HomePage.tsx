@@ -7,15 +7,15 @@ import styles from "../assets/scss/home/homepage.module.scss";
 const HomePage: React.FC = () => {
 	return (
 		<div className={styles.homepageContainer}>
-			{/* section titre principal et introduction */}
+			{/* section titre et introduction */}
 			<HeroSection />
 
-			{/* section avec les fonctionnalités */}
+			{/* section fonctionnalités */}
 			<FeaturesSection>
 				<FeatureCard
 					title="DES THÈMES POUR TOUS LES GOÛTS"
 					description="Choisissez le design qui vous correspond pour personnaliser vos recettes et créer l'atmosphère qui vous plaît."
-					imageUrl="/img/home/card - themes.png"
+					imageUrl="/img/home/card_themes.png"
 					altText="Illustration de différents thèmes colorés"
 				/>
 				<FeatureCard

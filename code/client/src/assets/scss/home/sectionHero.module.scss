@@ -40,15 +40,16 @@
   }
   
   .heroTitle {
-    font-size: 2.2rem;
     margin-bottom: 2rem;
     line-height: 1.3;
     display: flex;
     flex-direction: column;
-    
+    font-size: 2.2rem;
+    margin-top: 0.2rem;
+    color: var(--primary-color);
+
     span {
-      font-size: 2.6rem;
-      margin-top: 0.2rem;
+      font-size: 2.8rem;
       color: var(--quaternary-color);
     }
     

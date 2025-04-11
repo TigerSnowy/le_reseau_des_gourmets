@@ -180,6 +180,8 @@ VALUES
     (3, 4)
 ;
 
+-- TAG
+
 INSERT INTO le_reseau_des_gourmets_test.tag (name, user_id)
 VALUES 
     ('dessert', 2),
