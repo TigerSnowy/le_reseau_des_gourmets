@@ -17,6 +17,7 @@ import RecipeRouter from "../router/recipe_router.js";
 import UserRouter from "../router/user_router.js";
 import ContactRouter from "../router/contact_router.js";
 import SecurityRouter from "../router/security_router.js";
+import InstructionRouter from "../router/instruction_router.js";
 
 class Server {
 	// propriétés
@@ -49,15 +50,15 @@ class Server {
 		this.router.use("/", new HomepageRouter().getRoutes());
 
 		this.router.use("/role", new RoleRouter().getRoutes());
-		this.router.use("/ingredient", new IngredientRouter().getRoutes());
 		this.router.use("/picture", new PictureRouter().getRoutes());
-		this.router.use("/recipe_picture", new PictureRouter().getRoutes());
+		// this.router.use("/recipe_picture", new PictureRouter().getRoutes());
 		// this.router.use("/post", new PostRouter().getRoutes());
 		this.router.use("/recipe", new RecipeRouter().getRoutes());
+		this.router.use("/ingredient", new IngredientRouter().getRoutes());
+		this.router.use("/instruction", new InstructionRouter().getRoutes());
 		this.router.use("/user", new UserRouter().getRoutes());
 		this.router.use("/contact", new ContactRouter().getRoutes());
 		this.router.use("/", new SecurityRouter().getRoutes());
-		// this.router.use("/instruction", new InstructionRouter().getRoutes());
 
 		// routeur des routes inexistantes doit être obligatoirement en dernière position pour qu'il soit trouvé en dernier
 		this.router.use("*", new NotFoundRouter().getRoutes());

@@ -1,6 +1,11 @@
 import type Instruction from "../model/instruction.js";
 import MySQLService from "../service/mysql_service.js";
 
+type InsertResult = {
+	insertId: number;
+	affectedRows: number;
+};
+
 class InstructionRepository {
 	private table = "instruction";
 
@@ -65,6 +70,65 @@ class InstructionRepository {
 		try {
 			const [results] = await connexion.execute(sql, { recipe_id });
 			return results;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	public insert = async (
+		data: Partial<Instruction>,
+	): Promise<number | unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			INSERT INTO
+				${process.env.MYSQL_DATABASE}.${this.table} (step_number, text, recipe_id)
+			VALUES
+				(:step_number, :text, :recipe_id);
+		`;
+
+		try {
+			const [result] = await connexion.execute(sql, data);
+			return (result as InsertResult).insertId;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	public update = async (data: Partial<Instruction>): Promise<unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			UPDATE
+				${process.env.MYSQL_DATABASE}.${this.table}
+			SET
+				step_number = :step_number,
+				text = :text
+			WHERE
+				instruction_id = :instruction_id;
+		`;
+
+		try {
+			const [result] = await connexion.execute(sql, data);
+			return result;
+		} catch (error) {
+			return error;
+		}
+	};
+
+	public delete = async (data: Partial<Instruction>): Promise<unknown> => {
+		const connexion = await new MySQLService().connect();
+
+		const sql = `
+			DELETE FROM
+				${process.env.MYSQL_DATABASE}.${this.table}
+			WHERE
+				instruction_id = :instruction_id;
+		`;
+
+		try {
+			const [result] = await connexion.execute(sql, data);
+			return result;
 		} catch (error) {
 			return error;
 		}
