@@ -1,13 +1,170 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "../assets/scss/recipe/recipe.module.scss";
+import type Recipe from "../model/recipe";
+import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../provider/UserProvider";
+import type Ingredient from "../model/ingredient";
+import type Instruction from "../model/instruction";
+import SecurityAPI from "../service/security_api";
+import type User from "../model/user";
+import RecipeAPI from "../service/recipe_api";
+import type Tag from "../model/tag";
+
+const DEFAULT_RECIPE_IMAGE = "../../../public/img/default_recipe_img.png";
 
 const RecipePage = () => {
-	// Pour activer/désactiver l'édition
-	const [isEditing, setIsEditing] = useState(false);
+	const { recipeId } = useParams<{ recipeId: string }>();
+	const { user } = useContext(UserContext);
+	const navigate = useNavigate();
 
-	// Pour stocker la recette (sans back pour l'instant)
-	const [recipeName, setRecipeName] = useState("Tarte au citron");
+	// états pour la gestion de recette
+	const [recipe, setRecipe] = useState<Recipe | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+
+	// états pour l'édition
+	const [editedTitle, setEditedTitle] = useState("");
+	const [editedDescription, setEditedDescription] = useState("");
+	const [editedPreparationTime, setEditedPreparationTime] = useState("");
+	const [editedCookingTime, setEditedCookingTime] = useState("");
+	const [editedDifficulty, setEditedDifficulty] = useState("Facile");
+	const [editedIngredients, setEditedIngredients] = useState<
+		(Ingredient & { id: string })[]
+	>([]);
+	const [editedInstructions, setEditedInstructions] = useState<
+		(Instruction & { id: string })[]
+	>([]);
+	const [editedTags, setEditedTags] = useState<string>("");
 	const [image, setImage] = useState<File | null>(null);
+	const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+	// charger les détails de la recette
+	useEffect(() => {
+		const fetchRecipe = async () => {
+			if (!recipeId) return;
+
+			try {
+				setLoading(true);
+
+				// obtenir le token si l'utilisateur est connecté
+				let token = "";
+				if (user) {
+					const storedToken = localStorage.getItem("token");
+					if (storedToken) {
+						token = storedToken;
+					} else {
+						const authResponse = await new SecurityAPI().auth(user as User);
+						if (authResponse.status === 200) {
+							token = authResponse.data.token;
+							localStorage.setItem("token", token);
+						}
+					}
+				}
+
+				// on récupère la recette
+				const response = await new RecipeAPI().selectOne(
+					Number.parseInt(recipeId),
+					token,
+				);
+
+				if (response.status === 200) {
+					setRecipe(response.data);
+
+					// états d'édition
+					setEditedTitle(response.data.title);
+					setEditedDescription(response.data.description || "");
+
+					// convertir les temps en format minutes
+					const prepTime = response.data.preparation_time
+						? Number.parseInt(response.data.preparation_time.split(":")[1])
+						: "";
+					const cookTime = response.data.cooking_time
+						? Number.parseInt(response.data.cooking_time.split(":")[1])
+						: "";
+
+					setEditedPreparationTime(prepTime.toString());
+					setEditedCookingTime(cookTime.toString());
+					setEditedDifficulty(response.data.difficulty || "Facile");
+
+					// donner des ids aux ingrédients pour l'édition
+					if (
+						response.data.ingredients &&
+						response.data.ingredients.length > 0
+					) {
+						setEditedIngredients(
+							response.data.ingredients.map((ing: Ingredient) => ({
+								...ing,
+								id: crypto.randomUUID(),
+							})),
+						);
+					} else {
+						setEditedIngredients([
+							{
+								id: crypto.randomUUID(),
+								name: "",
+								quantity: "",
+								unit: null,
+								ingredient_id: 0,
+								recipe_id: Number.parseInt(recipeId),
+							},
+						]);
+					}
+
+					// donner des ids aux instructions pour l'édition
+					if (
+						response.data.instructions &&
+						response.data.instructions.length > 0
+					) {
+						setEditedInstructions(
+							response.data.instructions.map((instr: Instruction) => ({
+								...instr,
+								id: crypto.randomUUID(),
+							})),
+						);
+					} else {
+						setEditedInstructions([
+							{
+								id: crypto.randomUUID(),
+								text: "",
+								instruction_id: 0,
+								recipe_id: Number.parseInt(recipeId),
+								step_number: 1,
+							},
+						]);
+					}
+
+					// puis les tags
+					if (response.data.tags && response.data.tags.length > 0) {
+						setEditedTags(
+							response.data.tags.map((tag: Tag) => tag.name).join(","),
+						);
+					}
+				} else {
+					setError("Erreur lors du chargement de la recette");
+				}
+			} catch (err) {
+				console.error("Error fetching recipe:", err);
+				setError("Une erreur est survenue");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchRecipe();
+	}, [recipeId, user]);
+
+	// active/désactive l'édition
+	const toggleEdit = () => {
+		setIsEditing(!isEditing);
+	};
+
+	// A SUPPRIMER
+
+	// pour stocker la recette (sans back pour l'instant)
+	const [recipeName, setRecipeName] = useState("Tarte au citron");
+	// const [image, setImage] = useState<File | null>(null);
 	const [preparationTime, setPreparationTime] = useState("20");
 	const [cookingTime, setCookingTime] = useState("40");
 	const [difficulty, setDifficulty] = useState("Facile");
@@ -29,14 +186,9 @@ const RecipePage = () => {
 	const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
 	const [newTag, setNewTag] = useState("");
 
-	// Gère le changement d'image
-	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.target.files) {
-			setImage(event.target.files[0]);
-		}
-	};
+	// TAGS
 
-	// Ajoute un tag
+	// ajoute un tag
 	const addTag = () => {
 		if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
 			setTags([...tags, newTag.trim()]);
@@ -44,56 +196,242 @@ const RecipePage = () => {
 		}
 	};
 
-	// Supprime un tag
+	// supprime un tag
 	const removeTag = (tag: string) => {
 		setTags(tags.filter((t) => t !== tag));
 	};
 
-	// Ajoute un ingrédient
+	// INGREDIENTS
+
+	// ajoute un ingrédient
 	const addIngredient = () => {
-		setIngredients([
-			...ingredients,
-			{ id: crypto.randomUUID(), name: "", quantity: "", unit: "" },
+		if (!recipeId) return;
+
+		setEditedIngredients([
+			...editedIngredients,
+			{
+				id: crypto.randomUUID(),
+				name: "",
+				quantity: "",
+				unit: null,
+				ingredient_id: 0,
+				recipe_id: Number.parseInt(recipeId),
+			},
 		]);
 	};
 
-	// Modifie un ingrédient
+	// modifie un ingrédient
 	const updateIngredient = (
 		id: string,
-		field: keyof (typeof ingredients)[0],
+		field: keyof Omit<
+			(typeof editedIngredients)[0],
+			"id" | "ingredient_id" | "recipe_id"
+		>,
 		value: string,
 	) => {
-		setIngredients(
-			ingredients.map((i) => (i.id === id ? { ...i, [field]: value } : i)),
+		setEditedIngredients(
+			editedIngredients.map((i) =>
+				i.id === id ? { ...i, [field]: value } : i,
+			),
 		);
 	};
 
-	// Supprime un ingrédient
+	// supprime un ingrédient
 	const removeIngredient = (id: string) => {
-		setIngredients(ingredients.filter((i) => i.id !== id));
+		if (editedIngredients.length > 1) {
+			setEditedIngredients(editedIngredients.filter((i) => i.id !== id));
+		}
 	};
+
+	// INSTRUCTIONS
 
 	// Ajoute une instruction
 	const addInstruction = () => {
-		setInstructions([...instructions, { id: crypto.randomUUID(), text: "" }]);
+		if (!recipeId) return;
+
+		const newStepNumber = editedInstructions.length + 1;
+
+		setEditedInstructions([
+			...editedInstructions,
+			{
+				id: crypto.randomUUID(),
+				text: "",
+				instruction_id: 0,
+				recipe_id: Number.parseInt(recipeId),
+				step_number: newStepNumber,
+			},
+		]);
 	};
 
 	// Modifie une instruction
-	const updateInstruction = (id: string, value: string) => {
-		setInstructions(
-			instructions.map((s) => (s.id === id ? { ...s, text: value } : s)),
+	const updateInstruction = (id: string, text: string) => {
+		setEditedInstructions(
+			editedInstructions.map((i) => (i.id === id ? { ...i, text } : i)),
 		);
 	};
 
 	// Supprime une instruction
 	const removeInstruction = (id: string) => {
-		setInstructions(instructions.filter((step) => step.id !== id));
+		if (editedInstructions.length > 1) {
+			const filteredInstructions = editedInstructions.filter(
+				(i) => i.id !== id,
+			);
+
+			// numéros d'étapes
+			const updatedInstructions = filteredInstructions.map((instr, index) => ({
+				...instr,
+				step_number: index + 1,
+			}));
+
+			setEditedInstructions(updatedInstructions);
+		}
 	};
 
-	// Active/désactive l'édition
-	const toggleEdit = () => {
-		setIsEditing(!isEditing);
+	// IMAGE
+
+	// gère le changement d'image
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files?.[0]) {
+			const selectedFile = event.target.files[0];
+			setImage(selectedFile);
+
+			// URL d'aperçu
+			const objectUrl = URL.createObjectURL(selectedFile);
+			setImagePreview(objectUrl);
+
+			// supprimer l'URL d'aperçu à la fin
+			return () => URL.revokeObjectURL(objectUrl);
+		}
 	};
+
+	// SAUVEGARDE
+
+	// sauvegarde les modifications
+	const saveChanges = async () => {
+		if (!recipe || !user || !recipeId) return;
+
+		try {
+			setIsSaving(true);
+
+			// récupérer le token
+			let token = localStorage.getItem("token");
+
+			// si pas de token,, tenter d'en obtenir un nouveau
+			if (!token) {
+				const authResponse = await new SecurityAPI().auth(user as User);
+				if (authResponse.status === 200) {
+					token = authResponse.data.token;
+					localStorage.setItem("token", token as string);
+				} else {
+					throw new Error("Echec d'authentification");
+				}
+			}
+
+			// tags
+			const tagList = editedTags
+				.split(",")
+				.map((tag) => tag.trim())
+				.filter((tag) => tag !== "")
+				.map((tag) => ({ name: tag, user_id: user.user_id }));
+
+			// données de mise à jour
+			const updatedRecipe: Partial<Recipe> = {
+				recipe_id: Number.parseInt(recipeId),
+				title: editedTitle,
+				description: editedDescription || null,
+				preparation_time: editedPreparationTime
+					? `00:${editedPreparationTime}:00`
+					: null,
+				cooking_time: editedCookingTime ? `00:${editedCookingTime}:00` : null,
+				difficulty: editedDifficulty as "Facile" | "Moyen" | "Difficile" | null,
+				user_id: user.user_id,
+				ingredients: editedIngredients.map(({ id, ...rest }) => rest),
+				instructions: editedInstructions.map(({ id, ...rest }) => rest),
+				tags: tagList as unknown as Tag[],
+			};
+
+			// envoyer la mise à jour
+			const saveResponse = await new RecipeAPI().update(
+				updatedRecipe,
+				token as string,
+			);
+
+			if (saveResponse.success) {
+				// Utiliser navigate plutôt que reload pour une meilleure expérience
+				navigate(`/recettes/${recipeId}`, { replace: true });
+			} else {
+				setError(saveResponse.message);
+				setIsEditing(false);
+			}
+		} catch (err) {
+			console.error("Error updating recipe:", err);
+			setError("Une erreur est survenue lors de la mise à jour");
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	// gérer la suppression de la recette
+	const handleDelete = async () => {
+		if (!recipe || !user || !recipeId) return;
+
+		if (window.confirm("Êtes-vous sûr de vouloir supprimer cette recette ?")) {
+			try {
+				// récupérer le token
+				let token = localStorage.getItem("token");
+
+				if (!token) {
+					const authResponse = await new SecurityAPI().auth(user as User);
+					if (authResponse.status === 200) {
+						token = authResponse.data.token;
+						localStorage.setItem("token", token as string);
+					} else {
+						throw new Error("Echec d'authentification");
+					}
+				}
+
+				// supprimer la recette
+				const response = await new RecipeAPI().delete(
+					Number.parseInt(recipeId),
+					user.user_id,
+					token as string,
+				);
+
+				if (response.success) {
+					navigate("/recettes");
+				} else {
+					setError(response.message);
+				}
+			} catch (err) {
+				console.error("Error deleting recipe:", err);
+				setError("Une erreur est survenue lors de la suppresion");
+			}
+		}
+	};
+
+	if (loading) {
+		return (
+			<div className={styles.loadingContainer}>Chargement de la recette...</div>
+		);
+	}
+
+	if (error) {
+		return <div className={styles.errorContainer}>{error}</div>;
+	}
+
+	if (!recipe) {
+		return <div className={styles.errorContainer}>Recette non trouvée</div>;
+	}
+
+	// calculer l'URL de l'image
+	const recipeImage = recipe.picture?.image
+		? recipe.picture.image.startsWith("/")
+			? `${import.meta.env.VITE_API_URL}${recipe.picture.image}`
+			: `${import.meta.env.VITE_API_URL}/img/${recipe.picture.image}`
+		: DEFAULT_RECIPE_IMAGE;
+
+	// vérifier si la recette appartient à l'utilisateur
+	const isOwner = user && recipe.user_id === user.user_id;
 
 	return (
 		<div className={styles.recipeContainer}>
@@ -104,11 +442,13 @@ const RecipePage = () => {
 					{isEditing ? (
 						<input
 							type="text"
-							value={recipeName}
-							onChange={(e) => setRecipeName(e.target.value)}
+							value={editedTitle}
+							onChange={(e) => setEditedTitle(e.target.value)}
+							required
+							className={styles.titleInput}
 						/>
 					) : (
-						recipeName
+						recipe.title
 					)}
 				</h1>
 
@@ -152,52 +492,56 @@ const RecipePage = () => {
 					<div className={styles.difficulty}>
 						{isEditing ? (
 							<select
-								value={difficulty}
-								onChange={(e) => setDifficulty(e.target.value)}
+								value={editedDifficulty}
+								onChange={(e) => setEditedDifficulty(e.target.value)}
+								className={styles.difficultySelect}
 							>
 								<option value="Facile">Facile</option>
 								<option value="Moyen">Moyen</option>
 								<option value="Difficile">Difficile</option>
 							</select>
 						) : (
-							difficulty
+							<p className={styles.difficulty}>
+								{recipe.difficulty || "Non spécifiée"}
+							</p>
 						)}
 					</div>
 				</div>
 
 				{/* Tags */}
 				<h3>Tags</h3>
-				<div className={styles.tagsContainer}>
-					{tags.map((tag) => (
-						<span key={tag} className={styles.tag}>
-							{tag}
-							{isEditing && (
-								<button type="button" onClick={() => removeTag(tag)}>
-									×
-								</button>
-							)}
-						</span>
-					))}
-				</div>
-				{isEditing && (
+				{isEditing ? (
 					<div className={styles.addTag}>
 						<input
 							type="text"
-							value={newTag}
-							onChange={(e) => setNewTag(e.target.value)}
-							placeholder="Nouveau tag"
+							value={editedTags}
+							onChange={(e) => setEditedTags(e.target.value)}
+							placeholder="Tags séparas par des virgules"
+							className={styles.tagsInput}
 						/>
 						<button type="button" onClick={addTag}>
 							Ajouter
 						</button>
 					</div>
+				) : (
+					<div className={styles.tagsContainer}>
+						{recipe.tags && recipe.tags.length > 0 ? (
+							recipe.tags.map((tag) => (
+								<span key={tag.tag_id} className={styles.tag}>
+									{tag.name}
+								</span>
+							))
+						) : (
+							<p>Aucun tag</p>
+						)}
+					</div>
 				)}
 
 				{/* Gestion de l'image */}
 				{isEditing ? (
-					<>
+					<div className={styles.imageUploadContainer}>
 						<label htmlFor="imageUpload" className={styles.customFileUpload}>
-							{image ? "Changer l'image" : "Ajouter une image"}
+							Changer l'image
 						</label>
 						<input
 							id="imageUpload"
@@ -206,163 +550,249 @@ const RecipePage = () => {
 							onChange={handleImageChange}
 							className={styles.imgInput}
 						/>
-						{image && (
-							<>
-								<img
-									src={URL.createObjectURL(image)}
-									alt="Aperçu de l'image"
-									className={styles.previewImage}
-								/>
-								<button
-									type="button"
-									onClick={() => setImage(null)}
-									className={styles.deleteImage}
-								>
-									Supprimer
-								</button>
-							</>
+						{imagePreview ? (
+							<img
+								src={imagePreview}
+								alt="Aperçu de l'image"
+								className={styles.previewImage}
+							/>
+						) : (
+							<img
+								src={recipeImage}
+								alt={recipe.title}
+								className={styles.recipeImage}
+							/>
 						)}
-					</>
+					</div>
 				) : (
 					<img
-						src={
-							image
-								? URL.createObjectURL(image)
-								: "/img/tarte-au-citron-meringuee.jpeg"
-						}
-						alt="Recette"
-						className={styles.previewImage}
+						src={recipeImage}
+						alt={recipe.title}
+						className={styles.recipeImage}
 					/>
 				)}
+
+				{/* Auteur */}
+				<div className={styles.authorContainer}>
+					<h3>Créé par</h3>
+					<p className={styles.author}>
+						{recipe.user?.pseudo || "Utilisateur inconnu"}
+					</p>
+				</div>
 			</div>
 
 			{/* Partie droite */}
 			<div className={styles.right}>
+				{/* Description */}
+				<h3>Description</h3>
+				{isEditing ? (
+					<textarea
+						value={editedDescription}
+						onChange={(e) => setEditedDescription(e.target.value)}
+						className={styles.descriptionInput}
+						placeholder="Description de la recette"
+					/>
+				) : (
+					<p className={styles.description}>
+						{recipe.description || "Aucune description"}
+					</p>
+				)}
+
 				{/* Ingrédients */}
 				<h3>Ingrédients</h3>
-				<div className={styles.ingredientsContainer}>
-					{ingredients.map((ingredient) => (
-						<div
-							key={ingredient.id}
-							className={`${styles.ingredientItem} ${isEditing ? styles.editing : ""}`}
+				{isEditing ? (
+					<div className={styles.ingredientsEditContainer}>
+						{editedIngredients.map((ingredient) => (
+							<div key={ingredient.id} className={styles.ingredientRow}>
+								<input
+									type="text"
+									value={ingredient.name}
+									onChange={(e) =>
+										updateIngredient(ingredient.id, "name", e.target.value)
+									}
+									placeholder="Ingrédient"
+									required
+									className={styles.ingredientNameInput}
+								/>
+								<input
+									type="text"
+									value={ingredient.quantity || ""}
+									onChange={(e) =>
+										updateIngredient(ingredient.id, "quantity", e.target.value)
+									}
+									placeholder="Quantité"
+									className={styles.ingredientQuantityInput}
+								/>
+								<select
+									value={ingredient.unit || ""}
+									onChange={(e) =>
+										updateIngredient(ingredient.id, "unit", e.target.value)
+									}
+									className={styles.ingredientUnitSelect}
+								>
+									<option value="">Unité</option>
+									<option value="mg">mg</option>
+									<option value="g">g</option>
+									<option value="kg">kg</option>
+									<option value="ml">ml</option>
+									<option value="cl">cl</option>
+									<option value="l">l</option>
+									<option value="càc">càc</option>
+									<option value="càs">càs</option>
+									<option value="pincée">pincée</option>
+									<option value="oz">oz</option>
+									<option value="lb">lb</option>
+									<option value="unité">unité</option>
+								</select>
+								<button
+									type="button"
+									onClick={() => removeIngredient(ingredient.id)}
+									className={styles.deleteButton}
+									disabled={editedIngredients.length <= 1}
+								>
+									🗑
+								</button>
+							</div>
+						))}
+						<button
+							type="button"
+							onClick={addIngredient}
+							className={styles.addButton}
 						>
-							{isEditing ? (
-								<>
-									<input
-										type="text"
-										placeholder="Nom"
-										value={ingredient.name}
-										onChange={(e) =>
-											updateIngredient(ingredient.id, "name", e.target.value)
-										}
-									/>
-									<input
-										type="text"
-										placeholder="Quantité"
-										value={ingredient.quantity}
-										onChange={(e) =>
-											updateIngredient(
-												ingredient.id,
-												"quantity",
-												e.target.value,
-											)
-										}
-									/>
-									<select
-										value={ingredient.unit}
-										onChange={(e) =>
-											updateIngredient(ingredient.id, "unit", e.target.value)
-										}
-									>
-										<option value="">Unité</option>
-										<option value="mg">mg</option>
-										<option value="g">g</option>
-										<option value="kg">kg</option>
-										<option value="ml">ml</option>
-										<option value="cl">cl</option>
-										<option value="l">l</option>
-										<option value="càc">c. à café</option>
-										<option value="càs">c. à soupe</option>
-										<option value="pincée">pincée</option>
-										<option value="unité">unité</option>
-									</select>
-									<button
-										type="button"
-										className={styles.deleteButton}
-										onClick={() => removeIngredient(ingredient.id)}
-									>
-										🗑
-									</button>
-								</>
-							) : (
-								<>
-									<p className={styles.ingredientName}>{ingredient.name}</p>
-									<p className={styles.ingredientQuantity}>
-										{ingredient.quantity}
-									</p>
-									<p className={styles.ingredientUnit}>{ingredient.unit}</p>
-								</>
-							)}
-						</div>
-					))}
-				</div>
-				{isEditing && (
-					<button
-						type="button"
-						onClick={addIngredient}
-						className={styles.addIngredientButton}
-					>
-						Ajouter un ingrédient
-					</button>
+							Ajouter un ingrédient
+						</button>
+					</div>
+				) : (
+					<ul className={styles.ingredientsList}>
+						{recipe.ingredients && recipe.ingredients.length > 0 ? (
+							recipe.ingredients.map((ingredient) => (
+								<li
+									key={ingredient.ingredient_id}
+									className={styles.ingredientItem}
+								>
+									<span className={styles.ingredientName}>
+										{ingredient.name}
+									</span>
+									{ingredient.quantity && (
+										<span className={styles.ingredientQuantity}>
+											{ingredient.quantity} {ingredient.unit || ""}
+										</span>
+									)}
+								</li>
+							))
+						) : (
+							<li>Aucun ingrédient</li>
+						)}
+					</ul>
 				)}
 
 				{/* Instructions */}
 				<h3>Instructions</h3>
-				<ol className={styles.instructionsContainer}>
-					{instructions.map((step) => (
-						<li
-							key={step.id}
-							className={`${styles.instructionItem} ${isEditing ? styles.editing : ""}`}
+				{isEditing ? (
+					<div className={styles.instructionsEditContainer}>
+						{editedInstructions.map((instruction, index) => (
+							<div key={instruction.id} className={styles.instructionRow}>
+								<span className={styles.stepNumber}>{index + 1}.</span>
+								<textarea
+									value={instruction.text}
+									onChange={(e) =>
+										updateInstruction(instruction.id, e.target.value)
+									}
+									placeholder="Étape de préparation"
+									required
+									className={styles.instructionTextInput}
+								/>
+								<button
+									type="button"
+									onClick={() => removeInstruction(instruction.id)}
+									className={styles.deleteButton}
+									disabled={editedInstructions.length <= 1}
+								>
+									🗑
+								</button>
+							</div>
+						))}
+						<button
+							type="button"
+							onClick={addInstruction}
+							className={styles.addButton}
 						>
-							{isEditing ? (
-								<>
-									<textarea
-										placeholder="Étape"
-										value={step.text}
-										onChange={(e) => updateInstruction(step.id, e.target.value)}
-									/>
-									<button
-										type="button"
-										className={styles.deleteButton}
-										onClick={() => removeInstruction(step.id)}
+							Ajouter une étape
+						</button>
+					</div>
+				) : (
+					<ol className={styles.instructionsList}>
+						{recipe.instructions && recipe.instructions.length > 0 ? (
+							recipe.instructions
+								.sort((a, b) => (a.step_number || 0) - (b.step_number || 0))
+								.map((instruction) => (
+									<li
+										key={instruction.instruction_id}
+										className={styles.instructionItem}
 									>
-										🗑
-									</button>
-								</>
-							) : (
-								step.text
-							)}
-						</li>
-					))}
-				</ol>
-				{isEditing && (
-					<button
-						type="button"
-						onClick={addInstruction}
-						className={styles.addInstructionButton}
-					>
-						Ajouter une étape
-					</button>
+										{instruction.text}
+									</li>
+								))
+						) : (
+							<li>Aucune instruction</li>
+						)}
+					</ol>
 				)}
 
-				{/* Bouton pour activer l'édition */}
-				<button
-					type="button"
-					className={styles.editButton}
-					onClick={toggleEdit}
-				>
-					{isEditing ? "Sauvegarder" : "Modifier"}
-				</button>
+				{/* Boutons d'action */}
+				<div className={styles.actionButtons}>
+					{/* Buttons for recipe owner */}
+					{isOwner && isEditing && (
+						<button
+							type="button"
+							onClick={saveChanges}
+							className={styles.saveButton}
+							disabled={isSaving}
+						>
+							{isSaving ? "Enregistrement..." : "Enregistrer"}
+						</button>
+					)}
+
+					{isOwner && isEditing && (
+						<button
+							type="button"
+							onClick={toggleEdit}
+							className={styles.cancelButton}
+							disabled={isSaving}
+						>
+							Annuler
+						</button>
+					)}
+
+					{isOwner && !isEditing && (
+						<button
+							type="button"
+							onClick={toggleEdit}
+							className={styles.editButton}
+						>
+							Modifier
+						</button>
+					)}
+
+					{isOwner && !isEditing && (
+						<button
+							type="button"
+							onClick={handleDelete}
+							className={styles.deleteRecipeButton}
+						>
+							Supprimer
+						</button>
+					)}
+
+					{/* Back button always visible */}
+					<button
+						type="button"
+						onClick={() => navigate("/recettes")}
+						className={styles.backButton}
+					>
+						Retour au carnet
+					</button>
+				</div>
 			</div>
 		</div>
 	);

@@ -60,6 +60,10 @@ const router = createBrowserRouter([
 				element: <RecipesPage />,
 			},
 			{
+				path: "recettes/creation/recette",
+				element: <RecipesPage />, // A SUPPRIMER
+			},
+			{
 				path: "recettes/creation",
 				element: <CreateRecipePage />,
 			},

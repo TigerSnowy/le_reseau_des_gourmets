@@ -8,13 +8,13 @@ class InstructionRouter {
 
 	// méthodes
 	public getRoutes = () => {
-		this.router.get("/", new InstructionController().index);
-		// créer une variable de route en la préfixant d'un :
-		this.router.get("/:instruction_id", new InstructionController().selectOne);
 		this.router.get(
 			"/recipe/:recipe_id",
 			new InstructionController().selectByRecipeId,
 		);
+		this.router.get("/:instruction_id", new InstructionController().selectOne);
+		this.router.get("/", new InstructionController().index);
+		// créer une variable de route en la préfixant d'un :
 
 		this.router.post(
 			"/",

@@ -8,10 +8,10 @@ class IngredientRouter {
 
 	// méthodes
 	public getRoutes = () => {
+		this.router.get("/recipe/:recipe_id", new IngredientController().byRecipe);
+		this.router.get("/:ingredient_id", new IngredientController().one);
 		this.router.get("/", new IngredientController().index);
 		// créer une variable de route en la préfixant d'un :
-		this.router.get("/:ingredient_id", new IngredientController().one);
-		this.router.get("/recipe/:recipe_id", new IngredientController().byRecipe);
 
 		this.router.post(
 			"/",

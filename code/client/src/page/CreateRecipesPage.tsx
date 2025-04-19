@@ -235,12 +235,10 @@ const CreateRecipePage = () => {
 			if (token) {
 				const response = await new RecipeAPI().insert(recipeData, token);
 
-				if (response.status === 201) {
+				if (response.success) {
 					navigate(`/recettes/${response.data.recipe_id}`);
 				} else {
-					setError(
-						response.message || "Erreur lors de la création de la recette.",
-					);
+					setError(response.message);
 				}
 			} else {
 				setError("Erreur d'authentification.");

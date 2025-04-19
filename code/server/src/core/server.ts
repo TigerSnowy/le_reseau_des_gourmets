@@ -51,7 +51,7 @@ class Server {
 
 		this.router.use("/role", new RoleRouter().getRoutes());
 		this.router.use("/picture", new PictureRouter().getRoutes());
-		// this.router.use("/recipe_picture", new PictureRouter().getRoutes());
+		this.router.use("/recipe_picture", new PictureRouter().getRoutes());
 		// this.router.use("/post", new PostRouter().getRoutes());
 		this.router.use("/recipe", new RecipeRouter().getRoutes());
 		this.router.use("/ingredient", new IngredientRouter().getRoutes());

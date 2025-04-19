@@ -37,10 +37,12 @@ const AllRecipesPage = () => {
 				// récupére toutes les recettes
 				const response = await new RecipeAPI().selectAll(token);
 
-				if (response.status === 200) {
+				if (response.success) {
 					setRecipes(response.data);
 				} else {
-					setError("Erreur lors du chargement des recettes");
+					setError(
+						response.message || "Erreur lors du chargement des recettes",
+					);
 				}
 			} catch (err) {
 				console.error("Error fetching recipes:", err);
