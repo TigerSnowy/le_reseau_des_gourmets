@@ -14,19 +14,27 @@ import TagRepository from "./tag_repository.js";
 class RecipeRepository {
 	private table = "recipe";
 
-	public selectAll = async (): Promise<Recipe[] | unknown> => {
+	public selectAll = async (userId?: number): Promise<Recipe[] | unknown> => {
 		const connexion = await new MySQLService().connect();
 
-		const sql = `
-            SELECT
-                ${this.table}.*
-            FROM 
-                ${process.env.MYSQL_DATABASE}.${this.table}
-			;
-        `;
+		let sql = `
+		SELECT
+		  ${this.table}.*
+		FROM 
+		  ${process.env.MYSQL_DATABASE}.${this.table}
+	  `;
+
+		// si un userId est fourni, filtrer les recettes de cet utilisateur
+		if (userId) {
+			sql += ` WHERE ${this.table}.user_id = ?`;
+		}
+
+		sql += ";";
 
 		try {
-			const [results] = await connexion.execute(sql);
+			const [results] = userId
+				? await connexion.execute(sql, [userId])
+				: await connexion.execute(sql);
 
 			for (let i = 0; i < (results as Recipe[]).length; i++) {
 				const result = (results as Recipe[])[i];
@@ -190,7 +198,7 @@ class RecipeRepository {
 			}
 
 			await connexion.commit();
-			return { success: true };
+			return { success: true, recipe_id: recipe_id };
 		} catch (error) {
 			await connexion.rollback();
 			return error;

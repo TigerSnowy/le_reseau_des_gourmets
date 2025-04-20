@@ -53,6 +53,36 @@ class PictureController {
 			data: results,
 		});
 	};
+
+	public upload = async (req: Request, res: Response): Promise<void> => {
+		try {
+			const file = req.file;
+			const { recipe_id } = req.body;
+			if (!file || !recipe_id) {
+				res
+					.status(400)
+					.json({ success: false, message: "image & recipe_id requis" });
+				return;
+			}
+
+			const picRepo = new PictureRepository();
+			const pictureResult = await picRepo.insert({ filename: file.filename });
+
+			// lier recette/image dans recipe_picture
+			await picRepo.linkToRecipe(Number(recipe_id), pictureResult.picture_id);
+
+			res.status(201).json({
+				success: true,
+				data: {
+					picture_id: pictureResult.picture_id,
+					image: file.filename,
+				},
+			});
+		} catch (err) {
+			console.error("Erreur upload image recette :", err);
+			res.status(500).json({ success: false, message: "Erreur serveur" });
+		}
+	};
 }
 
 export default PictureController;

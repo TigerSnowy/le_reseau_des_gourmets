@@ -35,6 +35,8 @@ const AppContent = () => {
 				console.log("utilisateur récupéré du localStorage");
 			} catch (error) {
 				console.error("Erreur lors de la récupération de l'utilisateur");
+				localStorage.removeItem("user");
+				localStorage.removeItem("token");
 			}
 		}
 	}, [setUser]);

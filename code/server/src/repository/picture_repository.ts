@@ -1,3 +1,4 @@
+import type { ResultSetHeader } from "mysql2";
 import type Picture from "../model/picture.js";
 import MySQLService from "../service/mysql_service.js";
 
@@ -95,6 +96,39 @@ class PictureRepository {
 		} catch (error) {
 			return error;
 		}
+	};
+
+	public insert = async (data: { filename: string }): Promise<{
+		picture_id: number;
+		filename: string;
+	}> => {
+		const conn = await new MySQLService().connect();
+		const sql = `
+		  INSERT INTO ${process.env.MYSQL_DATABASE}.${this.table}
+			(image)
+		  VALUES
+			(:filename);
+		`;
+
+		const [result] = await conn.execute<ResultSetHeader>(sql, data);
+
+		const picture_id = result.insertId;
+		return { picture_id, filename: data.filename };
+	};
+
+	// lie une image à une recette
+	public linkToRecipe = async (
+		recipe_id: number,
+		picture_id: number,
+	): Promise<void> => {
+		const conn = await new MySQLService().connect();
+		const sql = `
+		  INSERT INTO ${process.env.MYSQL_DATABASE}.recipe_picture
+			(recipe_id, picture_id)
+		  VALUES
+			(:recipe_id, :picture_id);
+		`;
+		await conn.execute(sql, { recipe_id, picture_id });
 	};
 }
 export default PictureRepository;

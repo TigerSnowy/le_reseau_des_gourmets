@@ -10,7 +10,7 @@ import type User from "../model/user";
 import RecipeAPI from "../service/recipe_api";
 import type Tag from "../model/tag";
 
-const DEFAULT_RECIPE_IMAGE = "../../../public/img/default_recipe_img.png";
+const DEFAULT_RECIPE_IMAGE = "/img/default_recipe_img.png";
 
 const RecipePage = () => {
 	const { recipeId } = useParams<{ recipeId: string }>();
@@ -40,12 +40,25 @@ const RecipePage = () => {
 	const [image, setImage] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+	const formatTimeForDatabase = (minutes: string): string | null => {
+		if (!minutes || minutes.trim() === "") return null;
+
+		const numMinutes = Number.parseInt(minutes, 10);
+		if (Number.isNaN(numMinutes)) return null;
+
+		const hours = Math.floor(numMinutes / 60);
+		const mins = numMinutes % 60;
+
+		return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:00`;
+	};
+
 	// charger les détails de la recette
 	useEffect(() => {
 		const fetchRecipe = async () => {
 			if (!recipeId) return;
 
 			try {
+				console.log("Début du chargement de la recette ID:", recipeId);
 				setLoading(true);
 
 				// obtenir le token si l'utilisateur est connecté
@@ -64,12 +77,18 @@ const RecipePage = () => {
 				}
 
 				// on récupère la recette
+				console.log(
+					"Envoi de la requête pour récupérer la recette ID:",
+					recipeId,
+				);
 				const response = await new RecipeAPI().selectOne(
 					Number.parseInt(recipeId),
 					token,
 				);
+				console.log("Réponse de la requête recette:", response);
 
-				if (response.status === 200) {
+				if (response.success) {
+					console.log("Données de recette reçues:", response.data);
 					setRecipe(response.data);
 
 					// états d'édition
@@ -142,7 +161,10 @@ const RecipePage = () => {
 						);
 					}
 				} else {
-					setError("Erreur lors du chargement de la recette");
+					console.error("Erreur de chargement:", response);
+					setError(
+						response.message || "Erreur lors du chargement de la recette",
+					);
 				}
 			} catch (err) {
 				console.error("Error fetching recipe:", err);
@@ -163,25 +185,25 @@ const RecipePage = () => {
 	// A SUPPRIMER
 
 	// pour stocker la recette (sans back pour l'instant)
-	const [recipeName, setRecipeName] = useState("Tarte au citron");
-	// const [image, setImage] = useState<File | null>(null);
-	const [preparationTime, setPreparationTime] = useState("20");
-	const [cookingTime, setCookingTime] = useState("40");
-	const [difficulty, setDifficulty] = useState("Facile");
-	const [ingredients, setIngredients] = useState([
-		{ id: crypto.randomUUID(), name: "Farine", quantity: "200", unit: "g" },
-		{ id: crypto.randomUUID(), name: "Oeufs", quantity: "2", unit: "" },
-		{ id: crypto.randomUUID(), name: "Sucre", quantity: "50", unit: "g" },
-		{ id: crypto.randomUUID(), name: "Citron", quantity: "3", unit: "" },
-		{ id: crypto.randomUUID(), name: "Lait", quantity: "100", unit: "ml" },
-	]);
+	// const [recipeName, setRecipeName] = useState("Tarte au citron");
+	// // const [image, setImage] = useState<File | null>(null);
+	// const [preparationTime, setPreparationTime] = useState("20");
+	// const [cookingTime, setCookingTime] = useState("40");
+	// const [difficulty, setDifficulty] = useState("Facile");
+	// const [ingredients, setIngredients] = useState([
+	// 	{ id: crypto.randomUUID(), name: "Farine", quantity: "200", unit: "g" },
+	// 	{ id: crypto.randomUUID(), name: "Oeufs", quantity: "2", unit: "" },
+	// 	{ id: crypto.randomUUID(), name: "Sucre", quantity: "50", unit: "g" },
+	// 	{ id: crypto.randomUUID(), name: "Citron", quantity: "3", unit: "" },
+	// 	{ id: crypto.randomUUID(), name: "Lait", quantity: "100", unit: "ml" },
+	// ]);
 
-	const [instructions, setInstructions] = useState([
-		{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-		{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-		{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-		{ id: crypto.randomUUID(), text: "Cuire au four à 180°C." },
-	]);
+	// const [instructions, setInstructions] = useState([
+	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
+	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
+	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
+	// 	{ id: crypto.randomUUID(), text: "Cuire au four à 180°C." },
+	// ]);
 
 	const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
 	const [newTag, setNewTag] = useState("");
@@ -339,10 +361,8 @@ const RecipePage = () => {
 				recipe_id: Number.parseInt(recipeId),
 				title: editedTitle,
 				description: editedDescription || null,
-				preparation_time: editedPreparationTime
-					? `00:${editedPreparationTime}:00`
-					: null,
-				cooking_time: editedCookingTime ? `00:${editedCookingTime}:00` : null,
+				preparation_time: formatTimeForDatabase(editedPreparationTime),
+				cooking_time: formatTimeForDatabase(editedCookingTime),
 				difficulty: editedDifficulty as "Facile" | "Moyen" | "Difficile" | null,
 				user_id: user.user_id,
 				ingredients: editedIngredients.map(({ id, ...rest }) => rest),
@@ -435,363 +455,363 @@ const RecipePage = () => {
 
 	return (
 		<div className={styles.recipeContainer}>
-			{/* Partie gauche */}
-			<div className={styles.left}>
-				{/* Nom de la recette */}
-				<h1>
-					{isEditing ? (
-						<input
-							type="text"
-							value={editedTitle}
-							onChange={(e) => setEditedTitle(e.target.value)}
-							required
-							className={styles.titleInput}
-						/>
-					) : (
-						recipe.title
-					)}
-				</h1>
-
-				{/* Temps de préparation et cuisson côte à côte */}
-				<h3>Temps</h3>
-				<div className={styles.timeContainer}>
-					<div className={styles.timeBlock}>
-						<p className={styles.timeTitle}>Préparation :</p>
-						<p className={styles.time}>
-							{isEditing ? (
-								<input
-									type="number"
-									value={preparationTime}
-									onChange={(e) => setPreparationTime(e.target.value)}
-								/>
-							) : (
-								`${preparationTime} min`
-							)}
-						</p>
-					</div>
-
-					<div className={styles.timeBlock}>
-						<p className={styles.timeTitle}>Cuisson :</p>
-						<p className={styles.time}>
-							{isEditing ? (
-								<input
-									type="number"
-									value={cookingTime}
-									onChange={(e) => setCookingTime(e.target.value)}
-								/>
-							) : (
-								`${cookingTime} min`
-							)}
-						</p>
-					</div>
-				</div>
-
-				{/* Difficulté */}
-				<div className={styles.difficultyContainer}>
-					<h3>Difficulté</h3>
-					<div className={styles.difficulty}>
+			<div className={styles.card}>
+				{/* Partie gauche */}
+				<div className={styles.left}>
+					{/* Nom de la recette */}
+					<h1>
 						{isEditing ? (
-							<select
-								value={editedDifficulty}
-								onChange={(e) => setEditedDifficulty(e.target.value)}
-								className={styles.difficultySelect}
-							>
-								<option value="Facile">Facile</option>
-								<option value="Moyen">Moyen</option>
-								<option value="Difficile">Difficile</option>
-							</select>
+							<input
+								type="text"
+								value={editedTitle}
+								onChange={(e) => setEditedTitle(e.target.value)}
+								required
+								className={styles.titleInput}
+							/>
 						) : (
-							<p className={styles.difficulty}>
-								{recipe.difficulty || "Non spécifiée"}
+							recipe.title
+						)}
+					</h1>
+
+					{/* Temps de préparation et cuisson côte à côte */}
+					<h3>Temps</h3>
+					<div className={styles.timeContainer}>
+						<div className={styles.timeBlock}>
+							<p className={styles.timeTitle}>Préparation :</p>
+							<p className={styles.time}>
+								{isEditing ? (
+									<input
+										type="number"
+										value={editedPreparationTime}
+										onChange={(e) => setEditedPreparationTime(e.target.value)}
+									/>
+								) : (
+									`${editedPreparationTime} min`
+								)}
 							</p>
-						)}
-					</div>
-				</div>
+						</div>
 
-				{/* Tags */}
-				<h3>Tags</h3>
-				{isEditing ? (
-					<div className={styles.addTag}>
-						<input
-							type="text"
-							value={editedTags}
-							onChange={(e) => setEditedTags(e.target.value)}
-							placeholder="Tags séparas par des virgules"
-							className={styles.tagsInput}
-						/>
-						<button type="button" onClick={addTag}>
-							Ajouter
-						</button>
+						<div className={styles.timeBlock}>
+							<p className={styles.timeTitle}>Cuisson :</p>
+							<p className={styles.time}>
+								{isEditing ? (
+									<input
+										type="number"
+										value={editedCookingTime}
+										onChange={(e) => setEditedCookingTime(e.target.value)}
+									/>
+								) : (
+									`${editedCookingTime} min`
+								)}
+							</p>
+						</div>
 					</div>
-				) : (
-					<div className={styles.tagsContainer}>
-						{recipe.tags && recipe.tags.length > 0 ? (
-							recipe.tags.map((tag) => (
-								<span key={tag.tag_id} className={styles.tag}>
-									{tag.name}
-								</span>
-							))
-						) : (
-							<p>Aucun tag</p>
-						)}
-					</div>
-				)}
 
-				{/* Gestion de l'image */}
-				{isEditing ? (
-					<div className={styles.imageUploadContainer}>
-						<label htmlFor="imageUpload" className={styles.customFileUpload}>
-							Changer l'image
-						</label>
-						<input
-							id="imageUpload"
-							type="file"
-							accept="image/*"
-							onChange={handleImageChange}
-							className={styles.imgInput}
-						/>
-						{imagePreview ? (
-							<img
-								src={imagePreview}
-								alt="Aperçu de l'image"
-								className={styles.previewImage}
+					{/* Difficulté */}
+					<div className={styles.difficultyContainer}>
+						<h3>Difficulté</h3>
+						<div className={styles.difficulty}>
+							{isEditing ? (
+								<select
+									value={editedDifficulty}
+									onChange={(e) => setEditedDifficulty(e.target.value)}
+									className={styles.difficultySelect}
+								>
+									<option value="Facile">Facile</option>
+									<option value="Moyen">Moyen</option>
+									<option value="Difficile">Difficile</option>
+								</select>
+							) : (
+								<p className={styles.difficulty}>
+									{recipe.difficulty || "Non spécifiée"}
+								</p>
+							)}
+						</div>
+					</div>
+
+					{/* Tags */}
+					<h3>Tags</h3>
+					{isEditing ? (
+						<div className={styles.addTag}>
+							<input
+								type="text"
+								value={editedTags}
+								onChange={(e) => setEditedTags(e.target.value)}
+								placeholder="Tags séparas par des virgules"
+								className={styles.tagsInput}
 							/>
-						) : (
-							<img
-								src={recipeImage}
-								alt={recipe.title}
-								className={styles.recipeImage}
-							/>
-						)}
-					</div>
-				) : (
-					<img
-						src={recipeImage}
-						alt={recipe.title}
-						className={styles.recipeImage}
-					/>
-				)}
+							{/* <button type="button" onClick={addTag}>
+								Ajouter
+							</button> */}
+						</div>
+					) : (
+						<div className={styles.tagsContainer}>
+							{recipe.tags && recipe.tags.length > 0 ? (
+								recipe.tags.map((tag) => (
+									<span key={tag.tag_id} className={styles.tag}>
+										{tag.name}
+									</span>
+								))
+							) : (
+								<p>Aucun tag</p>
+							)}
+						</div>
+					)}
 
-				{/* Auteur */}
-				<div className={styles.authorContainer}>
-					<h3>Créé par</h3>
-					<p className={styles.author}>
-						{recipe.user?.pseudo || "Utilisateur inconnu"}
-					</p>
+					{/* Gestion de l'image */}
+					{isEditing ? (
+						<div className={styles.imageUploadContainer}>
+							<label htmlFor="imageUpload" className={styles.customFileUpload}>
+								Changer l'image
+							</label>
+							<input
+								id="imageUpload"
+								type="file"
+								accept="image/*"
+								onChange={handleImageChange}
+								className={styles.imgInput}
+							/>
+							{imagePreview ? (
+								<img
+									src={imagePreview}
+									alt="Aperçu de l'image"
+									className={styles.previewImage}
+								/>
+							) : (
+								<img
+									src={recipeImage}
+									alt={recipe.title}
+									className={styles.recipeImage}
+								/>
+							)}
+						</div>
+					) : (
+						<img
+							src={recipeImage}
+							alt={recipe.title}
+							className={styles.recipeImage}
+						/>
+					)}
 				</div>
 			</div>
 
 			{/* Partie droite */}
-			<div className={styles.right}>
-				{/* Description */}
-				<h3>Description</h3>
-				{isEditing ? (
-					<textarea
-						value={editedDescription}
-						onChange={(e) => setEditedDescription(e.target.value)}
-						className={styles.descriptionInput}
-						placeholder="Description de la recette"
-					/>
-				) : (
-					<p className={styles.description}>
-						{recipe.description || "Aucune description"}
-					</p>
-				)}
+			<div className={styles.card}>
+				<div className={styles.right}>
+					{/* Description */}
+					<h3>Description</h3>
+					{isEditing ? (
+						<textarea
+							value={editedDescription}
+							onChange={(e) => setEditedDescription(e.target.value)}
+							className={styles.descriptionInput}
+							placeholder="Description de la recette"
+						/>
+					) : (
+						<p className={styles.description}>
+							{recipe.description || "Aucune description"}
+						</p>
+					)}
 
-				{/* Ingrédients */}
-				<h3>Ingrédients</h3>
-				{isEditing ? (
-					<div className={styles.ingredientsEditContainer}>
-						{editedIngredients.map((ingredient) => (
-							<div key={ingredient.id} className={styles.ingredientRow}>
-								<input
-									type="text"
-									value={ingredient.name}
-									onChange={(e) =>
-										updateIngredient(ingredient.id, "name", e.target.value)
-									}
-									placeholder="Ingrédient"
-									required
-									className={styles.ingredientNameInput}
-								/>
-								<input
-									type="text"
-									value={ingredient.quantity || ""}
-									onChange={(e) =>
-										updateIngredient(ingredient.id, "quantity", e.target.value)
-									}
-									placeholder="Quantité"
-									className={styles.ingredientQuantityInput}
-								/>
-								<select
-									value={ingredient.unit || ""}
-									onChange={(e) =>
-										updateIngredient(ingredient.id, "unit", e.target.value)
-									}
-									className={styles.ingredientUnitSelect}
-								>
-									<option value="">Unité</option>
-									<option value="mg">mg</option>
-									<option value="g">g</option>
-									<option value="kg">kg</option>
-									<option value="ml">ml</option>
-									<option value="cl">cl</option>
-									<option value="l">l</option>
-									<option value="càc">càc</option>
-									<option value="càs">càs</option>
-									<option value="pincée">pincée</option>
-									<option value="oz">oz</option>
-									<option value="lb">lb</option>
-									<option value="unité">unité</option>
-								</select>
-								<button
-									type="button"
-									onClick={() => removeIngredient(ingredient.id)}
-									className={styles.deleteButton}
-									disabled={editedIngredients.length <= 1}
-								>
-									🗑
-								</button>
-							</div>
-						))}
-						<button
-							type="button"
-							onClick={addIngredient}
-							className={styles.addButton}
-						>
-							Ajouter un ingrédient
-						</button>
-					</div>
-				) : (
-					<ul className={styles.ingredientsList}>
-						{recipe.ingredients && recipe.ingredients.length > 0 ? (
-							recipe.ingredients.map((ingredient) => (
-								<li
-									key={ingredient.ingredient_id}
-									className={styles.ingredientItem}
-								>
-									<span className={styles.ingredientName}>
-										{ingredient.name}
-									</span>
-									{ingredient.quantity && (
-										<span className={styles.ingredientQuantity}>
-											{ingredient.quantity} {ingredient.unit || ""}
-										</span>
-									)}
-								</li>
-							))
-						) : (
-							<li>Aucun ingrédient</li>
-						)}
-					</ul>
-				)}
-
-				{/* Instructions */}
-				<h3>Instructions</h3>
-				{isEditing ? (
-					<div className={styles.instructionsEditContainer}>
-						{editedInstructions.map((instruction, index) => (
-							<div key={instruction.id} className={styles.instructionRow}>
-								<span className={styles.stepNumber}>{index + 1}.</span>
-								<textarea
-									value={instruction.text}
-									onChange={(e) =>
-										updateInstruction(instruction.id, e.target.value)
-									}
-									placeholder="Étape de préparation"
-									required
-									className={styles.instructionTextInput}
-								/>
-								<button
-									type="button"
-									onClick={() => removeInstruction(instruction.id)}
-									className={styles.deleteButton}
-									disabled={editedInstructions.length <= 1}
-								>
-									🗑
-								</button>
-							</div>
-						))}
-						<button
-							type="button"
-							onClick={addInstruction}
-							className={styles.addButton}
-						>
-							Ajouter une étape
-						</button>
-					</div>
-				) : (
-					<ol className={styles.instructionsList}>
-						{recipe.instructions && recipe.instructions.length > 0 ? (
-							recipe.instructions
-								.sort((a, b) => (a.step_number || 0) - (b.step_number || 0))
-								.map((instruction) => (
-									<li
-										key={instruction.instruction_id}
-										className={styles.instructionItem}
+					{/* Ingrédients */}
+					<h3>Ingrédients</h3>
+					{isEditing ? (
+						<div className={styles.ingredientsEditContainer}>
+							{editedIngredients.map((ingredient) => (
+								<div key={ingredient.id} className={styles.ingredientRow}>
+									<input
+										type="text"
+										value={ingredient.name}
+										onChange={(e) =>
+											updateIngredient(ingredient.id, "name", e.target.value)
+										}
+										placeholder="Ingrédient"
+										required
+										className={styles.ingredientNameInput}
+									/>
+									<input
+										type="text"
+										value={ingredient.quantity || ""}
+										onChange={(e) =>
+											updateIngredient(
+												ingredient.id,
+												"quantity",
+												e.target.value,
+											)
+										}
+										placeholder="Quantité"
+										className={styles.ingredientQuantityInput}
+									/>
+									<select
+										value={ingredient.unit || ""}
+										onChange={(e) =>
+											updateIngredient(ingredient.id, "unit", e.target.value)
+										}
+										className={styles.ingredientUnitSelect}
 									>
-										{instruction.text}
+										<option value="">Unité</option>
+										<option value="mg">mg</option>
+										<option value="g">g</option>
+										<option value="kg">kg</option>
+										<option value="ml">ml</option>
+										<option value="cl">cl</option>
+										<option value="l">l</option>
+										<option value="càc">càc</option>
+										<option value="càs">càs</option>
+										<option value="pincée">pincée</option>
+										<option value="oz">oz</option>
+										<option value="lb">lb</option>
+										<option value="unité">unité</option>
+									</select>
+									<button
+										type="button"
+										onClick={() => removeIngredient(ingredient.id)}
+										className={styles.deleteButton}
+										disabled={editedIngredients.length <= 1}
+									>
+										🗑
+									</button>
+								</div>
+							))}
+							<button
+								type="button"
+								onClick={addIngredient}
+								className={styles.addButton}
+							>
+								Ajouter un ingrédient
+							</button>
+						</div>
+					) : (
+						<ul className={styles.ingredientsList}>
+							{recipe.ingredients && recipe.ingredients.length > 0 ? (
+								recipe.ingredients.map((ingredient) => (
+									<li
+										key={ingredient.ingredient_id}
+										className={styles.ingredientItem}
+									>
+										<span className={styles.ingredientName}>
+											{ingredient.name}
+										</span>
+										{ingredient.quantity && (
+											<span className={styles.ingredientQuantity}>
+												{ingredient.quantity} {ingredient.unit || ""}
+											</span>
+										)}
 									</li>
 								))
-						) : (
-							<li>Aucune instruction</li>
+							) : (
+								<li>Aucun ingrédient</li>
+							)}
+						</ul>
+					)}
+
+					{/* Instructions */}
+					<h3>Instructions</h3>
+					{isEditing ? (
+						<div className={styles.instructionsEditContainer}>
+							{editedInstructions.map((instruction, index) => (
+								<div key={instruction.id} className={styles.instructionRow}>
+									<span className={styles.stepNumber}>{index + 1}.</span>
+									<textarea
+										value={instruction.text}
+										onChange={(e) =>
+											updateInstruction(instruction.id, e.target.value)
+										}
+										placeholder="Étape de préparation"
+										required
+										className={styles.instructionTextInput}
+									/>
+									<button
+										type="button"
+										onClick={() => removeInstruction(instruction.id)}
+										className={styles.deleteButton}
+										disabled={editedInstructions.length <= 1}
+									>
+										🗑
+									</button>
+								</div>
+							))}
+							<button
+								type="button"
+								onClick={addInstruction}
+								className={styles.addButton}
+							>
+								Ajouter une étape
+							</button>
+						</div>
+					) : (
+						<ol className={styles.instructionsList}>
+							{recipe.instructions && recipe.instructions.length > 0 ? (
+								recipe.instructions
+									.sort((a, b) => (a.step_number || 0) - (b.step_number || 0))
+									.map((instruction) => (
+										<li
+											key={instruction.instruction_id}
+											className={styles.instructionItem}
+										>
+											{instruction.text}
+										</li>
+									))
+							) : (
+								<li>Aucune instruction</li>
+							)}
+						</ol>
+					)}
+
+					{/* Boutons d'action */}
+					<div className={styles.actionButtons}>
+						{/* Buttons for recipe owner */}
+						{isOwner && isEditing && (
+							<button
+								type="button"
+								onClick={saveChanges}
+								className={styles.saveButton}
+								disabled={isSaving}
+							>
+								{isSaving ? "Enregistrement..." : "Enregistrer"}
+							</button>
 						)}
-					</ol>
-				)}
 
-				{/* Boutons d'action */}
-				<div className={styles.actionButtons}>
-					{/* Buttons for recipe owner */}
-					{isOwner && isEditing && (
+						{isOwner && isEditing && (
+							<button
+								type="button"
+								onClick={toggleEdit}
+								className={styles.cancelButton}
+								disabled={isSaving}
+							>
+								Annuler
+							</button>
+						)}
+
+						{isOwner && !isEditing && (
+							<button
+								type="button"
+								onClick={toggleEdit}
+								className={styles.editButton}
+							>
+								Modifier
+							</button>
+						)}
+
+						{isOwner && !isEditing && (
+							<button
+								type="button"
+								onClick={handleDelete}
+								className={styles.deleteRecipeButton}
+							>
+								Supprimer
+							</button>
+						)}
+
+						{/* Back button always visible */}
 						<button
 							type="button"
-							onClick={saveChanges}
-							className={styles.saveButton}
-							disabled={isSaving}
+							onClick={() => navigate("/recettes")}
+							className={styles.backButton}
 						>
-							{isSaving ? "Enregistrement..." : "Enregistrer"}
+							Retour au carnet
 						</button>
-					)}
-
-					{isOwner && isEditing && (
-						<button
-							type="button"
-							onClick={toggleEdit}
-							className={styles.cancelButton}
-							disabled={isSaving}
-						>
-							Annuler
-						</button>
-					)}
-
-					{isOwner && !isEditing && (
-						<button
-							type="button"
-							onClick={toggleEdit}
-							className={styles.editButton}
-						>
-							Modifier
-						</button>
-					)}
-
-					{isOwner && !isEditing && (
-						<button
-							type="button"
-							onClick={handleDelete}
-							className={styles.deleteRecipeButton}
-						>
-							Supprimer
-						</button>
-					)}
-
-					{/* Back button always visible */}
-					<button
-						type="button"
-						onClick={() => navigate("/recettes")}
-						className={styles.backButton}
-					>
-						Retour au carnet
-					</button>
+					</div>
 				</div>
 			</div>
 		</div>

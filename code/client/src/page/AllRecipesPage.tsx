@@ -15,8 +15,18 @@ const AllRecipesPage = () => {
 
 	useEffect(() => {
 		const fetchRecipes = async () => {
+			if (!user) {
+				return;
+			}
+
 			try {
 				setLoading(true);
+
+				if (!user) {
+					setError("Veuillez vous connecter pour voir vos recettes.");
+					setLoading(false);
+					return;
+				}
 
 				// récupérer le token d'authentification
 				let token = "";
@@ -35,7 +45,7 @@ const AllRecipesPage = () => {
 				}
 
 				// récupére toutes les recettes
-				const response = await new RecipeAPI().selectAll(token);
+				const response = await new RecipeAPI().selectAll(token, user?.user_id);
 
 				if (response.success) {
 					setRecipes(response.data);
@@ -52,7 +62,11 @@ const AllRecipesPage = () => {
 			}
 		};
 
-		fetchRecipes();
+		if (user) {
+			fetchRecipes();
+		} else {
+			setLoading(true);
+		}
 	}, [user]);
 
 	if (loading) {
@@ -85,7 +99,13 @@ const AllRecipesPage = () => {
 							key={recipe.recipe_id}
 							id={recipe.recipe_id}
 							title={recipe.title}
-							imageUrl={recipe.picture?.image || "/img/default_recipe.jpg"}
+							imageUrl={
+								recipe.picture?.image
+									? recipe.picture.image.startsWith("/")
+										? `${import.meta.env.VITE_API_URL}${recipe.picture.image}`
+										: `${import.meta.env.VITE_API_URL}/img/${recipe.picture.image}`
+									: "/img/default_recipe_img.png"
+							}
 							tags={recipe.tags || []}
 						/>
 					))}

@@ -5,7 +5,7 @@ class RecipeAPI {
   private route = "recipe";
 
   // récupére toutes les recettes
-  public selectAll = async (token?: string) => {
+  public selectAll = async (token?: string, userId?: number) => {
     const headers: HeadersInit = {
       'Content-Type': 'application/json'
     };
@@ -15,7 +15,10 @@ class RecipeAPI {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/${this.route}`, {
+    // ajoute les paramètres de requête si userId est fourni
+    const queryParams = userId ? `?user_id=${userId}` : '';
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/${this.route}${queryParams}`, {
       headers
     });
 
@@ -24,6 +27,8 @@ class RecipeAPI {
 
   // Récupérer une recette par son id
   public selectOne = async (recipeId: number, token?: string) => {
+    console.log(`Récupération recette ID ${recipeId} avec token:`, token ? "présent" : "absent");
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json'
     };
@@ -35,6 +40,8 @@ class RecipeAPI {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/${this.route}/${recipeId}`, {
       headers
     });
+
+    console.log(`Réponse pour recette ${recipeId}:`, response.status, response.statusText);
 
     return handleApiResponse(response);
   };

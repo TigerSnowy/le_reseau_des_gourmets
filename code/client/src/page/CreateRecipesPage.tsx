@@ -9,8 +9,9 @@ import { UserContext } from "../provider/UserProvider";
 import type Tag from "../model/tag";
 import type Ingredient from "../model/ingredient";
 import type Instruction from "../model/instruction";
+import PictureAPI from "../service/picture_api";
 
-const DEFAULT_RECIPE_IMAGE = "../../public/img/default_recipe_img.png";
+const DEFAULT_RECIPE_IMAGE = "/img/default_recipe_img.png";
 
 type PartialTag = Omit<Tag, "tag_id">;
 
@@ -61,6 +62,19 @@ const CreateRecipePage = () => {
 		"Facile" | "Moyen" | "Difficile"
 	>("Facile");
 
+	// formatage du temps
+	const formatTimeForDatabase = (minutes: string): string | null => {
+		if (!minutes || minutes.trim() === "") return null;
+
+		const numMinutes = Number.parseInt(minutes, 10);
+		if (Number.isNaN(numMinutes)) return null;
+
+		const hours = Math.floor(numMinutes / 60);
+		const mins = numMinutes % 60;
+
+		return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:00`;
+	};
+
 	// INGRÉDIENTS
 
 	// ajoute un nouvel ingrédient à la liste
@@ -86,7 +100,7 @@ const CreateRecipePage = () => {
 
 	// supprime un ingrédient
 	const removeIngredient = (id: string) => {
-		if (ingredients.length === 1) {
+		if (ingredients.length > 1) {
 			setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
 		}
 	};
@@ -211,8 +225,8 @@ const CreateRecipePage = () => {
 			const recipeData: Partial<Recipe> = {
 				title: recipeName,
 				description: recipeDescription,
-				preparation_time: preparationTime ? `00:${preparationTime}:00` : null,
-				cooking_time: cookingTime ? `00:${cookingTime}:00` : null,
+				preparation_time: formatTimeForDatabase(preparationTime),
+				cooking_time: formatTimeForDatabase(cookingTime),
 				difficulty,
 				user_id: user.user_id,
 				ingredients: ingredients.map((ingredient) => ({
@@ -233,19 +247,60 @@ const CreateRecipePage = () => {
 
 			// envoyer la recette au serveur
 			if (token) {
+				console.log("Envoi des données de recette:", recipeData);
 				const response = await new RecipeAPI().insert(recipeData, token);
+				console.log("Réponse de création de recette:", response);
 
-				if (response.success) {
-					navigate(`/recettes/${response.data.recipe_id}`);
+				if (response.success && response.data && response.data.recipe_id) {
+					const recipeId = response.data.recipe_id;
+					console.log("ID de la recette créée:", recipeId);
+
+					// si une image a été sélectionnée, la télécharger
+					if (image) {
+						try {
+							const formData = new FormData();
+							formData.append("image", image);
+							formData.append("recipe_id", recipeId.toString());
+
+							const imageResponse = await new PictureAPI().uploadRecipeImage(
+								formData,
+								token,
+							);
+							console.log("Réponse de téléchargement d'image:", imageResponse);
+
+							if (!imageResponse.success) {
+								console.error(
+									"Erreur lors du téléchargement de l'image:",
+									imageResponse.message,
+								);
+							}
+						} catch (imgError) {
+							console.error(
+								"Erreur lors du téléchargement de l'image:",
+								imgError,
+							);
+						}
+					}
+
+					// Attendre un court instant avant de naviguer
+					// Cela peut aider à résoudre certains problèmes de navigation/timing
+					setTimeout(() => {
+						console.log("Navigation vers la page de la recette...");
+						navigate(`/recettes/${recipeId}`);
+					}, 300);
 				} else {
-					setError(response.message);
+					console.error("Données de réponse incorrectes:", response);
+					setError(
+						"Impossible de créer la recette. Données de réponse incorrectes.",
+					);
+					navigate("/recettes");
 				}
 			} else {
 				setError("Erreur d'authentification.");
 				navigate("/connexion");
 			}
 		} catch (err) {
-			console.error("Erreur lors de la création de la recette :", err);
+			console.error("Erreur lors de la création de la recette:", err);
 			setError("Une erreur est survenue lors de la création de la recette.");
 		} finally {
 			setIsSubmitting(false);

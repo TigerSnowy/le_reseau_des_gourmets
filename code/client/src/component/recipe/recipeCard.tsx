@@ -16,7 +16,16 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 	tags,
 }) => {
 	// limite l'affichage des tags à 2
-	const displayTags = tags.slice(0, 2);
+	const displayTags = tags.slice(0, 3);
+
+	// gestion des erreurs d'image
+	const handleImageError = (
+		e: React.SyntheticEvent<HTMLImageElement, Event>,
+	) => {
+		const target = e.target as HTMLImageElement;
+		console.error("Erreur de chargement de l'image:", imageUrl);
+		target.src = "/img/default_recipe_img.png";
+	};
 
 	return (
 		<Link to={`/recettes/${id}`} className={styles.recipeCard}>
@@ -25,12 +34,15 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 				<div className={styles.imageContainer}>
 					<img
 						src={
-							imageUrl.startsWith("/")
-								? `${import.meta.env.VITE_API_URL}${imageUrl}`
-								: imageUrl
+							imageUrl
+								? imageUrl.startsWith("/")
+									? `${import.meta.env.VITE_API_URL}${imageUrl}`
+									: imageUrl
+								: "/img/default_recipe_img.png"
 						}
 						alt={title}
 						className={styles.recipeImage}
+						onError={handleImageError}
 					/>
 				</div>
 				<div className={styles.tagContainer}>

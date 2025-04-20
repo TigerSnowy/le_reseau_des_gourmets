@@ -5,8 +5,12 @@ import type User from "../model/user.js";
 
 class RecipeController {
 	public index = async (req: Request, res: Response): Promise<void> => {
-		// récupérer tous les enregistrements
-		const results = await new RecipeRepository().selectAll();
+		const userId = req.query.user_id ? Number(req.query.user_id) : undefined;
+
+		console.log("Requête de recettes pour user_id:", userId);
+
+		// récupérer tous les enregistrements filtrés par user_id
+		const results = await new RecipeRepository().selectAll(userId);
 
 		// si la requête SQL renvoie une erreur
 		if (results instanceof Error) {
