@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4% </span>
+                <span class="strong">3.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/250</span>
+                <span class='fraction'>10/256</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">4% </span>
+                <span class="strong">3.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/250</span>
+                <span class='fraction'>10/256</span>
             </div>
         
             
@@ -423,7 +423,15 @@
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -450,6 +458,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -799,19 +815,27 @@ import TagRepository from "./tag_repository.js";
 class RecipeRepository {
 	private <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >table = "recipe";</span></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	public selectAll = async (): Promise&lt;Recipe[] | unknown&gt; =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >	public selectAll = async (userId?: number): Promise&lt;Recipe[] | unknown&gt; =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >		const connexion = await new MySQLService().connect();</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >		const sql = `</span>
-            SELECT
-<span class="cstat-no" title="statement not covered" >                ${this.table}.*</span>
-            FROM 
-<span class="cstat-no" title="statement not covered" >                ${process.env.MYSQL_DATABASE}.${this.table}</span>
-			;
-        `;
+<span class="cstat-no" title="statement not covered" >		let sql = `</span>
+		SELECT
+<span class="cstat-no" title="statement not covered" >		  ${this.table}.*</span>
+		FROM 
+<span class="cstat-no" title="statement not covered" >		  ${process.env.MYSQL_DATABASE}.${this.table}</span>
+	  `;
+&nbsp;
+		// si un userId est fourni, filtrer les recettes de cet utilisateur
+<span class="cstat-no" title="statement not covered" >		if (userId) {</span>
+<span class="cstat-no" title="statement not covered" >			sql += ` WHERE ${this.table}.user_id = ?`;</span>
+<span class="cstat-no" title="statement not covered" >		}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		sql += ";";</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >		try {</span>
-<span class="cstat-no" title="statement not covered" >			const [results] = await connexion.execute(sql);</span>
+<span class="cstat-no" title="statement not covered" >			const [results] = userId</span>
+<span class="cstat-no" title="statement not covered" >				? await connexion.execute(sql, [userId])</span>
+<span class="cstat-no" title="statement not covered" >				: await connexion.execute(sql);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >			for (let i = 0; i &lt; (results as Recipe[]).length; i++) {</span>
 <span class="cstat-no" title="statement not covered" >				const result = (results as Recipe[])[i];</span>
@@ -975,7 +999,7 @@ class RecipeRepository {
 <span class="cstat-no" title="statement not covered" >			}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >			await connexion.commit();</span>
-<span class="cstat-no" title="statement not covered" >			return { success: true };</span>
+<span class="cstat-no" title="statement not covered" >			return { success: true, recipe_id: recipe_id };</span>
 <span class="cstat-no" title="statement not covered" >		} catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >			await connexion.rollback();</span>
 <span class="cstat-no" title="statement not covered" >			return error;</span>
@@ -1150,7 +1174,7 @@ export default RecipeRepository;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-03T13:33:24.072Z
+                at 2025-04-22T12:02:38.491Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

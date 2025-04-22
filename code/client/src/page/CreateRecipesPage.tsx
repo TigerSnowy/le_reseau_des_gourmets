@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styles from "../assets/scss/recipe/createRecipe.module.scss";
 import SecurityAPI from "../service/security_api";
 import type User from "../model/user";
@@ -11,9 +11,7 @@ import type Ingredient from "../model/ingredient";
 import type Instruction from "../model/instruction";
 import PictureAPI from "../service/picture_api";
 
-const DEFAULT_RECIPE_IMAGE = "/img/default_recipe_img.png";
-
-type PartialTag = Omit<Tag, "tag_id">;
+// const DEFAULT_RECIPE_IMAGE = "/img/default_recipe_img.png";
 
 const CreateRecipePage = () => {
 	const navigate = useNavigate();
@@ -24,45 +22,34 @@ const CreateRecipePage = () => {
 
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (!user) {
-			navigate("/connexion");
-		}
-	}, [user, navigate]);
-
-	// stocke le nomde la recette
 	const [recipeName, setRecipeName] = useState("");
 
 	const [recipeDescription, setRecipeDescription] = useState("");
 
-	// stocke l'image téléchargée par l'utilisateur
 	const [image, setImage] = useState<File | null>(null);
 
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-	// stocke la liste des ingrédients (un id unique pour chaque (crypto.randomUUID))
+	// un id unique pour chaque
 	const [ingredients, setIngredients] = useState([
 		{ id: crypto.randomUUID(), name: "", quantity: "", unit: "" },
 	]);
 
-	//stocke la liste des instructions sous forme de texte (id unique)
 	const [instructions, setInstructions] = useState([
 		{ id: crypto.randomUUID(), text: "" },
 	]);
 
-	// stocke les tags associés à la recette
 	const [tags, setTags] = useState("");
 
-	// stocke le temps de préparation et de cuisson
 	const [preparationTime, setPreparationTime] = useState("");
+
 	const [cookingTime, setCookingTime] = useState("");
 
-	// stocke la difficulté de la recette
 	const [difficulty, setDifficulty] = useState<
 		"Facile" | "Moyen" | "Difficile"
 	>("Facile");
 
-	// formatage du temps
+	// formatage du temps (en cours)
 	const formatTimeForDatabase = (minutes: string): string | null => {
 		if (!minutes || minutes.trim() === "") return null;
 
@@ -77,7 +64,6 @@ const CreateRecipePage = () => {
 
 	// INGRÉDIENTS
 
-	// ajoute un nouvel ingrédient à la liste
 	const addIngredient = () => {
 		setIngredients([
 			...ingredients,
@@ -98,7 +84,6 @@ const CreateRecipePage = () => {
 		);
 	};
 
-	// supprime un ingrédient
 	const removeIngredient = (id: string) => {
 		if (ingredients.length > 1) {
 			setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
@@ -107,7 +92,6 @@ const CreateRecipePage = () => {
 
 	// INSTRUCTIONS
 
-	// ajoute une nouvelle instruction à la liste
 	const addInstruction = () => {
 		setInstructions([...instructions, { id: crypto.randomUUID(), text: "" }]);
 	};
@@ -120,7 +104,6 @@ const CreateRecipePage = () => {
 		);
 	};
 
-	// supprimer une instruction
 	const removeInstruction = (id: string) => {
 		if (instructions.length > 1) {
 			setInstructions(
@@ -131,7 +114,6 @@ const CreateRecipePage = () => {
 
 	// IMAGE
 
-	// gère le changement d'image
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files?.[0]) {
 			const selectedFile = event.target.files[0];
@@ -146,7 +128,6 @@ const CreateRecipePage = () => {
 		}
 	};
 
-	// supprime l'image
 	const removeImage = () => {
 		setImage(null);
 		setImagePreview(null);
@@ -213,7 +194,7 @@ const CreateRecipePage = () => {
 
 			// préparer les données de la recette
 
-			const tagList: PartialTag[] = tags
+			const tagList = tags
 				.split(",")
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "")
@@ -282,8 +263,7 @@ const CreateRecipePage = () => {
 						}
 					}
 
-					// Attendre un court instant avant de naviguer
-					// Cela peut aider à résoudre certains problèmes de navigation/timing
+					// attendre un court instant avant de naviguer
 					setTimeout(() => {
 						console.log("Navigation vers la page de la recette...");
 						navigate(`/recettes/${recipeId}`);

@@ -37,7 +37,7 @@ const RecipePage = () => {
 		(Instruction & { id: string })[]
 	>([]);
 	const [editedTags, setEditedTags] = useState<string>("");
-	const [image, setImage] = useState<File | null>(null);
+	const [, setImage] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 
 	const formatTimeForDatabase = (minutes: string): string | null => {
@@ -182,46 +182,23 @@ const RecipePage = () => {
 		setIsEditing(!isEditing);
 	};
 
-	// A SUPPRIMER
+	// const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
+	// const [newTag, setNewTag] = useState("");
 
-	// pour stocker la recette (sans back pour l'instant)
-	// const [recipeName, setRecipeName] = useState("Tarte au citron");
-	// // const [image, setImage] = useState<File | null>(null);
-	// const [preparationTime, setPreparationTime] = useState("20");
-	// const [cookingTime, setCookingTime] = useState("40");
-	// const [difficulty, setDifficulty] = useState("Facile");
-	// const [ingredients, setIngredients] = useState([
-	// 	{ id: crypto.randomUUID(), name: "Farine", quantity: "200", unit: "g" },
-	// 	{ id: crypto.randomUUID(), name: "Oeufs", quantity: "2", unit: "" },
-	// 	{ id: crypto.randomUUID(), name: "Sucre", quantity: "50", unit: "g" },
-	// 	{ id: crypto.randomUUID(), name: "Citron", quantity: "3", unit: "" },
-	// 	{ id: crypto.randomUUID(), name: "Lait", quantity: "100", unit: "ml" },
-	// ]);
+	// // TAGS
 
-	// const [instructions, setInstructions] = useState([
-	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-	// 	{ id: crypto.randomUUID(), text: "Mélanger les ingrédients." },
-	// 	{ id: crypto.randomUUID(), text: "Cuire au four à 180°C." },
-	// ]);
+	// // ajoute un tag
+	// const addTag = () => {
+	// 	if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
+	// 		setTags([...tags, newTag.trim()]);
+	// 		setNewTag("");
+	// 	}
+	// };
 
-	const [tags, setTags] = useState<string[]>(["dessert", "facile"]);
-	const [newTag, setNewTag] = useState("");
-
-	// TAGS
-
-	// ajoute un tag
-	const addTag = () => {
-		if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
-			setTags([...tags, newTag.trim()]);
-			setNewTag("");
-		}
-	};
-
-	// supprime un tag
-	const removeTag = (tag: string) => {
-		setTags(tags.filter((t) => t !== tag));
-	};
+	// // supprime un tag
+	// const removeTag = (tag: string) => {
+	// 	setTags(tags.filter((t) => t !== tag));
+	// };
 
 	// INGREDIENTS
 
@@ -694,7 +671,12 @@ const RecipePage = () => {
 										</span>
 										{ingredient.quantity && (
 											<span className={styles.ingredientQuantity}>
-												{ingredient.quantity} {ingredient.unit || ""}
+												{ingredient.quantity}
+											</span>
+										)}
+										{ingredient.unit && (
+											<span className={styles.ingredientUnit}>
+												{ingredient.unit}
 											</span>
 										)}
 									</li>
@@ -760,7 +742,6 @@ const RecipePage = () => {
 
 					{/* Boutons d'action */}
 					<div className={styles.actionButtons}>
-						{/* Buttons for recipe owner */}
 						{isOwner && isEditing && (
 							<button
 								type="button"
@@ -803,7 +784,6 @@ const RecipePage = () => {
 							</button>
 						)}
 
-						{/* Back button always visible */}
 						<button
 							type="button"
 							onClick={() => navigate("/recettes")}
