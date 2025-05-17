@@ -1,10 +1,6 @@
 # Le Réseau des Gourmets 🧑‍🍳👩‍🍳
 
 <p text-align="center">
-  <img src="code/client/public/img/logo_noir.svg" alt="Le Réseau des Gourmets Logo" width="250">
-</p>
-
-<p text-align="center">
   <em>Une plateforme sociale pour les passionnés de cuisine où partager et découvrir des recettes</em>
 </p>
 
