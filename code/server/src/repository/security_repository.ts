@@ -32,40 +32,6 @@ class SecurityRepository {
 			console.log(`Avatar attribué: ${userData.profile_picture}`);
 		}
 
-		// if
-		// const validationErrors = [];
-
-		// if (!data) validationErrors.push("Aucune donnée fournie");
-		// else {
-		// 	if (!data.pseudo) validationErrors.push("Le pseudo est requis");
-		// 	if (!data.surname) validationErrors.push("Le nom est requis");
-		// 	if (!data.first_name) validationErrors.push("Le prénom est requis");
-		// 	if (!data.email) validationErrors.push("L'email est requis");
-		// 	else if (!this.isValidEmail(data.email))
-		// 		validationErrors.push("Format d'email invalide");
-		// 	if (!data.password) validationErrors.push("Le mot de passe est requis");
-		// 	else if (data.password.length < 8)
-		// 		validationErrors.push(
-		// 			"Le mot de passe doit contenir au moins 8 caractères",
-		// 		);
-		// }
-
-		// if (validationErrors.length > 0) {
-		// 	return { error: validationErrors.join(", ") };
-		// }
-
-		// const userData: Partial<User> = {
-		// 	...data,
-		// 	profile_picture: data?.profile_picture || this.getRandomDefaultAvatar(),
-		// 	role_id: 2,
-		// };
-
-		// connexion au serveur MySQL
-
-		// const connexion = await new MySQLService().connect();
-
-		// requête SQL
-		// SELECT school.* FROM le_reseau_des_gourmets_dev
 		const sql = `
             INSERT INTO
                 ${process.env.MYSQL_DATABASE}.${this.table}

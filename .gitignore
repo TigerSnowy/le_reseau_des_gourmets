@@ -1,6 +1,8 @@
 mysql-data/
 code/server/dist
 code/server/node_modules
+code/server/.env.dev
+code/server/.env.test
 code/client/dist
 code/client/node_modules
 mongodb-data/
